@@ -1,0 +1,7 @@
+#navbar header {
+	@apply mx-4 mt-5 bg-accent rounded-xl;
+}
+
+#avatar-container {
+	@apply grow-0 sm:grow;
+}
