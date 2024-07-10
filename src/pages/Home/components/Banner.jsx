@@ -7,10 +7,10 @@ import "./styles.css";
 
 const Banner = () => {
 	return (
-		<ContainerWrapper className="flex mt-12">
-			<div id="left-banner" className="flex flex-col flex-1 mt-10 capitalize gap-9">
+		<ContainerWrapper className="relative flex mt-12">
+			<div id="left-banner" className="flex flex-col flex-1 mt-10 gap-9">
 				<div>
-					<h1 className="text-[62px] font-medium inline">
+					<h1 className="text-[4rem] font-medium inline leading-tight capitalize">
 						Get ready for your best ever{" "}
 						<span className="relative">
 							Dental Experience!{" "}
@@ -20,7 +20,7 @@ const Banner = () => {
 						</span>
 					</h1>
 				</div>
-				<p className="">
+				<p className="max-w-[35rem] text-lg">
 					We use only the best quality materials on the market in order to provide the
 					best products to our patients, So don’t worry about anything and book yourself.
 				</p>
@@ -41,7 +41,10 @@ const Banner = () => {
 					</div>
 				</div>
 			</div>
-			<div id="right-banner" className="flex-1">
+			<div
+				id="right-banner"
+				className="absolute z-[-1] opacity-40 lg:opacity-100 top-0 flex-1 -translate-x-1/2 lg:translate-x-0 left-1/2 lg:left-0 lg:relative"
+			>
 				<LandingPageIllustration />
 			</div>
 		</ContainerWrapper>

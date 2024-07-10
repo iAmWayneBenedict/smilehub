@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import PropTypes from "prop-types";
 
 /**
- * Container wrapper for home pages with a default max width of 1536px.
+ * Container wrapper for home pages with a default max width of 1600px.
  *
  * @param {object} props - The props for the component.
  * @param {React.ReactNode} props.children - The children elements to be rendered inside the container.
@@ -12,7 +12,13 @@ import PropTypes from "prop-types";
  */
 const ContainerWrapper = ({ children, className, ...props }) => {
 	return (
-		<div className={cn("container max-w-[1536px] p-0 px-4", className)} {...props}>
+		<div
+			className={cn(
+				"container max-w-[1600px] p-0 px-[--homepage-container-padding-x]",
+				className
+			)}
+			{...props}
+		>
 			{children}
 		</div>
 	);

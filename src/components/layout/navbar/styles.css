@@ -1,5 +1,5 @@
 #navbar header {
-	@apply mx-4 mt-5 bg-accent rounded-xl;
+	@apply mx-[--homepage-container-padding-x] mt-5 bg-accent rounded-xl;
 }
 
 #avatar-container {

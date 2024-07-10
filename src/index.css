@@ -54,6 +54,12 @@
 		--ring: 221 44% 54%;
 
 		--radius: 0.5rem;
+
+		/**
+		 * Custom variables
+		 *  
+		 * */
+		--homepage-container-padding-x: clamp(1rem, 3vw, 3rem);
 	}
 
 	.dark {
@@ -92,6 +98,6 @@
 		@apply border-border font-Mukta;
 	}
 	body {
-		@apply bg-background text-foreground;
+		@apply text-foreground;
 	}
 }
