@@ -41,7 +41,14 @@ const NavigationBar = () => {
 		{ name: "Contact", href: "#" },
 	];
 	return (
-		<Navbar id="navbar" height={"5rem"} onMenuOpenChange={setIsMenuOpen} maxWidth="2xl">
+		<Navbar
+			id="navbar"
+			isBlurred={false}
+			className="bg-transparent"
+			height={"5rem"}
+			onMenuOpenChange={setIsMenuOpen}
+			maxWidth="2xl"
+		>
 			{/**
 			 ** Navigation menu for logo and menu toggle **
 			 */}

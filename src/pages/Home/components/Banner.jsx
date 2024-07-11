@@ -12,12 +12,7 @@ const Banner = () => {
 				<div>
 					<h1 className="text-[4rem] font-medium inline leading-tight capitalize">
 						Get ready for your best ever{" "}
-						<span className="relative">
-							Dental Experience!{" "}
-							<div className="absolute bottom-0 left-0">
-								<CustomUnderline />
-							</div>
-						</span>
+						<CustomUnderline>Dental Experience!</CustomUnderline>
 					</h1>
 				</div>
 				<p className="max-w-[35rem] text-lg">

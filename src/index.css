@@ -60,6 +60,9 @@
 		 *  
 		 * */
 		--homepage-container-padding-x: clamp(1rem, 3vw, 3rem);
+
+		--dark-text: #011632;
+		--secondary-text-color: #3c4959;
 	}
 
 	.dark {

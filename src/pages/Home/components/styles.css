@@ -26,3 +26,13 @@
 #calling-bg-icon {
 	background: linear-gradient(180deg, #e6f6fe 0%, rgba(230, 246, 254, 0) 100%);
 }
+
+/* Article Section */
+#article-home-page-container::after {
+	background: linear-gradient(
+		52.56deg,
+		rgba(37, 180, 248, 0) 0%,
+		rgba(37, 180, 248, 0.473958) 64.42%,
+		#5777bd 126.21%
+	);
+}

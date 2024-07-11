@@ -1,14 +1,18 @@
 /** @type {import('tailwindcss').Config} */
 import tailwindCSSAnimate from "tailwindcss-animate";
 import { nextui } from "@nextui-org/react";
+import fluid, { extract } from "fluid-tailwind";
 export const darkMode = ["class"];
-export const content = [
-	"./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
-	"./pages/**/*.{js,jsx}",
-	"./components/**/*.{js,jsx}",
-	"./app/**/*.{js,jsx}",
-	"./src/**/*.{js,jsx}",
-];
+export const content = {
+	files: [
+		"./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
+		"./pages/**/*.{js,jsx}",
+		"./components/**/*.{js,jsx}",
+		"./app/**/*.{js,jsx}",
+		"./src/**/*.{js,jsx}",
+	],
+	extract,
+};
 export const prefix = "";
 export const theme = {
 	darkMode: "class",
@@ -99,4 +103,5 @@ export const plugins = [
 			// ... custom themes
 		},
 	}),
+	fluid,
 ];
