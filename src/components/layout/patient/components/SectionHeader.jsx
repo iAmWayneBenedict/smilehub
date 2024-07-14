@@ -26,6 +26,7 @@ const SectionHeader = ({
 	lastSeriesText,
 	description,
 }) => {
+	console.log(textUnderlined, customUnderlineOptions);
 	return (
 		<div
 			className={cn(

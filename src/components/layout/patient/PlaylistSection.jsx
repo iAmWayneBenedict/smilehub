@@ -10,9 +10,9 @@ const PlaylistSection = () => {
 				<SectionHeader
 					firstSeriesText="We’re"
 					lastSeriesText="New patients and can’t wait to meet you."
-					textUnderlined="Welcome"
+					textUnderlined="Welcoming"
 					description="We use only the best quality materials on the market in order to provide the best products to our patients."
-					customUnderlineOptions={{ isLarge: true }}
+					customUnderlineOptions={{ isLarge: true, classes: "w-[105%]" }}
 				/>
 				<Image
 					src={playlistSectionTempImage}

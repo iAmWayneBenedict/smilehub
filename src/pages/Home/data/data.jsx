@@ -36,7 +36,7 @@ export const articleCardData = [
 		title: (
 			<React.Fragment>
 				We’re{" "}
-				<CustomUnderline childClassName="bottom-[5px] w-[130%]">Welcome</CustomUnderline>
+				<CustomUnderline childClassName="bottom-[5px] w-[130%]">Welcoming</CustomUnderline>
 				New patients and can’t wait to meet you.
 			</React.Fragment>
 		),

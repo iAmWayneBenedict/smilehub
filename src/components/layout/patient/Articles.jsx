@@ -48,6 +48,10 @@ const Articles = ({ align = "left" }) => {
 				>
 					<div id="article-section-header-left">
 						<SectionHeader
+							customUnderlineOptions={{
+								isLarge: true,
+								classes: "w-[115%]",
+							}}
 							elementClasses={{
 								parentClasses: align === "left" ? "items-start" : "",
 								childClasses: align === "left" ? "text-left" : "",
