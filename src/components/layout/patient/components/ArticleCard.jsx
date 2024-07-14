@@ -1,15 +1,16 @@
 import { Card, CardHeader, CardBody, Image } from "@nextui-org/react";
+import PropTypes from "prop-types";
 
-const ArticleCard = () => {
+const ArticleCard = ({ image }) => {
 	return (
-		<Card className="py-4 shadow-none w-fit bg-accent">
+		<Card className="px-1 py-3 shadow-none w-fit bg-accent">
 			<CardHeader className="flex-col items-start px-4 pt-2 pb-0">
-				<div className="max-w-[19rem]">
+				<div className="max-w-[19rem] w-screen">
 					<Image
 						removeWrapper
 						alt="Card background"
-						className="object-cover rounded-xl"
-						src="https://nextui.org/images/hero-card-complete.jpeg"
+						className="object-cover w-full rounded-xl"
+						src={image}
 					/>
 				</div>
 			</CardHeader>
@@ -22,5 +23,7 @@ const ArticleCard = () => {
 		</Card>
 	);
 };
-
+ArticleCard.propTypes = {
+	image: PropTypes.string,
+};
 export default ArticleCard;
