@@ -1,7 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 import tailwindCSSAnimate from "tailwindcss-animate";
 import { nextui } from "@nextui-org/react";
-import fluid, { extract } from "fluid-tailwind";
+import fluid, { extract, screens, fontSize } from "fluid-tailwind";
 export const darkMode = ["class"];
 export const content = {
 	files: [
@@ -23,9 +23,18 @@ export const theme = {
 			"2xl": "1400px",
 		},
 	},
+	screens,
+	fontSize: {
+		...fontSize,
+		"45xl": ["2.75rem", "1"],
+		"55xl": ["3.25rem", "1"],
+	},
 	extend: {
 		fontFamily: {
 			Mukta: ["Mukta", "sans-serif"],
+		},
+		width: {
+			120: "30rem",
 		},
 		colors: {
 			border: "hsl(var(--border))",

@@ -1,0 +1,6 @@
+#specialist-card-detail-container {
+	background: linear-gradient(96.2deg, rgba(37, 180, 248, 0.5) 0%, rgba(37, 180, 248, 0) 100%);
+	-webkit-backdrop-filter: blur(100px);
+	-moz-backdrop-filter: blur(100px);
+	backdrop-filter: blur(100px);
+}

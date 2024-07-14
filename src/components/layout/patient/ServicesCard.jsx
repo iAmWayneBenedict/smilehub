@@ -3,9 +3,8 @@ import { ArrowRightCircle } from "lucide-react";
 import PropTypes from "prop-types";
 
 export default function ServicesCard({ icon, href, title, description }) {
-	console.log(icon);
 	return (
-		<Card className="max-w-[400px]">
+		<Card className="max-w-[300px] md:max-w-[400px]">
 			<CardHeader className="flex justify-center">
 				<div className="p-3 rounded-full bg-primary">{icon}</div>
 			</CardHeader>

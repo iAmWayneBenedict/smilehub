@@ -1,13 +1,11 @@
-const LandingPageIllustration = () => {
+const LandingPageIllustration = (props) => {
 	return (
 		<svg
-			width="733"
-			height="677"
 			viewBox="0 0 733 677"
 			fill="none"
 			xmlns="http://www.w3.org/2000/svg"
 			xmlnsXlink="http://www.w3.org/1999/xlink"
-			// className="w-full h-full"
+			{...props}
 		>
 			<rect x="182" y="57" width="480" height="480" fill="url(#pattern0_7_27)" />
 			<rect x="125" width="594" height="594" fill="url(#pattern1_7_27)" />
@@ -97,7 +95,7 @@ const LandingPageIllustration = () => {
 				id="landing-page-illustration-person"
 				width="696"
 				height="677"
-				className="hidden lg:flex"
+				// className="hidden lg:flex"
 				fill="url(#pattern2_7_27)"
 			/>
 			<defs>

@@ -5,12 +5,17 @@ import PropTypes from "prop-types";
 
 const ArticleHomePage = ({ title, description, isForm, image }) => {
 	return (
-		<ContainerWrapper className="flex gap-5 mt-36">
-			<div id="left-article" className="flex-1 max-w-[40rem] flex flex-col gap-8">
-				<h2 className="text-[3.25rem] font-semibold leading-[1.25] capitalize">{title}</h2>
-				<p className="text-lg ">{description}</p>
+		<ContainerWrapper className="flex flex-col items-center gap-5 lg:flex-row mt-36 lg:items-start">
+			<div
+				id="left-article"
+				className="flex-1 max-w-[40rem] flex flex-col gap-8 order-2 lg:order-1 items-center lg:items-start"
+			>
+				<h2 className="~text-3xl/55xl font-semibold leading-[1.25] capitalize text-center lg:text-left">
+					{title}
+				</h2>
+				<p className="~text-base/lg text-center lg:text-left">{description}</p>
 				{isForm ? (
-					<div className="flex overflow-hidden rounded-lg h-[4rem] w-[30rem]">
+					<div className="flex overflow-hidden rounded-lg h-[4rem] ~w-80/120  justify-center lg:justify-start">
 						<Input
 							startContent={<CallIcon width="28" height="27" />}
 							variant="bordered"
@@ -40,10 +45,10 @@ const ArticleHomePage = ({ title, description, isForm, image }) => {
 					</Button>
 				)}
 			</div>
-			<div className="flex items-center justify-center flex-1">
+			<div className="flex items-center justify-center flex-1 order-1 lg:order-2">
 				<div
 					id="article-home-page-container"
-					className="relative w-[30rem] h-fit object-cover after:rounded-[13px] after:absolute after:content-[''] after:w-full after:h-full after:-top-[2rem] after:-right-[2rem]"
+					className="relative w-[80%] -translate-x-4 md:translate-x-0 lg:w-120 h-fit object-cover after:rounded-[13px] after:absolute after:content-[''] after:w-full after:h-full after:-top-[2rem] after:-right-[2rem]"
 				>
 					{image}
 				</div>

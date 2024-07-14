@@ -5,9 +5,15 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@nextui-org/accordion':
+    specifier: ^2.0.35
+    version: 2.0.35(@nextui-org/system@2.2.2)(@nextui-org/theme@2.2.6)(framer-motion@11.2.13)(react-dom@18.3.1)(react@18.3.1)
   '@nextui-org/button':
     specifier: ^2.0.34
     version: 2.0.34(@nextui-org/system@2.2.2)(@nextui-org/theme@2.2.6)(framer-motion@11.2.13)(react-dom@18.3.1)(react@18.3.1)
+  '@nextui-org/divider':
+    specifier: ^2.0.28
+    version: 2.0.28(@nextui-org/theme@2.2.6)(react-dom@18.3.1)(react@18.3.1)
   '@nextui-org/input':
     specifier: ^2.2.2
     version: 2.2.2(@nextui-org/system@2.2.2)(@nextui-org/theme@2.2.6)(@types/react@18.3.3)(react-dom@18.3.1)(react@18.3.1)
@@ -23,6 +29,9 @@ dependencies:
   '@radix-ui/react-slot':
     specifier: ^1.1.0
     version: 1.1.0(@types/react@18.3.3)(react@18.3.1)
+  '@smastrom/react-rating':
+    specifier: ^1.5.0
+    version: 1.5.0(react-dom@18.3.1)(react@18.3.1)
   '@tanstack/react-query':
     specifier: ^5.50.1
     version: 5.50.1(react@18.3.1)
@@ -53,9 +62,15 @@ dependencies:
   react-hook-form:
     specifier: ^7.52.1
     version: 7.52.1(react@18.3.1)
+  react-responsive:
+    specifier: ^10.0.0
+    version: 10.0.0(react@18.3.1)
   sonner:
     specifier: ^1.5.0
     version: 1.5.0(react-dom@18.3.1)(react@18.3.1)
+  swiper:
+    specifier: ^11.1.4
+    version: 11.1.4
   tailwind-merge:
     specifier: ^2.4.0
     version: 2.4.0
@@ -3051,6 +3066,16 @@ packages:
     dev: true
     optional: true
 
+  /@smastrom/react-rating@1.5.0(react-dom@18.3.1)(react@18.3.1):
+    resolution: {integrity: sha512-7vg3NRgO0tpvEunq8BEWA8qckNSd7x3dVGqaNEfLs3Ow4ibU2EEXJtnd7Yl44xOujWIzXM5Bk2VZm2DVm065Qw==}
+    peerDependencies:
+      react: '>=18'
+      react-dom: '>=18'
+    dependencies:
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+    dev: false
+
   /@swc/core-darwin-arm64@1.6.13:
     resolution: {integrity: sha512-SOF4buAis72K22BGJ3N8y88mLNfxLNprTuJUpzikyMGrvkuBFNcxYtMhmomO0XHsgLDzOJ+hWzcgjRNzjMsUcQ==}
     engines: {node: '>=10'}
@@ -3583,6 +3608,10 @@ packages:
       path-key: 3.1.1
       shebang-command: 2.0.0
       which: 2.0.2
+
+  /css-mediaquery@0.1.2:
+    resolution: {integrity: sha512-COtn4EROW5dBGlE/4PiKnh6rZpAPxDeFLaEEwt4i10jpDMFt2EhQGS79QmmrO+iKCHv0PU/HrOWEhijFd1x99Q==}
+    dev: false
 
   /cssesc@3.0.0:
     resolution: {integrity: sha512-/Tb/JcjK111nNScGob5MNtsntNM1aCNUDipB/TkwZFhyDrrE47SOx/18wF2bbjgc3ZzCSKW1T5nt5EbFoAz/Vg==}
@@ -4282,6 +4311,10 @@ packages:
     dependencies:
       function-bind: 1.1.2
 
+  /hyphenate-style-name@1.1.0:
+    resolution: {integrity: sha512-WDC/ui2VVRrz3jOVi+XtjqkDjiVjTtFaAGiW37k6b+ohyQ5wYDOGkvCZa8+H0nx3gyvv0+BST9xuOgIyGQ00gw==}
+    dev: false
+
   /ignore@5.3.1:
     resolution: {integrity: sha512-5Fytz/IraMjqpwfd34ke28PTVMjZjJG2MPn5t7OE4eUCUNf8BAa7b5WUS9/Qvr6mwOQS7Mk6vdsMno5he+T8Xw==}
     engines: {node: '>= 4'}
@@ -4657,6 +4690,12 @@ packages:
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
     dev: true
 
+  /matchmediaquery@0.4.2:
+    resolution: {integrity: sha512-wrZpoT50ehYOudhDjt/YvUJc6eUzcdFPdmbizfgvswCKNHD1/OBOHYJpHie+HXpu6bSkEGieFMYk6VuutaiRfA==}
+    dependencies:
+      css-mediaquery: 0.1.2
+    dev: false
+
   /merge2@1.4.1:
     resolution: {integrity: sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg==}
     engines: {node: '>= 8'}
@@ -5024,6 +5063,19 @@ packages:
       use-sidecar: 1.1.2(@types/react@18.3.3)(react@18.3.1)
     dev: false
 
+  /react-responsive@10.0.0(react@18.3.1):
+    resolution: {integrity: sha512-N6/UiRLGQyGUqrarhBZmrSmHi2FXSD++N5VbSKsBBvWfG0ZV7asvUBluSv5lSzdMyEVjzZ6Y8DL4OHABiztDOg==}
+    engines: {node: '>=14'}
+    peerDependencies:
+      react: '>=16.8.0'
+    dependencies:
+      hyphenate-style-name: 1.1.0
+      matchmediaquery: 0.4.2
+      prop-types: 15.8.1
+      react: 18.3.1
+      shallow-equal: 3.1.0
+    dev: false
+
   /react-style-singleton@2.2.1(@types/react@18.3.3)(react@18.3.1):
     resolution: {integrity: sha512-ZWj0fHEMyWkHzKYUr2Bs/4zU6XLmq9HsgBURm7g5pAVfyn49DgUiNgY2d4lXRlYSiCif9YBGpQleewkcqddc7g==}
     engines: {node: '>=10'}
@@ -5223,6 +5275,10 @@ packages:
       has-property-descriptors: 1.0.2
     dev: true
 
+  /shallow-equal@3.1.0:
+    resolution: {integrity: sha512-pfVOw8QZIXpMbhBWvzBISicvToTiM5WBF1EeAUZDDSb5Dt29yl4AYbyywbJFSEsRUMr7gJaxqCdr4L3tQf9wVg==}
+    dev: false
+
   /shebang-command@2.0.0:
     resolution: {integrity: sha512-kHxr2zZpYtdmrN1qDjrrX/Z1rR1kG8Dx+gkpK1G4eXmvXswmcE1hTWBWYUzlraYw1/yZp6YuDY77YtvbN0dmDA==}
     engines: {node: '>=8'}
@@ -5368,6 +5424,11 @@ packages:
   /supports-preserve-symlinks-flag@1.0.0:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
+
+  /swiper@11.1.4:
+    resolution: {integrity: sha512-1n7kbYJB2dFEpUHRFszq7gys/ofIBrMNibwTiMvPHwneKND/t9kImnHt6CfGPScMHgI+dWMbGTycCKGMoOO1KA==}
+    engines: {node: '>= 4.7.0'}
+    dev: false
 
   /tailwind-merge@1.14.0:
     resolution: {integrity: sha512-3mFKyCo/MBcgyOTlrY8T7odzZFx+w+qKSMAmdFzRvqBfLlSigU6TZnlFHK0lkMwj9Bj8OYU+9yW9lmGuS0QEnQ==}

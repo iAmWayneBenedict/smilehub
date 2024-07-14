@@ -1,5 +1,10 @@
 #navbar header {
-	@apply mx-[--homepage-container-padding-x] mt-5 bg-accent rounded-xl;
+	@apply mx-[--homepage-container-padding-x] mt-5 rounded-xl;
+	-webkit-backdrop-filter: blur(100px);
+	-moz-backdrop-filter: blur(100px);
+	backdrop-filter: blur(20px);
+	background-color: unset;
+	background: rgba(231, 246, 254, 0.7);
 }
 
 #avatar-container {

@@ -21,18 +21,7 @@ import "./styles.css";
 const NavigationBar = () => {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-	const menuItems = [
-		"Profile",
-		"Dashboard",
-		"Activity",
-		"Analytics",
-		"System",
-		"Deployments",
-		"My Settings",
-		"Team Settings",
-		"Help & Feedback",
-		"Log Out",
-	];
+	const menuItems = ["Home", "Services", "Blogs", "About", "Contact", "Log Out"];
 	const navItems = [
 		{ name: "Home", href: "#" },
 		{ name: "Services", href: "#" },
@@ -97,7 +86,6 @@ const NavigationBar = () => {
 					<Dropdown placement="bottom-end">
 						<DropdownTrigger>
 							<Avatar
-								isBordered
 								as="button"
 								className="transition-transform"
 								color="secondary"
