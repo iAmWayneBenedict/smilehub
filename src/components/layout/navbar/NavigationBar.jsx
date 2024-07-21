@@ -16,18 +16,45 @@ import {
 	DropdownItem,
 	Avatar,
 } from "@nextui-org/react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./styles.css";
+import { useLocation } from "react-router-dom";
 const NavigationBar = () => {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
+	const nav = useRef(null);
+
+	const location = useLocation();
+
+	useEffect(() => {
+		if (nav.current === null) return;
+		if (location.pathname === "/") {
+			nav.current.classList.add("colored");
+		} else {
+			nav.current.classList.remove("colored");
+		}
+	}, [location.pathname]);
+
+	useEffect(() => {
+		const handleScroll = () => {
+			console.log(nav.current);
+			if (nav.current === null) return;
+			if (window.scrollY > 800) {
+				nav.current.classList.add("colored");
+			} else {
+				nav.current.classList.remove("colored");
+			}
+		};
+		window.addEventListener("scroll", handleScroll);
+		return () => window.removeEventListener("scroll", handleScroll);
+	}, []);
 
 	const menuItems = ["Home", "Services", "Blogs", "About", "Contact", "Log Out"];
 	const navItems = [
-		{ name: "Home", href: "#" },
-		{ name: "Services", href: "#" },
-		{ name: "Blogs", href: "#" },
-		{ name: "About", href: "#" },
-		{ name: "Contact", href: "#" },
+		{ name: "Home", href: "/" },
+		{ name: "Services", href: "/services" },
+		{ name: "Blogs", href: "/blogs" },
+		{ name: "About", href: "/about" },
+		{ name: "Contact", href: "/contact" },
 	];
 	return (
 		<Navbar
@@ -37,6 +64,7 @@ const NavigationBar = () => {
 			height={"5rem"}
 			onMenuOpenChange={setIsMenuOpen}
 			maxWidth="2xl"
+			ref={nav}
 		>
 			{/**
 			 ** Navigation menu for logo and menu toggle **

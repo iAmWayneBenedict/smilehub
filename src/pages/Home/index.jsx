@@ -8,7 +8,6 @@ import SwiperSection from "@/components/layout/patient/SwiperSection";
 import Articles from "@/components/layout/patient/Articles";
 import FAQ from "@/components/layout/patient/FAQ";
 import OutroHomepageSection from "@/components/layout/patient/OutroHomepageSection";
-import Footer from "@/components/layout/patient/Footer";
 import { useMediaQuery } from "react-responsive";
 
 const Home = () => {
@@ -26,7 +25,9 @@ const Home = () => {
 	return (
 		<div className="overflow-x-hidden">
 			<Banner />
-			<ServicesCardContainer cardListData={servicesCardData} />
+			<ServicesCardContainer
+				cardListData={servicesCardData.filter((_, index) => index < 3)}
+			/>
 			<ArticleHomePage
 				title={article1?.title}
 				description={article1?.description}
@@ -76,12 +77,19 @@ const Home = () => {
 					isSmallerDesktop ? (isTablet ? (isMobile ? "1.25" : "1.75") : "3.1") : "3.65"
 				}
 			/>
-			<Articles />
+			<Articles
+				customUnderline={{
+					customUnderLineOptions: {
+						isLarge: true,
+						classes: "w-[115%]",
+					},
+					textUnderlined: "News & Articles",
+					description:
+						"We use only the best quality materials on the market in order to provide the best products to our patients.",
+				}}
+			/>
 			<FAQ />
 			<OutroHomepageSection />
-			<Footer />
-			<br />
-			<br />
 		</div>
 	);
 };

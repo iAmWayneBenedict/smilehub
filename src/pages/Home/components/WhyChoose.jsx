@@ -21,32 +21,32 @@ const WhyChoose = () => {
 						</CustomUnderline>{" "}
 						for all your dental treatments?
 					</h2>
-					<p className="~text-base/lg text-[--secondary-text-color]">
+					<p className="~text-base/lg text-secondaryText">
 						We use only the best quality materials on the market in order to provide the
 						best products to our patients.
 					</p>
 					<div className="flex flex-col gap-4">
 						<div className="flex gap-3">
 							<Image src={shieldDone} removeWrapper />
-							<p className="~text-base/lg text-[--secondary-text-color] font-[500]">
+							<p className="~text-base/lg text-secondaryText font-[500]">
 								Top quality dental team
 							</p>
 						</div>
 						<div className="flex gap-3">
 							<Image src={shieldDone} removeWrapper />
-							<p className="~text-base/lg text-[--secondary-text-color] font-[500]">
+							<p className="~text-base/lg text-secondaryText font-[500]">
 								State of the art dental services
 							</p>
 						</div>
 						<div className="flex gap-3">
 							<Image src={shieldDone} removeWrapper />
-							<p className="~text-base/lg text-[--secondary-text-color] font-[500]">
+							<p className="~text-base/lg text-secondaryText font-[500]">
 								Discount on all dental treatment
 							</p>
 						</div>
 						<div className="flex gap-3">
 							<Image src={shieldDone} removeWrapper />
-							<p className="~text-base/lg text-[--secondary-text-color] font-[500]">
+							<p className="~text-base/lg text-secondaryText font-[500]">
 								Enrollment is quick and easy
 							</p>
 						</div>

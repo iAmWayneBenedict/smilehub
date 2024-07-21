@@ -12,7 +12,7 @@ import articleImg6 from "../../../assets/images/article img 6.png";
 import articleImg7 from "../../../assets/images/article img 7.png";
 import articleImg8 from "../../../assets/images/article img 8.png";
 
-const Articles = ({ align = "left" }) => {
+const Articles = ({ align = "left", showButton = true, customUnderline }) => {
 	const tempData = [
 		{
 			image: articleImg1,
@@ -48,25 +48,24 @@ const Articles = ({ align = "left" }) => {
 				>
 					<div id="article-section-header-left">
 						<SectionHeader
-							customUnderlineOptions={{
-								isLarge: true,
-								classes: "w-[115%]",
-							}}
+							customUnderlineOptions={customUnderline?.customUnderlineOptions}
 							elementClasses={{
 								parentClasses: align === "left" ? "items-start" : "",
 								childClasses: align === "left" ? "text-left" : "",
 							}}
-							textUnderlined="News & Articles"
-							description="We use only the best quality materials on the market in order to provide the best products to our patients."
+							textUnderlined={customUnderline?.textUnderlined}
+							description={customUnderline?.description}
 						/>
 					</div>
-					<div id="article-section-header-right" className="mt-5 sm:mt-0">
-						<Button color="primary" className="font-semibold p-7 w-fit">
-							View All
-						</Button>
-					</div>
+					{showButton && (
+						<div id="article-section-header-right" className="mt-5 sm:mt-0">
+							<Button color="primary" className="font-semibold p-7 w-fit">
+								View All
+							</Button>
+						</div>
+					)}
 				</div>
-				<div className="flex flex-wrap gap-6 mt-16 justify-evenly xl:justify-between">
+				<div className="flex flex-wrap ~gap-2/6 mt-16 justify-evenly xl:justify-between">
 					{tempData.map((item) => {
 						return <ArticleCard key={item.image} image={item.image} />;
 					})}
@@ -82,6 +81,8 @@ const Articles = ({ align = "left" }) => {
 };
 Articles.propTypes = {
 	align: PropTypes.string,
+	customUnderline: PropTypes.any,
+	showButton: PropTypes.bool,
 };
 
 export default Articles;

@@ -4,9 +4,14 @@
 	-moz-backdrop-filter: blur(100px);
 	backdrop-filter: blur(20px);
 	background-color: unset;
-	background: rgba(231, 246, 254, 0.7);
+	background: rgba(255, 255, 255, 0.7);
+	transition: background 1s;
 }
 
 #avatar-container {
 	@apply grow-0 sm:grow;
+}
+
+#navbar.colored header {
+	background: rgba(231, 246, 254, 0.7);
 }

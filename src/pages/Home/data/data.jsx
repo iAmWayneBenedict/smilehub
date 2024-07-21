@@ -6,6 +6,9 @@ import React from "react";
 import articleImageHomPage from "../../../assets/images/article-image-homepage.png";
 import articleImageHomPage2 from "../../../assets/images/article-image-homepage2.png";
 import CustomUnderline from "@/components/illustrations/CustomUnderline";
+import Tooth1 from "@/components/icons/Tooth1";
+import Dental1 from "@/components/icons/Dental1";
+import DentalCare from "@/components/icons/DentalCare";
 
 export const servicesCardData = [
 	{
@@ -27,6 +30,27 @@ export const servicesCardData = [
 		title: "Dental Implants",
 		description:
 			"A dental implant is an artificial tooth root that’s placed into your jaw to hold a prosthetic tooth or bridge.",
+		href: "#", //! Add a link here
+	},
+	{
+		icon: <Tooth1 />,
+		title: "Teeth Whitening",
+		description:
+			"It's never been easier to brighten your smile at home. There are all kinds of products you can try.",
+		href: "#", //! Add a link here
+	},
+	{
+		icon: <Dental1 />,
+		title: "Emergency Dentistry",
+		description:
+			"In general, any dental problem that needs immediate treatment to stop bleeding, alleviate severe pain.",
+		href: "#", //! Add a link here
+	},
+	{
+		icon: <DentalCare />,
+		title: "Prevention",
+		description:
+			"Preventive dentistry is dental care that helps maintain good oral health. a combination of regular dental.",
 		href: "#", //! Add a link here
 	},
 ];

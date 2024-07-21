@@ -33,6 +33,8 @@ const Footer = () => {
 					<Image src={instagram} alt="instagram" />
 				</div>
 			</div>
+			<br />
+			<br />
 		</ContainerWrapper>
 	);
 };

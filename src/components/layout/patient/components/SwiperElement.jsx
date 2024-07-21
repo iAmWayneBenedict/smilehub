@@ -7,6 +7,7 @@ import { MoveLeft, MoveRight } from "lucide-react";
 import PropTypes from "prop-types";
 import { cn } from "@/lib/utils";
 import FeedbackCard from "./FeedbackCard";
+import ArticleCard from "./ArticleCard";
 
 // register SwiperElement
 register();
@@ -64,6 +65,16 @@ const SwiperElement = ({ data, buttonTheme, type, slidesPerView = "4.5" }) => {
 									{/* custom styled cards */}
 									{type === "specialists" && <SpecialistCard data={item} />}
 									{type === "feedbacks" && <FeedbackCard data={item} />}
+									{type === "blogs" && (
+										<ArticleCard
+											classNames={{
+												parentClassName: "w-full",
+												imgParentClassName: "max-w-full",
+											}}
+											alt={true}
+											image={item?.image}
+										/>
+									)}
 								</swiper-slide>
 							);
 						})}

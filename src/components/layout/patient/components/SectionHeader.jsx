@@ -26,7 +26,6 @@ const SectionHeader = ({
 	lastSeriesText,
 	description,
 }) => {
-	console.log(textUnderlined, customUnderlineOptions);
 	return (
 		<div
 			className={cn(
@@ -34,9 +33,15 @@ const SectionHeader = ({
 				elementClasses?.parentClasses
 			)}
 		>
-			<h2 className="text-center ~text-3xl/55xl font-semibold leading-[1.25] capitalize">
+			<h2
+				className={cn(
+					"text-center ~text-3xl/55xl font-semibold leading-[1.25] capitalize",
+					elementClasses?.headingClasses
+				)}
+			>
 				{firstSeriesText}{" "}
 				<CustomUnderline
+					color={customUnderlineOptions?.color || "#25B4F8"}
 					isLarge={customUnderlineOptions?.isLarge || false}
 					childClassName={cn("bottom-[5px] w-[130%]", customUnderlineOptions?.classes)}
 				>
