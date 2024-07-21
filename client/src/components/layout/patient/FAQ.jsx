@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useLayoutEffect } from "react";
 import ContainerWrapper from "../wrappers/ContainerWrapper";
 import SectionHeader from "./components/SectionHeader";
 import { Accordion, AccordionItem } from "@nextui-org/accordion";
@@ -8,7 +8,7 @@ import "./style.css";
 
 const FAQ = () => {
 	const [selectedKeys, setSelectedKeys] = useState(new Set(["1"]));
-	useEffect(() => {
+	useLayoutEffect(() => {
 		const selectedKeysArray = [...selectedKeys];
 		const accordionElements = document.querySelectorAll(`[data-accordion-item]`);
 		if (accordionElements.length) {
@@ -20,6 +20,7 @@ const FAQ = () => {
 				h2.style.paddingBottom = ".5rem";
 				element.classList.remove(
 					"group-[.is-splitted]:shadow-medium",
+					"shadow-medium",
 					"group-[.is-splitted]:px-4"
 				);
 
@@ -46,6 +47,7 @@ const FAQ = () => {
 		selectedElement.classList.add("bg-primary", "text-white");
 		selectedElement.classList.remove(
 			"group-[.is-splitted]:bg-content1",
+			"shadow-medium",
 			"group-[.is-splitted]:shadow-medium"
 		);
 

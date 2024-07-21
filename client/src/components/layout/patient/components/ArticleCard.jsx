@@ -8,7 +8,7 @@ const ArticleCard = ({ image, classNames, alt = false }) => {
 		<Card className={cn("px-1 py-3 shadow-none w-fit bg-accent", classNames?.parentClassName)}>
 			<CardHeader className="flex-col items-start px-4 pt-2 pb-0">
 				<div
-					id="article-card-img-container"
+					id={alt ? "" : "article-card-img-container"}
 					className={cn("w-screen", classNames?.imgParentClassName)}
 				>
 					<Image
