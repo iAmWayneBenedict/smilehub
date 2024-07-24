@@ -27,7 +27,11 @@ const NavigationBar = () => {
 
 	useEffect(() => {
 		if (nav.current === null) return;
-		if (location.pathname === "/") {
+		if (
+			location.pathname === "/" ||
+			location.pathname === "/login" ||
+			location.pathname === "/register"
+		) {
 			nav.current.classList.add("colored");
 		} else {
 			nav.current.classList.remove("colored");
@@ -36,7 +40,12 @@ const NavigationBar = () => {
 
 	useEffect(() => {
 		const handleScroll = () => {
-			console.log(nav.current);
+			if (
+				location.pathname === "/" ||
+				location.pathname === "/login" ||
+				location.pathname === "/register"
+			)
+				return;
 			if (nav.current === null) return;
 			if (window.scrollY > 800) {
 				nav.current.classList.add("colored");

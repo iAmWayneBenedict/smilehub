@@ -63,8 +63,8 @@ export const theme = {
 				foreground: "hsl(var(--accent-foreground))",
 			},
 			darkText: {
-				DEFAULT: "var(--dark-text-color)",
-				secondary: "var(--dark-text-color)",
+				DEFAULT: "var(--dark-text)",
+				secondary: "var(--dark-text)",
 			},
 			secondaryText: {
 				DEFAULT: "var(--secondary-text-color)",
