@@ -20,14 +20,14 @@ The base URL for accessing the API is: http://localhost/smilehub/server
 
 #### Request Body
 
-All user role request should be sent as JSON with the following structure:
-
 ```json
+All user role request should be sent as JSON with the following structure:
 {
     "FULLNAME": "John Doe",
     "EMAIL": "johndoe@example.com",
     "PASSWORD": "@SecurePassword123!"
 }
+```
 
 #### Response
 
@@ -35,6 +35,7 @@ All user role request should be sent as JSON with the following structure:
 {
     "message": "User registered successfully."
 }
+```
 
 ```Error (400 Bad Request):
 {
@@ -45,11 +46,13 @@ All user role request should be sent as JSON with the following structure:
     }
 }
 Note: The exact error messages depend on which validations fail.
+```
 
 ```Error (500 Internal Server Error):
 {
     "message": "Failed to register user."
 }
+```
 
 ### 2. Login User
 
@@ -74,6 +77,7 @@ The request should be sent as JSON with the following structure:
     "EMAIL": "johndoe@example.com",
     "PASSWORD": "@SecurePassword123!"
 }
+```
 
 #### Response
 
@@ -87,12 +91,14 @@ The request should be sent as JSON with the following structure:
         "role": "PATIENT"
     }
 }
+```
 
 ```Error (400 Bad Request):
 {
     "success": false,
     "message": "Invalid email or password"
 }
+```
 
 ## Development Setup
 
