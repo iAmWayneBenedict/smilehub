@@ -1,40 +1,51 @@
 /* eslint-disable no-unused-vars */
 import { Image, Input, Checkbox, Link, Button } from "@nextui-org/react";
-import img from "../../assets/images/Login IMG.png";
-import rImg from "../../assets/images/Register IMG.png";
-import { LockKeyhole, Mail } from "lucide-react";
+import img from "../../../assets/images/Login IMG.png";
+import rImg from "../../../assets/images/Register IMG.png";
+import { LockKeyhole, Mail, UserRound } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useState, useRef, useEffect } from "react";
 import { Eye, EyeOff, ArrowLeft, ArrowRight } from "lucide-react";
 import { register } from "swiper/element/bundle";
 import { useMutation } from "@tanstack/react-query";
-import AuthPatientAPIManager from "@/services/api/managers/AuthPatientAPIManager";
-import { useAppStore, useAuthTokenPersisted } from "@/store/zustand";
-import { AlertCircle } from "lucide-react";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { encrypt } from "@/lib/utils";
-
+import { useAppStore } from "@/store/zustand";
+import AuthStaffAPIManager from "@/services/api/managers/AuthStaffAPIManager";
 // register SwiperElement
 register();
-const Login = () => {
+const StaffRegister = () => {
 	const [isVisible, setIsVisible] = useState(false);
 	const toggleVisibility = () => setIsVisible(!isVisible);
 
-	// stores alert dialog details
-	const { setAlertDialogDetails } = useAppStore();
-
-	// swiper ref
+	// swiper refs
 	const swiperElRef = useRef(null);
 	const nextSlide = useRef(null);
 	const prevSlide = useRef(null);
 
-	// stores auth token
-	const { setAuthToken } = useAuthTokenPersisted();
+	// stores alert dialog details
+	const { setAlertDialogDetails } = useAppStore();
 
-	// stores error
-	const [isErrorDetails, setIsErrorDetails] = useState({
-		isError: false,
-		message: "",
+	// mutation for registration
+	const mutation = useMutation({
+		mutationFn: AuthStaffAPIManager.register,
+		onSuccess: (data) => {
+			// show alert dialog
+			setAlertDialogDetails({
+				isOpen: true,
+				type: "success",
+				title: "Success!",
+				message: [data.message, "Please login to continue."].join(" "),
+				actionLink: "/staff/login",
+			});
+		},
+		onError: (error) => {
+			// show alert dialog
+			setAlertDialogDetails({
+				isOpen: true,
+				type: "error",
+				title: "Error!",
+				message: error.message,
+			});
+		},
 	});
 
 	// form hook
@@ -44,45 +55,11 @@ const Login = () => {
 		formState: { errors },
 	} = useForm({
 		defaultValues: {
+			FULLNAME: "",
 			EMAIL: "",
 			PASSWORD: "",
 		},
 	});
-
-	// mutation function
-	const mutation = useMutation({
-		mutationFn: AuthPatientAPIManager.login,
-		onSuccess: (data) => {
-			setAlertDialogDetails({
-				isOpen: true,
-				type: "success",
-				title: "Success!",
-				message: data.message,
-				actionLink: "/",
-			});
-			setIsErrorDetails({
-				isError: false,
-				message: "",
-			});
-			try {
-				const enryptedToken = encrypt(data.user);
-				setAuthToken(enryptedToken);
-			} catch (error) {
-				console.log(error);
-			}
-		},
-		onError: (error) => {
-			setIsErrorDetails({
-				isError: true,
-				message: error.message,
-			});
-		},
-	});
-
-	// on submit function
-	const onSubmit = (data) => {
-		mutation.mutate(data);
-	};
 	useEffect(() => {
 		// listen for Swiper events using addEventListener
 		swiperElRef.current?.addEventListener("swiperprogress", (e) => {
@@ -108,10 +85,15 @@ const Login = () => {
 			swiperElRef.current?.swiper.slidePrev();
 		});
 	}, []);
+
+	// form submission
+	const onSubmit = (data) => {
+		mutation.mutate(data);
+	};
 	return (
-		<div className="lg:mt-10 justify-center items-center flex flex-row overflow-auto lg:overflow-hidden px-3 lg:px-0 ~gap-2/36 w-full h-[calc(100vh-4rem-4.75rem)]">
+		<div className="mt-20 md:mt-10 justify-center items-center flex flex-row lg:overflow-hidden px-3 lg:px-0 ~gap-2/36 w-full h-[calc(100vh-2.5rem)]">
 			<div
-				className="max-w-[50vw] relative hidden lg:block overflow-hidden rounded-tr-2xl"
+				className="max-w-[50vw] relative hidden lg:block overflow-hidden rounded-tr-2xl h-full"
 				style={{ flex: 1 }}
 			>
 				<swiper-container
@@ -123,9 +105,9 @@ const Login = () => {
 					autoplay-disable-on-interaction="false"
 				>
 					<swiper-slide>
-						<div className="relative w-full h-[calc(100vh-4rem-4.75rem)]">
+						<div className="relative w-full h-[calc(100vh-2.5rem)]">
 							<Image
-								src={img}
+								src={rImg}
 								className="z-0 object-cover w-full h-full rounded-none rounded-tr-2xl"
 								removeWrapper
 							/>
@@ -147,9 +129,9 @@ const Login = () => {
 						</div>
 					</swiper-slide>
 					<swiper-slide>
-						<div className="relative w-full h-[calc(100vh-4rem-4.75rem)]">
+						<div className="relative w-full h-[calc(100vh-2.5rem)]">
 							<Image
-								src={rImg}
+								src={img}
 								className="z-0 object-cover w-full h-full rounded-none"
 								removeWrapper
 							/>
@@ -194,22 +176,34 @@ const Login = () => {
 			</div>
 			<div style={{ flex: 1 }} className="flex items-center justify-center lg:justify-start">
 				<div className="max-w-[35rem] w-full">
-					<h2 className="text-4xl font-bold text-darkText">Welcome Back</h2>
+					<h2 className="text-4xl font-bold text-darkText">Create an account</h2>
 					<p className="text-secondaryText">
 						Discover a better way of spandings with Uifry.
 					</p>
 
-					<div className="~mt-10/20">
-						{isErrorDetails.isError && (
-							<Alert
-								variant="destructive"
-								className="flex items-center mb-5 bg-red-50"
-							>
-								<AlertCircle className="w-4 h-4" />
-								<AlertDescription>{isErrorDetails.message}</AlertDescription>
-							</Alert>
-						)}
+					<div className="~mt-10/20 mb-10 lg:mb-0">
 						<form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-8">
+							<Input
+								{...register("FULLNAME", {
+									required: "Name is required",
+								})}
+								isInvalid={!!errors.FULLNAME}
+								errorMessage={errors.FULLNAME?.message}
+								startContent={
+									<UserRound width="28" height="27" className="text-[#AFAFAF]" />
+								}
+								variant="bordered"
+								color="primary"
+								type="text"
+								size="lg"
+								radius="none"
+								placeholder="Enter your Name"
+								classNames={{
+									inputWrapper: "h-full rounded-lg p-4",
+									mainWrapper: "h-full",
+									input: "ml-3",
+								}}
+							/>
 							<Input
 								{...register("EMAIL", {
 									required: "Email is required",
@@ -218,11 +212,11 @@ const Login = () => {
 										message: "Invalid email address",
 									},
 								})}
-								isInvalid={!!errors.EMAIL?.message}
-								errorMessage={errors.EMAIL?.message}
 								startContent={
 									<Mail width="28" height="27" className="text-[#AFAFAF]" />
 								}
+								isInvalid={!!errors.EMAIL}
+								errorMessage={errors.EMAIL?.message}
 								variant="bordered"
 								color="primary"
 								type="text"
@@ -285,25 +279,22 @@ const Login = () => {
 										label: "text-darkText font-semibold",
 									}}
 								>
-									Remember Me
+									I agree with Terms and Privacy
 								</Checkbox>
-								<Link href="#" className="font-semibold underline text-darkText">
-									Forgot Password?
-								</Link>
 							</div>
 							<Button
 								type="submit"
 								color="primary"
 								className="w-full py-8 text-lg font-semibold p-7"
 							>
-								Log in
+								Register
 							</Button>
 							<div className="flex flex-row justify-center">
 								<Link
-									href="/register"
+									href="/staff/login"
 									className="font-semibold text-center underline text-darkText"
 								>
-									Not member yet? Create an account
+									Have account? Sign In
 								</Link>
 							</div>
 						</form>
@@ -314,4 +305,4 @@ const Login = () => {
 	);
 };
 
-export default Login;
+export default StaffRegister;

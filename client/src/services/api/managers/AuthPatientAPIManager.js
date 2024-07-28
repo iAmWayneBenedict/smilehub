@@ -13,12 +13,12 @@ class AuthPatientAPIManager {
 	 * @returns {Promise<Object>} - A promise that resolves to the response data.
 	 *
 	 * @example
-	 * const loginData = { name: 'user test', password: 'pass' };
+	 * const loginData = { NAME: 'user test', PASSWORD: 'pass' };
 	 * const response = await AuthPatientAPIManager.login(loginData);
 	 * console.log(response);
 	 */
 	static async login(body = {}) {
-		return await APIMethods.post(END_POINTS.LOGIN(), body);
+		return await APIMethods.post(END_POINTS.PATIENT_LOGIN(), body);
 	}
 
 	/**
@@ -28,12 +28,12 @@ class AuthPatientAPIManager {
 	 * @returns {Promise<Object>} - A promise that resolves to the response data.
 	 *
 	 * @example
-	 * const registerData = { name: 'user test', password: 'pass', email: 'user@example.com' };
+	 * const registerData = { NAME: 'user test', PASSWORD: 'pass', EMAIL: 'user@example.com' };
 	 * const response = await AuthPatientAPIManager.register(registerData);
 	 * console.log(response);
 	 */
 	static async register(body = {}) {
-		return await APIMethods.post(END_POINTS.REGISTER(), body);
+		return await APIMethods.post(END_POINTS.PATIENT_REGISTER(), body);
 	}
 }
 

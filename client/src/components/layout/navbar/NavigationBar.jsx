@@ -19,13 +19,16 @@ import {
 import { useEffect, useRef, useState } from "react";
 import "./styles.css";
 import { useLocation } from "react-router-dom";
+import { useAppStore, useAuthTokenPersisted } from "@/store/zustand";
 const NavigationBar = () => {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const nav = useRef(null);
-
+	const { setAlertDialogDetails } = useAppStore();
 	const location = useLocation();
+	const { authToken, setAuthToken } = useAuthTokenPersisted();
 
 	useEffect(() => {
+		// change navbar color on specific pages
 		if (nav.current === null) return;
 		if (
 			location.pathname === "/" ||
@@ -39,6 +42,7 @@ const NavigationBar = () => {
 	}, [location.pathname]);
 
 	useEffect(() => {
+		// change navbar color on scroll
 		const handleScroll = () => {
 			if (
 				location.pathname === "/" ||
@@ -57,6 +61,7 @@ const NavigationBar = () => {
 		return () => window.removeEventListener("scroll", handleScroll);
 	}, []);
 
+	// navigation menu items
 	const menuItems = ["Home", "Services", "Blogs", "About", "Contact", "Log Out"];
 	const navItems = [
 		{ name: "Home", href: "/" },
@@ -119,41 +124,57 @@ const NavigationBar = () => {
 			 ** Navigation menu for avatar and book now button **
 			 */}
 			<NavbarContent justify="end" id="avatar-container">
-				<NavbarItem>
-					<Dropdown placement="bottom-end">
-						<DropdownTrigger>
-							<Avatar
-								as="button"
-								className="transition-transform"
-								color="secondary"
-								name="Jason Hughes"
-								size="md"
-								src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
-							/>
-						</DropdownTrigger>
-						<DropdownMenu aria-label="Profile Actions" variant="flat">
-							<DropdownItem key="profile" className="gap-2 h-14">
-								<p className="font-semibold">Signed in as</p>
-								<p className="font-semibold">zoey@example.com</p>
-							</DropdownItem>
-							<DropdownItem key="settings">My Settings</DropdownItem>
-							<DropdownItem key="team_settings">Team Settings</DropdownItem>
-							<DropdownItem key="analytics">Analytics</DropdownItem>
-							<DropdownItem key="system">System</DropdownItem>
-							<DropdownItem key="configurations">Configurations</DropdownItem>
-							<DropdownItem key="help_and_feedback">Help & Feedback</DropdownItem>
-							<DropdownItem key="logout" color="danger">
-								Log Out
-							</DropdownItem>
-						</DropdownMenu>
-					</Dropdown>
-				</NavbarItem>
+				{authToken && (
+					<NavbarItem>
+						<Dropdown placement="bottom-end">
+							<DropdownTrigger>
+								<Avatar
+									as="button"
+									className="transition-transform"
+									color="secondary"
+									name="Jason Hughes"
+									size="md"
+									src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
+								/>
+							</DropdownTrigger>
+
+							<DropdownMenu aria-label="Profile Actions" variant="flat">
+								<DropdownItem key="profile" className="gap-2 h-14">
+									<p className="font-semibold">Signed in as</p>
+									<p className="font-semibold">zoey@example.com</p>
+								</DropdownItem>
+								<DropdownItem key="settings">My Settings</DropdownItem>
+								<DropdownItem key="team_settings">Team Settings</DropdownItem>
+								<DropdownItem key="analytics">Analytics</DropdownItem>
+								<DropdownItem key="system">System</DropdownItem>
+								<DropdownItem key="configurations">Configurations</DropdownItem>
+								<DropdownItem key="help_and_feedback">Help & Feedback</DropdownItem>
+								<DropdownItem
+									key="logout"
+									color="danger"
+									onClick={() => {
+										setAuthToken(false);
+										setAlertDialogDetails({
+											isOpen: true,
+											type: "success",
+											title: "Success!",
+											message: "You have been successfully logged out.",
+											actionLink: "/",
+										});
+									}}
+								>
+									Log Out
+								</DropdownItem>
+							</DropdownMenu>
+						</Dropdown>
+					</NavbarItem>
+				)}
 				<NavbarItem className="hidden sm:flex">
 					<Button
 						as={Link}
 						color="primary"
 						className="px-6 py-6 font-medium text-white bg-primary"
-						href="/login"
+						href={authToken ? "/contact" : "/login"}
 						variant="flat"
 					>
 						Book Now

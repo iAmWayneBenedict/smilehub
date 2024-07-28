@@ -7,6 +7,8 @@ import "../style/main.css";
 import { Image, Input, Select, SelectItem, Button } from "@nextui-org/react";
 import CustomDatePicker from "@/components/ui/DatePicker";
 import FAQ from "@/components/layout/patient/FAQ";
+import { useForm, Controller } from "react-hook-form";
+import { getLocalTimeZone, today } from "@internationalized/date";
 
 const contactAddressCard = [
 	{
@@ -35,8 +37,36 @@ const purpose = [
 	"Dental Sealants",
 	"Tooth Extractions",
 ];
+const timeDropdownList = [
+	"8:00 AM - 9:00 AM",
+	"9:00 AM - 10:00 AM",
+	"10:00 AM - 11:00 AM",
+	"11:00 AM - 12:00 PM",
+	"1:00 PM - 2:00 PM",
+	"2:00 PM - 3:00 PM",
+	"3:00 PM - 4:00 PM",
+	"4:00 PM - 5:00 PM",
+];
 
 const Contact = () => {
+	// Form hook
+	const {
+		register,
+		handleSubmit,
+		control,
+		formState: { errors },
+	} = useForm({
+		defaultValues: {
+			first_name: "",
+			last_name: "",
+			email: "",
+			phone_number: "",
+			date: today(getLocalTimeZone()), // default date (today)
+			time: "",
+			purpose: "",
+		},
+	});
+	const onSubmit = (data) => console.log(data);
 	return (
 		<>
 			<div id="banner-pages">
@@ -91,35 +121,48 @@ const Contact = () => {
 						</div>
 						<div style={{ flex: 7 }}>
 							<div className="border-2 rounded-lg border-[#25b4f8] p-10">
-								<form action="" className="flex flex-col gap-6">
+								<form
+									onSubmit={handleSubmit(onSubmit)}
+									className="flex flex-col gap-6"
+								>
 									<div className="flex flex-row gap-5">
 										<Input
+											{...register("first_name", {
+												required: "First Name is required",
+											})}
+											isInvalid={!!errors.first_name}
+											errorMessage={errors.first_name?.message}
 											key={"f_name"}
 											type="text"
 											label="First Name"
 											size="lg"
 											variant="bordered"
 											color="primary"
-											className="w-full bg-white"
+											className="w-full"
 											classNames={{
 												label: "text-darkText font-semibold ",
-												inputWrapper: "rounded-lg h-full",
+												inputWrapper: "rounded-lg h-full bg-white",
 												mainWrapper: "h-[4rem]",
 											}}
 											placeholder="First Name"
 											labelPlacement={"outside"}
 										/>
 										<Input
+											{...register("last_name", {
+												required: "Last Name is required",
+											})}
+											isInvalid={!!errors.last_name}
+											errorMessage={errors.last_name?.message}
 											key={"l_name"}
 											type="text"
 											label="Last Name"
 											size="lg"
 											variant="bordered"
 											color="primary"
-											className="w-full bg-white"
+											className="w-full"
 											classNames={{
 												label: "text-darkText font-semibold ",
-												inputWrapper: "rounded-lg h-full",
+												inputWrapper: "rounded-lg h-full bg-white",
 												mainWrapper: "h-[4rem]",
 											}}
 											placeholder="Last Name"
@@ -127,22 +170,36 @@ const Contact = () => {
 										/>
 									</div>
 									<Input
+										{...register("email", {
+											required: "Email is required",
+											pattern: {
+												value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+												message: "Invalid email address",
+											},
+										})}
+										isInvalid={!!errors.email}
+										errorMessage={errors.email?.message}
 										key={"email"}
-										type="email"
+										type="text"
 										label="Email"
 										size="lg"
 										variant="bordered"
 										color="primary"
-										className="w-full bg-white"
+										className="w-full"
 										classNames={{
 											label: "text-darkText font-semibold ",
-											inputWrapper: "rounded-lg h-full",
+											inputWrapper: "rounded-lg h-full bg-white",
 											mainWrapper: "h-[4rem]",
 										}}
 										placeholder="you@gmail.com"
 										labelPlacement={"outside"}
 									/>
 									<Input
+										{...register("phone_number", {
+											required: "Phone Number is required",
+										})}
+										isInvalid={!!errors.phone_number}
+										errorMessage={errors.phone_number?.message}
 										label="Phone Number"
 										placeholder="+63 900-000-0000"
 										labelPlacement="outside"
@@ -150,11 +207,11 @@ const Contact = () => {
 										size="lg"
 										variant="bordered"
 										color="primary"
-										className="w-full bg-white"
+										className="w-full"
 										classNames={{
 											label: "text-darkText font-semibold ",
-											inputWrapper: "rounded-lg h-full",
-											mainWrapper: "h-[4rem]",
+											inputWrapper: "rounded-lg h-full bg-white",
+											mainWrapper: "max-h-[4rem]",
 										}}
 										startContent={
 											<div className="flex items-center">
@@ -173,27 +230,96 @@ const Contact = () => {
 											</div>
 										}
 									/>
-									<CustomDatePicker />
-									<Select
-										labelPlacement={"outside"}
-										placeholder="Select Purpose"
-										label="Purpose of Visit"
-										size="lg"
-										variant="bordered"
-										color="primary"
-										className="w-full bg-white"
-										classNames={{
-											label: "text-darkText font-semibold ",
-											inputWrapper: "rounded-lg h-full",
-											trigger: "h-[4rem]",
-										}}
-									>
-										{purpose.map((purpose, index) => (
-											<SelectItem key={index}>{purpose}</SelectItem>
-										))}
-									</Select>
+									<Controller
+										name="date"
+										control={control}
+										rules={{ required: "Date is required" }}
+										render={({ field, formState: { errors } }) => (
+											<CustomDatePicker
+												value={field.value}
+												isInvalid={!!errors.date}
+												errorMessage={errors.date?.message}
+												setValue={(value) => {
+													field.onChange(value);
+												}}
+											/>
+										)}
+									/>
+									<Controller
+										name="time"
+										control={control}
+										rules={{ required: "Time is required" }}
+										render={({ field, formState: { errors } }) => (
+											<Select
+												{...field}
+												selectedKeys={[field.value]}
+												onChange={(selectedKeys) => {
+													field.onChange(selectedKeys);
+												}}
+												isInvalid={!!errors.time}
+												errorMessage={errors.time?.message}
+												labelPlacement={"outside"}
+												placeholder="Select Time"
+												label="Time of Visit"
+												size="lg"
+												variant="bordered"
+												color="primary"
+												className="w-full bg-white"
+												classNames={{
+													label: "text-darkText font-semibold ",
+													inputWrapper: "rounded-lg h-full",
+													trigger: "h-[4rem]",
+												}}
+											>
+												{timeDropdownList.map((time) => (
+													<SelectItem key={time} value={time}>
+														{time}
+													</SelectItem>
+												))}
+											</Select>
+										)}
+									/>
+									<Controller
+										name="purpose"
+										control={control}
+										rules={{ required: "Time is required" }}
+										render={({ field, formState: { errors } }) => (
+											<Select
+												{...field}
+												selectedKeys={[field.value]}
+												onChange={(selectedKeys) => {
+													field.onChange(selectedKeys);
+												}}
+												isInvalid={!!errors.purpose}
+												errorMessage={errors.purpose?.message}
+												labelPlacement={"outside"}
+												placeholder="Select Purpose"
+												label="Purpose of Visit"
+												size="lg"
+												variant="bordered"
+												color="primary"
+												className="w-full bg-white"
+												classNames={{
+													label: "text-darkText font-semibold ",
+													inputWrapper: "rounded-lg h-full",
+													trigger: "h-[4rem]",
+												}}
+											>
+												{purpose.map((time) => (
+													<SelectItem key={time} value={time}>
+														{time}
+													</SelectItem>
+												))}
+											</Select>
+										)}
+									/>
+
 									<div className="flex justify-center mt-16">
-										<Button color="primary" className="font-semibold p-7 w-fit">
+										<Button
+											color="primary"
+											type="submit"
+											className="font-semibold p-7 w-fit"
+										>
 											Book an appointment
 										</Button>
 									</div>

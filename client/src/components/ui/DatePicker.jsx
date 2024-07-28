@@ -1,13 +1,15 @@
-import React from "react";
-import { DatePicker, RadioGroup, Radio, ButtonGroup, Button, cn } from "@nextui-org/react";
+import { DatePicker, Radio, ButtonGroup, Button, cn } from "@nextui-org/react";
 import { startOfWeek, startOfMonth, getLocalTimeZone, today } from "@internationalized/date";
 import { useLocale, useDateFormatter } from "@react-aria/i18n";
 import PropTypes from "prop-types";
+import { useEffect } from "react";
 
-export default function CustomDatePicker() {
+export default function CustomDatePicker({ value, setValue, ...props }) {
 	let defaultDate = today(getLocalTimeZone());
 
-	const [value, setValue] = React.useState(defaultDate);
+	useEffect(() => {
+		setValue(defaultDate);
+	}, []);
 
 	let { locale } = useLocale();
 	let formatter = useDateFormatter({ dateStyle: "full" });
@@ -67,6 +69,7 @@ export default function CustomDatePicker() {
 						variant: "bordered",
 					},
 				}}
+				{...props}
 				value={value}
 				onChange={setValue}
 				label="Select Date"
@@ -87,3 +90,8 @@ export default function CustomDatePicker() {
 		</div>
 	);
 }
+CustomDatePicker.propTypes = {
+	value: PropTypes.any,
+	setValue: PropTypes.func,
+	props: PropTypes.any,
+};

@@ -14,8 +14,15 @@
 
 const END_POINTS = {
 	// Auth
-	LOGIN: () => "/login",
-	REGISTER: () => "/register",
+
+	// register
+	PATIENT_REGISTER: () => "/POST/PATIENT/register.php",
+	STAFF_REGISTER: () => "/POST/STAFF/register.php",
+	ADMIN_REGISTER: () => "/POST/ADMIN/register.php",
+
+	// login
+	PATIENT_LOGIN: () => "/POST/PATIENT/login.php",
+	SHARED_LOGIN: () => "/POST/SHARED/login.php",
 };
 
 export default END_POINTS;
