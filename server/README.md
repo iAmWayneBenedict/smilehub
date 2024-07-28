@@ -56,12 +56,6 @@ Note: The exact error messages depend on which validations fail.
 
 ### 2. Login User
 
-- **Endpoint:** `POST /POST/PATIENT/login.php`
-- **Description:** Authenticate a patient and log them into the system.
-
-- **Endpoint:** `POST /POST/SHARED/login.php`
-- **Description:** Authenticate both staff and admin and log them into the system.
-
 - **Endpoints:**
   - `POST /POST/PATIENT/login.php`  
     - **Description:** Authenticate a patient and log them into the system.
