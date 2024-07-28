@@ -10,6 +10,7 @@ import Contact from "./pages/Contact";
 import Login from "./pages/Login";
 import LayoutWrapper from "./components/layout/wrappers/LayoutWrapper";
 import Register from "./pages/Register";
+import AdminLogin from "./pages/admin/Login";
 
 function App() {
 	const navigate = useNavigate();
@@ -23,6 +24,7 @@ function App() {
 				<Route path="/blogs" element={<LayoutWrapper child={<Blogs />} />} />
 				<Route path="/about" element={<LayoutWrapper child={<About />} />} />
 				<Route path="/contact" element={<LayoutWrapper child={<Contact />} />} />
+				<Route path="/admin/login" element={<AdminLogin />} />
 			</Routes>
 		</NextUIProvider>
 	);

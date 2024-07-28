@@ -135,7 +135,7 @@ const Login = () => {
 					</div>
 				</div>
 			</div>
-			<div style={{ flex: 1 }} className="flex items-center justify-center">
+			<div style={{ flex: 1 }} className="flex items-center justify-center lg:justify-start">
 				<div className="max-w-[35rem] w-full">
 					<h2 className="text-4xl font-bold text-darkText">Welcome Back</h2>
 					<p className="text-secondaryText">
