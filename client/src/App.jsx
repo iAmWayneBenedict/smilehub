@@ -11,6 +11,7 @@ import Login from "./pages/Login";
 import LayoutWrapper from "./components/layout/wrappers/LayoutWrapper";
 import Register from "./pages/Register";
 import AdminLogin from "./pages/admin/Login";
+import StaffLogin from "./pages/staff/Login";
 
 function App() {
 	const navigate = useNavigate();
@@ -25,6 +26,7 @@ function App() {
 				<Route path="/about" element={<LayoutWrapper child={<About />} />} />
 				<Route path="/contact" element={<LayoutWrapper child={<Contact />} />} />
 				<Route path="/admin/login" element={<AdminLogin />} />
+				<Route path="/staff/login" element={<StaffLogin />} />
 			</Routes>
 		</NextUIProvider>
 	);

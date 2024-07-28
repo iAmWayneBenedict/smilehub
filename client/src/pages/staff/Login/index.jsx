@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Eye, EyeOff } from "lucide-react";
 
-const AdminLogin = () => {
+const StaffLogin = () => {
 	const [isVisible, setIsVisible] = useState(false);
 	const toggleVisibility = () => setIsVisible(!isVisible);
 	const {
@@ -125,4 +125,4 @@ const AdminLogin = () => {
 	);
 };
 
-export default AdminLogin;
+export default StaffLogin;

@@ -153,7 +153,7 @@ const NavigationBar = () => {
 						as={Link}
 						color="primary"
 						className="px-6 py-6 font-medium text-white bg-primary"
-						href="#"
+						href="/login"
 						variant="flat"
 					>
 						Book Now
