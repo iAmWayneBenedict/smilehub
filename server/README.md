@@ -31,13 +31,15 @@ Note: All user role request should be sent as JSON with the following structure:
 
 #### Response
 
-```Success (200 OK):
+```json
+Success (200 OK):
 {
     "message": "User registered successfully."
 }
 ```
 
-```Error (400 Bad Request):
+```json
+Error (400 Bad Request):
 {
     "errors": {
         "fullname": "Full name is required.",
@@ -48,7 +50,8 @@ Note: All user role request should be sent as JSON with the following structure:
 Note: The exact error messages depend on which validations fail.
 ```
 
-```Error (500 Internal Server Error):
+```json
+Error (500 Internal Server Error):
 {
     "message": "Failed to register user."
 }
@@ -75,7 +78,8 @@ The request should be sent as JSON with the following structure:
 
 #### Response
 
-```Success (200 OK):
+```json
+Success (200 OK):
 {
     "success": true,
     "message": "Login successful",
@@ -87,7 +91,8 @@ The request should be sent as JSON with the following structure:
 }
 ```
 
-```Error (400 Bad Request):
+```json
+Error (400 Bad Request):
 {
     "success": false,
     "message": "Invalid email or password"
