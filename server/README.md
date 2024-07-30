@@ -21,7 +21,19 @@ The base URL for accessing the API is: http://localhost/smilehub/server
 #### Request Body
 
 ```json
-Note: All user role request should be sent as JSON with the following structure:
+Note: Request body for Patient
+{
+    "FIRSTNAME": "John",
+    "LASTNAME": "Doe",
+    "BIRTHDATE": "1990-01-01",
+    "PHONE": "123-456-7890",
+    "EMAIL": "johndoe@example.com",
+    "PASSWORD": "@SecurePassword123!"
+}
+```
+
+```json
+Note: Request body for Staff and admin
 {
     "FULLNAME": "John Doe",
     "EMAIL": "johndoe@example.com",
