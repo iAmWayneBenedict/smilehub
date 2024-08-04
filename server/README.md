@@ -111,6 +111,55 @@ Error (400 Bad Request):
 }
 ```
 
+### 2. Fetch Available Appointment Times
+
+- **Endpoints:**
+  - `POST /POST/APPOINTMENT/availableTimes.php`  
+    - **Description:** Retrieve available appointment times for a specific date.
+
+#### Request Body
+
+The request should be sent as JSON with the following structure:
+
+```json
+{
+    "APPOINTMENT_DATE": "2024-08-04"
+}
+```
+
+#### Response
+
+```json
+Success (200 OK):
+{
+    "available_times": [
+        "8:00 AM - 9:00 AM",
+        "10:00 AM - 11:00 AM",
+        "11:00 AM - 12:00 PM",
+        "12:00 PM - 1:00 PM",
+        "1:00 PM - 2:00 PM",
+        "2:00 PM - 3:00 PM",
+        "3:00 PM - 4:00 PM",
+        "4:00 PM - 5:00 PM",
+        "5:00 PM - 6:00 PM"
+    ]
+}
+```
+
+```json
+Error (400 Bad Request):
+{
+    "error": "Appointment date is required."
+}
+```
+
+```json
+Error (404 Not Found):
+{
+    "message": "No available times for the selected date."
+}
+```
+
 ## Development Setup
 
 To set up the development environment for the SmileHub API, follow these steps:
