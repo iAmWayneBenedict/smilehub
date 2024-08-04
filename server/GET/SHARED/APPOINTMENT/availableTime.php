@@ -1,6 +1,6 @@
 <?php
-require_once "../../connection.php";
-require_once "../../cors.php";
+require_once "../../../connection.php";
+require_once "../../../cors.php";
 
 /**
  * Function to fetch available appointment times

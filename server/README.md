@@ -111,10 +111,10 @@ Error (400 Bad Request):
 }
 ```
 
-### 2. Fetch Available Appointment Times
+### 3. Fetch Available Appointment Times
 
 - **Endpoints:**
-  - `POST /POST/APPOINTMENT/availableTimes.php`  
+  - `GET /GET/SHARED/APPOINTMENT/availableTime.php`  
     - **Description:** Retrieve available appointment times for a specific date.
 
 #### Request Body
