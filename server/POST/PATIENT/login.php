@@ -48,7 +48,7 @@ function login($conn, $email, $password) {
             $response['success'] = true;
             $response['message'] = 'Login successful';
             $response['user'] = [
-                'fullname' => $user['FULLNAME'],
+                'fullname' => $user['FIRSTNAME'].' '.$user['LASTNAME'],
                 'email' => $user['EMAIL'],
                 'role' => $user['ROLE']
             ];
