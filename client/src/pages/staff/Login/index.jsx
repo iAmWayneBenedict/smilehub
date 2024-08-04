@@ -118,6 +118,14 @@ const StaffLogin = () => {
 						>
 							Log in
 						</Button>
+						<div className="flex flex-row justify-center">
+							<Link
+								href="/staff/register"
+								className="font-semibold text-center text-white underline"
+							>
+								Not member yet? Create an account
+							</Link>
+						</div>
 					</form>
 				</div>
 			</div>

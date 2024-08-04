@@ -1,30 +1,20 @@
 import { Image, Input, Checkbox, Link, Button } from "@nextui-org/react";
-import img from "../../assets/images/Login IMG.png";
-import rImg from "../../assets/images/Register IMG.png";
+import img from "../../../assets/images/Login IMG.png";
+import rImg from "../../../assets/images/Register IMG.png";
 import { LockKeyhole, Mail, UserRound } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useState, useRef, useEffect } from "react";
 import { Eye, EyeOff, ArrowLeft, ArrowRight } from "lucide-react";
 import { register } from "swiper/element/bundle";
 import { useMutation } from "@tanstack/react-query";
-import AuthPatientAPIManager from "@/services/api/managers/AuthPatientAPIManager";
 // register SwiperElement
 register();
-const Register = () => {
+const AdminRegister = () => {
 	const [isVisible, setIsVisible] = useState(false);
 	const swiperElRef = useRef(null);
 	const nextSlide = useRef(null);
 	const prevSlide = useRef(null);
 	const toggleVisibility = () => setIsVisible(!isVisible);
-	const mutation = useMutation({
-		mutationFn: AuthPatientAPIManager.register,
-		onSuccess: (data) => {
-			console.log(data);
-		},
-		onError: (error) => {
-			console.log(error);
-		},
-	});
 
 	const {
 		register,
@@ -62,13 +52,11 @@ const Register = () => {
 			swiperElRef.current?.swiper.slidePrev();
 		});
 	}, []);
-	const onSubmit = (data) => {
-		mutation.mutate(data);
-	};
+	const onSubmit = (data) => console.log(data);
 	return (
-		<div className="mt-20 md:mt-10 justify-center items-center flex flex-row lg:overflow-hidden px-3 lg:px-0 ~gap-2/36 w-full h-[calc(100vh-4rem-4.75rem)]">
+		<div className="mt-20 md:mt-10 justify-center items-center flex flex-row lg:overflow-hidden px-3 lg:px-0 ~gap-2/36 w-full h-[calc(100vh-2.5rem)]">
 			<div
-				className="max-w-[50vw] relative hidden lg:block overflow-hidden rounded-tr-2xl"
+				className="max-w-[50vw] relative hidden lg:block overflow-hidden rounded-tr-2xl h-full"
 				style={{ flex: 1 }}
 			>
 				<swiper-container
@@ -80,7 +68,7 @@ const Register = () => {
 					autoplay-disable-on-interaction="false"
 				>
 					<swiper-slide>
-						<div className="relative w-full h-[calc(100vh-4rem-4.75rem)]">
+						<div className="relative w-full h-[calc(100vh-2.5rem)]">
 							<Image
 								src={rImg}
 								className="z-0 object-cover w-full h-full rounded-none rounded-tr-2xl"
@@ -104,7 +92,7 @@ const Register = () => {
 						</div>
 					</swiper-slide>
 					<swiper-slide>
-						<div className="relative w-full h-[calc(100vh-4rem-4.75rem)]">
+						<div className="relative w-full h-[calc(100vh-2.5rem)]">
 							<Image
 								src={img}
 								className="z-0 object-cover w-full h-full rounded-none"
@@ -266,7 +254,7 @@ const Register = () => {
 							</Button>
 							<div className="flex flex-row justify-center">
 								<Link
-									href="/login"
+									href="/admin/login"
 									className="font-semibold text-center underline text-darkText"
 								>
 									Have account? Sign In
@@ -280,4 +268,4 @@ const Register = () => {
 	);
 };
 
-export default Register;
+export default AdminRegister;
