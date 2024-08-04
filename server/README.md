@@ -160,6 +160,82 @@ Error (404 Not Found):
 }
 ```
 
+### 4. Create an Appointment
+
+- **Endpoints:**
+  - `POST /POST/PATIENT/appointment.php`  
+    - **Description:** Create a new appointment for a user (This route is for patients account only).
+
+#### Request Body
+
+The request should be sent as JSON with the following structure:
+
+```json
+Note: Request body for patients account
+{
+    "FULLNAME": "John Doe",
+    "EMAIL": "johndoe@example.com",
+    "PHONE": "123-456-7890",
+    "APPOINTMENT_DATE": "2024-08-04",
+    "APPOINTMENT_TIME": "9:00 AM - 10:00 AM",
+    "PURPOSE": "Dental Bonding"
+}
+```
+
+```json
+Note: Request body for staff account
+{
+    "PATIENT_ID": "123",
+    "APPOINTMENT_DATE": "2024-08-04",
+    "APPOINTMENT_TIME": "9:00 AM - 10:00 AM",
+    "PURPOSE": "Dental Bonding"
+}
+```
+
+#### Response
+
+```json
+Success (200 OK):
+{
+    "message": "Appointment created successfully."
+}
+```
+
+```json
+Error (400 Bad Request):
+{
+    "errors": {
+        "FULLNAME": "Full name is required.",
+        "EMAIL": "Email is required.",
+        "PHONE": "Phone number is required.",
+        "APPOINTMENT_DATE": "Appointment date is required.",
+        "APPOINTMENT_TIME": "Appointment time is required.",
+        "PURPOSE": "Purpose is required."
+    }
+}
+```
+
+```json
+Error (400 Bad Request):
+{
+    "message": "You already have a pending appointment from us."
+}
+```
+
+```json
+Error (400 Bad Request):
+{
+    "message": "The date and time you've selected is booked already."
+}
+```
+
+```json
+Error (500 Internal Server Error):
+{
+    "message": "Failed to create an appointment."
+}
+```
+
 ## Development Setup
 
 To set up the development environment for the SmileHub API, follow these steps:

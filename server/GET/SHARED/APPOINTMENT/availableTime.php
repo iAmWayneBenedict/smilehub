@@ -17,6 +17,7 @@ function getAvailableTimes($conn, $appointment_date) {
         LEFT JOIN appointment_table a
         ON t.TIME = a.APPOINTMENT_TIME
         AND a.APPOINTMENT_DATE = ?
+        AND a.STATUS = 'Pending'
         WHERE a.APPOINTMENT_TIME IS NULL
     ";
 
