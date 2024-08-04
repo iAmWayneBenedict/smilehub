@@ -11,10 +11,13 @@ import { useAppStore, useAuthTokenPersisted } from "@/store/zustand";
 import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { encrypt } from "@/lib/utils";
+import { useLocation } from "react-router-dom";
 
 const SharedLogin = () => {
 	const [isVisible, setIsVisible] = useState(false);
 	const toggleVisibility = () => setIsVisible(!isVisible);
+
+	const location = useLocation();
 
 	// stores alert dialog details
 	const { setAlertDialogDetails } = useAppStore();
@@ -190,7 +193,11 @@ const SharedLogin = () => {
 						</Button>
 						<div className="flex flex-row justify-center">
 							<Link
-								href="/admin/register"
+								href={
+									location.pathname.includes("admin")
+										? "/admin/register"
+										: "/staff/register"
+								}
 								className="font-semibold text-center text-white underline"
 							>
 								Not member yet? Create an account

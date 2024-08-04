@@ -4,7 +4,14 @@ import { useLocale, useDateFormatter } from "@react-aria/i18n";
 import PropTypes from "prop-types";
 import { useEffect } from "react";
 
-export default function CustomDatePicker({ value, setValue, ...props }) {
+export default function CustomDatePicker({
+	value,
+	setValue,
+	label,
+	showTimeSelect = true,
+	classNames,
+	...props
+}) {
 	let defaultDate = today(getLocalTimeZone());
 
 	useEffect(() => {
@@ -30,9 +37,9 @@ export default function CustomDatePicker({ value, setValue, ...props }) {
 						"cursor-pointer rounded-full border-2 border-default-200/60",
 						"data-[selected=true]:border-primary"
 					),
-					label: "text-tiny text-default-500",
-					labelWrapper: "px-1 m-0",
-					wrapper: "hidden",
+					label: cn("text-tiny text-default-500"),
+					labelWrapper: cn("flex items-center justify-center"),
+					wrapper: cn("hidden"),
 				}}
 			>
 				{children}
@@ -72,21 +79,24 @@ export default function CustomDatePicker({ value, setValue, ...props }) {
 				{...props}
 				value={value}
 				onChange={setValue}
-				label="Select Date"
+				label={label === undefined ? "Select a date" : label}
 				labelPlacement={"outside"}
 				size="lg"
 				variant="bordered"
 				color="primary"
 				className="w-full bg-white"
 				dateInputClassNames={{
-					label: "text-darkText font-semibold ",
-					inputWrapper: "rounded-lg h-full",
-					innerWrapper: "h-[4rem]",
+					label: cn("text-darkText font-semibold ", classNames?.label),
+					inputWrapper: cn("rounded-lg h-full", classNames?.inputWrapper),
+					innerWrapper: cn("h-[4rem]", classNames?.innerWrapper),
 				}}
 			/>
-			<p className="text-sm text-default-500">
-				Selected date: {value ? formatter.format(value.toDate(getLocalTimeZone())) : "--"}
-			</p>
+			{showTimeSelect && (
+				<p className="text-sm text-default-500">
+					Selected date:{" "}
+					{value ? formatter.format(value.toDate(getLocalTimeZone())) : "--"}
+				</p>
+			)}
 		</div>
 	);
 }
@@ -94,4 +104,7 @@ CustomDatePicker.propTypes = {
 	value: PropTypes.any,
 	setValue: PropTypes.func,
 	props: PropTypes.any,
+	label: PropTypes.string,
+	showTimeSelect: PropTypes.bool,
+	classNames: PropTypes.object,
 };

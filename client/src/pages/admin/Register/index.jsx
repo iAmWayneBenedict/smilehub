@@ -47,14 +47,14 @@ const AdminRegister = () => {
 				type: "success",
 				title: "Success!",
 				message: [data.message, "Please login to continue."].join(" "),
-				actionLink: "/login",
+				actionLink: "/admin/login",
 			});
 		},
 		onError: (error) => {
 			// show alert dialog
 			setAlertDialogDetails({
 				isOpen: true,
-				type: "error",
+				type: "danger",
 				title: "Error!",
 				message: error.message,
 			});

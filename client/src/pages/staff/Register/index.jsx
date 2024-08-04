@@ -41,7 +41,7 @@ const StaffRegister = () => {
 			// show alert dialog
 			setAlertDialogDetails({
 				isOpen: true,
-				type: "error",
+				type: "danger",
 				title: "Error!",
 				message: error.message,
 			});

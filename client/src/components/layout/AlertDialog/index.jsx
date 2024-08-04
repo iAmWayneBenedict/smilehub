@@ -42,8 +42,8 @@ const AlertDialog = () => {
 			bg: "bg-green-500/5",
 			icon: <CircleCheckBig className="w-16 h-16 text-green-500" />,
 		},
-		error: {
-			title: "Error!",
+		danger: {
+			title: "Danger!",
 			bg: "bg-red-500/5",
 			icon: <CircleX className="w-16 h-16 text-red-500" />,
 		},
@@ -102,18 +102,57 @@ const AlertDialog = () => {
 							)}
 						</ModalBody>
 						<ModalFooter>
-							<Button
-								color="default"
-								variant="light"
-								onPress={() => {
-									if (alertDialogDetails?.actionLink) {
-										navigate(alertDialogDetails?.actionLink);
-									}
-									onClose();
-								}}
-							>
-								Close
-							</Button>
+							{alertDialogDetails?.dialogType !== "confirm" ? (
+								<Button
+									color="default"
+									variant="light"
+									onPress={() => {
+										if (alertDialogDetails?.actionLink) {
+											navigate(alertDialogDetails?.actionLink);
+										}
+										if (alertDialogDetails?.confirmCallback) {
+											alertDialogDetails?.confirmCallback();
+										}
+										onClose();
+									}}
+								>
+									Close
+								</Button>
+							) : (
+								<>
+									<Button
+										color="default"
+										variant="light"
+										onPress={() => {
+											if (alertDialogDetails?.cancelCallback) {
+												alertDialogDetails?.cancelCallback();
+											}
+											onClose();
+										}}
+									>
+										Cancel
+									</Button>
+									<Button
+										color={
+											alertDialogDetails?.type === "info"
+												? "primary"
+												: alertDialogDetails?.type
+										}
+										variant="solid"
+										onPress={() => {
+											if (alertDialogDetails?.confirmCallback) {
+												alertDialogDetails?.confirmCallback();
+											}
+											if (alertDialogDetails?.actionLink) {
+												navigate(alertDialogDetails?.actionLink);
+											}
+											onClose();
+										}}
+									>
+										Confirm
+									</Button>
+								</>
+							)}
 						</ModalFooter>
 					</>
 				)}

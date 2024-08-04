@@ -1,15 +1,18 @@
 /* eslint-disable no-unused-vars */
-import { Image, Input, Checkbox, Link, Button } from "@nextui-org/react";
+import { Image, Input, Checkbox, Link, Button, Select, SelectItem } from "@nextui-org/react";
 import img from "../../assets/images/Login IMG.png";
 import rImg from "../../assets/images/Register IMG.png";
 import { LockKeyhole, Mail, UserRound } from "lucide-react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { useState, useRef, useEffect } from "react";
-import { Eye, EyeOff, ArrowLeft, ArrowRight } from "lucide-react";
+import { Eye, EyeOff, ArrowLeft, ArrowRight, Calendar, ContactRound } from "lucide-react";
 import { register } from "swiper/element/bundle";
 import { useMutation } from "@tanstack/react-query";
 import AuthPatientAPIManager from "@/services/api/managers/AuthPatientAPIManager";
 import { useAppStore } from "@/store/zustand";
+import CustomDatePicker from "@/components/ui/DatePicker";
+import { today } from "@internationalized/date";
+import { getLocalTimeZone } from "@internationalized/date";
 // register SwiperElement
 register();
 const Register = () => {
@@ -41,7 +44,7 @@ const Register = () => {
 			// show alert dialog
 			setAlertDialogDetails({
 				isOpen: true,
-				type: "error",
+				type: "danger",
 				title: "Error!",
 				message: error.message,
 			});
@@ -52,10 +55,14 @@ const Register = () => {
 	const {
 		register,
 		handleSubmit,
+		control,
 		formState: { errors },
 	} = useForm({
 		defaultValues: {
-			FULLNAME: "",
+			FIRSTNAME: "",
+			LASTNAME: "",
+			BIRTHDATE: today(getLocalTimeZone()),
+			PHONE: "",
 			EMAIL: "",
 			PASSWORD: "",
 		},
@@ -88,6 +95,12 @@ const Register = () => {
 
 	// form submit function
 	const onSubmit = (data) => {
+		// convert date to Date object before sending request
+		data.BIRTHDATE = new Date(
+			data.BIRTHDATE.year,
+			data.BIRTHDATE.month - 1,
+			data.BIRTHDATE.day
+		);
 		mutation.mutate(data);
 	};
 	return (
@@ -174,8 +187,12 @@ const Register = () => {
 					</div>
 				</div>
 			</div>
-			<div style={{ flex: 1 }} className="flex items-center justify-center lg:justify-start">
-				<div className="max-w-[35rem] w-full">
+			<div
+				style={{ flex: 1 }}
+				className="flex items-center justify-center overflow-y-auto h-[calc(100vh-4rem-4.75rem)] lg:justify-start"
+			>
+				<div className="max-w-[35rem] w-full py-10">
+					<br />
 					<h2 className="text-4xl font-bold text-darkText">Create an account</h2>
 					<p className="text-secondaryText">
 						Discover a better way of spandings with Uifry.
@@ -183,27 +200,117 @@ const Register = () => {
 
 					<div className="~mt-10/20 mb-10 lg:mb-0">
 						<form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-8">
-							<Input
-								{...register("FULLNAME", {
-									required: "Name is required", // custom error message
-								})}
-								isInvalid={!!errors.FULLNAME} // check if the input is invalid
-								errorMessage={errors.FULLNAME?.message} // get the error message
-								startContent={
-									<UserRound width="28" height="27" className="text-[#AFAFAF]" />
-								}
-								variant="bordered"
-								color="primary"
-								type="text"
-								size="lg"
-								radius="none"
-								placeholder="Enter your Name"
-								classNames={{
-									inputWrapper: "h-full rounded-lg p-4",
-									mainWrapper: "h-full",
-									input: "ml-3",
-								}}
-							/>
+							<div className="flex flex-row gap-2">
+								<Input
+									{...register("FIRSTNAME", {
+										required: "First name is required", // custom error message
+									})}
+									isInvalid={!!errors.FIRSTNAME} // check if the input is invalid
+									errorMessage={errors.FIRSTNAME?.message} // get the error message
+									startContent={
+										<UserRound
+											width="28"
+											height="27"
+											className="text-[#AFAFAF]"
+										/>
+									}
+									variant="bordered"
+									color="primary"
+									type="text"
+									size="lg"
+									radius="none"
+									placeholder="Enter your first name"
+									classNames={{
+										inputWrapper: "h-full rounded-lg p-4",
+										mainWrapper: "h-full",
+										input: "ml-3",
+									}}
+								/>
+								<Input
+									{...register("LASTNAME", {
+										required: "Last name is required", // custom error message
+									})}
+									isInvalid={!!errors.LASTNAME} // check if the input is invalid
+									errorMessage={errors.LASTNAME?.message} // get the error message
+									startContent={
+										<UserRound
+											width="28"
+											height="27"
+											className="text-[#AFAFAF]"
+										/>
+									}
+									variant="bordered"
+									color="primary"
+									type="text"
+									size="lg"
+									radius="none"
+									placeholder="Enter your last name"
+									classNames={{
+										inputWrapper: "h-full rounded-lg p-4",
+										mainWrapper: "h-full",
+										input: "ml-3",
+									}}
+								/>
+							</div>
+							<div className="flex flex-row gap-2">
+								<Controller
+									name="BIRTHDATE"
+									control={control}
+									rules={{ required: "Birth date is required" }}
+									render={({ field, formState: { errors } }) => (
+										<CustomDatePicker
+											value={field.value}
+											showTimeSelect={false}
+											label={""}
+											isInvalid={!!errors.BIRTHDATE}
+											errorMessage={errors.BIRTHDATE?.message}
+											setValue={(value) => {
+												field.onChange(value);
+											}}
+											classNames={{
+												inputWrapper: "h-full rounded-lg p-4",
+												innerWrapper: "h-full text-lightText",
+											}}
+										/>
+									)}
+								/>
+								<Controller
+									name="GENDER"
+									control={control}
+									rules={{ required: "Gender is required" }}
+									render={({ field, formState: { errors } }) => (
+										<Select
+											{...field}
+											selectedKeys={[field.value]}
+											onChange={(selectedKeys) => {
+												field.onChange(selectedKeys);
+											}}
+											isInvalid={!!errors.GENDER}
+											errorMessage={errors.GENDER?.message}
+											labelPlacement={"outside"}
+											placeholder="Select Gender"
+											startContent={<ContactRound />}
+											size="lg"
+											variant="bordered"
+											color="primary"
+											radius="none"
+											className="w-full bg-white"
+											classNames={{
+												label: "text-lightText font-semibold ",
+												inputWrapper: "h-full",
+												trigger: "h-full py-5 rounded-lg ",
+												innerWrapper: "h-full text-lightText",
+											}}
+										>
+											{["Male", "Female", "Rather not to say"].map((time) => (
+												<SelectItem key={time} value={time}>
+													{time}
+												</SelectItem>
+											))}
+										</Select>
+									)}
+								/>
+							</div>
 							<Input
 								{...register("EMAIL", {
 									required: "Email is required", // custom error message
@@ -223,6 +330,39 @@ const Register = () => {
 								size="lg"
 								radius="none"
 								placeholder="Enter your Email"
+								classNames={{
+									inputWrapper: "h-full rounded-lg p-4",
+									mainWrapper: "h-full",
+									input: "ml-3",
+								}}
+							/>
+							<Input
+								{...register("PHONE", {
+									required: "Phone Number is required",
+								})}
+								startContent={
+									<div className="flex items-center">
+										<label className="sr-only" htmlFor="country">
+											Country
+										</label>
+										<select
+											className="bg-transparent border-0 outline-none text-default-400 text-small"
+											id="country"
+											name="country"
+										>
+											<option>PH</option>
+											<option>US</option>
+											<option>EU</option>
+										</select>
+									</div>
+								}
+								isInvalid={!!errors.PHONE} // check if the input is invalid
+								errorMessage={errors.PHONE?.message} // get the error message
+								variant="bordered"
+								color="primary"
+								type="text"
+								size="lg"
+								placeholder="Enter your phone"
 								classNames={{
 									inputWrapper: "h-full rounded-lg p-4",
 									mainWrapper: "h-full",
