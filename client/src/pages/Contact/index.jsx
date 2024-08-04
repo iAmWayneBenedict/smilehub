@@ -49,6 +49,7 @@ const timeDropdownList = [
 ];
 
 const Contact = () => {
+	// Form hook
 	const {
 		register,
 		handleSubmit,
@@ -60,7 +61,7 @@ const Contact = () => {
 			last_name: "",
 			email: "",
 			phone_number: "",
-			date: today(getLocalTimeZone()),
+			date: today(getLocalTimeZone()), // default date (today)
 			time: "",
 			purpose: "",
 		},

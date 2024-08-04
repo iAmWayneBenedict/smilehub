@@ -13,9 +13,24 @@ require_once "../../VALIDATORS/password.php";
 function validateRequestData($data) {
     $errors = [];
 
-    // Validate full name
-    if (empty($data->FULLNAME)) {
-        $errors['FULLNAME'] = "Full name is required.";
+    // Validate first name
+    if (empty($data->FIRSTNAME)) {
+        $errors['FIRSTNAME'] = "First name is required.";
+    }
+
+    // Validate last name
+    if (empty($data->LASTNAME)) {
+        $errors['LASTNAME'] = "Last name is required.";
+    }
+
+    // Validate birthday
+    if (empty($data->BIRTHDATE)) {
+        $errors['BIRTHDATE'] = "Date of birth is required.";
+    }
+
+    // Validate phone number
+    if (empty($data->PHONE)) {
+        $errors['PHONE'] = "Date of birth is required.";
     }
 
     // Validate email
@@ -59,16 +74,24 @@ function register($conn, $data) {
     $HASHED_PASSWORD = password_hash($data->PASSWORD, PASSWORD_DEFAULT);
 
     $query = "INSERT INTO patient_table (
-        FULLNAME,
+        FIRSTNAME,
+        LASTNAME,
+        BIRTHDATE,
+        GENDER,
+        PHONE,
         EMAIL,
         PASSWORD,
         ROLE)
         VALUES
-        (?, ?, ?, ?)";
+        (?, ?, ?, ?, ?, ?, ?, ?)";
 
     $stmt = $conn->prepare($query);
-    $stmt->bind_param('ssss',
-        $data->FULLNAME,
+    $stmt->bind_param('ssssssss',
+        $data->FIRSTNAME,
+        $data->LASTNAME,
+        $data->BIRTHDATE,
+        $data->GENDER,
+        $data->PHONE,
         $data->EMAIL,
         $HASHED_PASSWORD,
         $ROLE

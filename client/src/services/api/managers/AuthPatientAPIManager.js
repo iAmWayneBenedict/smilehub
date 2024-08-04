@@ -33,7 +33,6 @@ class AuthPatientAPIManager {
 	 * console.log(response);
 	 */
 	static async register(body = {}) {
-		console.log(body);
 		return await APIMethods.post(END_POINTS.PATIENT_REGISTER(), body);
 	}
 }

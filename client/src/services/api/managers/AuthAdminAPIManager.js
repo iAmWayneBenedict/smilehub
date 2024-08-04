@@ -18,7 +18,7 @@ class AuthAdminAPIManager {
 	 * console.log(response);
 	 */
 	static async register(body = {}) {
-		return await APIMethods.post(END_POINTS.STAFF_REGISTER(), body);
+		return await APIMethods.post(END_POINTS.ADMIN_REGISTER(), body);
 	}
 }
 

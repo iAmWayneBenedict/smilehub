@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Image, Input, Checkbox, Link, Button } from "@nextui-org/react";
 import img from "../../assets/images/Login IMG.png";
 import rImg from "../../assets/images/Register IMG.png";
@@ -8,13 +9,21 @@ import { Eye, EyeOff, ArrowLeft, ArrowRight } from "lucide-react";
 import { register } from "swiper/element/bundle";
 import { useMutation } from "@tanstack/react-query";
 import AuthPatientAPIManager from "@/services/api/managers/AuthPatientAPIManager";
+<<<<<<< HEAD
+=======
+import { useAppStore } from "@/store/zustand";
+>>>>>>> dddf27f5f1306d623371e4827ba82ffefac92537
 // register SwiperElement
 register();
 const Register = () => {
 	const [isVisible, setIsVisible] = useState(false);
+	const toggleVisibility = () => setIsVisible(!isVisible);
+
+	// swiper refs
 	const swiperElRef = useRef(null);
 	const nextSlide = useRef(null);
 	const prevSlide = useRef(null);
+<<<<<<< HEAD
 	const toggleVisibility = () => setIsVisible(!isVisible);
 	const mutation = useMutation({
 		mutationFn: AuthPatientAPIManager.register,
@@ -25,16 +34,46 @@ const Register = () => {
 			console.log(error);
 		},
 	});
+=======
+>>>>>>> dddf27f5f1306d623371e4827ba82ffefac92537
 
+	// stores alert dialog details
+	const { setAlertDialogDetails } = useAppStore();
+
+	// mutation function
+	const mutation = useMutation({
+		mutationFn: AuthPatientAPIManager.register,
+		onSuccess: (data) => {
+			// show alert dialog
+			setAlertDialogDetails({
+				isOpen: true,
+				type: "success",
+				title: "Success!",
+				message: [data.message, "Please login to continue."].join(" "),
+				actionLink: "/login",
+			});
+		},
+		onError: (error) => {
+			// show alert dialog
+			setAlertDialogDetails({
+				isOpen: true,
+				type: "error",
+				title: "Error!",
+				message: error.message,
+			});
+		},
+	});
+
+	// form submit function
 	const {
 		register,
 		handleSubmit,
 		formState: { errors },
 	} = useForm({
 		defaultValues: {
-			name: "",
-			email: "",
-			password: "",
+			FULLNAME: "",
+			EMAIL: "",
+			PASSWORD: "",
 		},
 	});
 	useEffect(() => {
@@ -47,7 +86,7 @@ const Register = () => {
 
 		swiperElRef.current?.addEventListener("swiperslidechange", (e) => {
 			// * when slide changes do something here
-			console.log("slide changed");
+			// console.log("slide changed");
 		});
 
 		// initialize next button listener
@@ -62,6 +101,11 @@ const Register = () => {
 			swiperElRef.current?.swiper.slidePrev();
 		});
 	}, []);
+<<<<<<< HEAD
+=======
+
+	// form submit function
+>>>>>>> dddf27f5f1306d623371e4827ba82ffefac92537
 	const onSubmit = (data) => {
 		mutation.mutate(data);
 	};
@@ -76,7 +120,7 @@ const Register = () => {
 					ref={swiperElRef}
 					slides-per-view={"1"}
 					loop="true"
-					autoplay-delay="2500"
+					autoplay-delay="2500" // 2.5 seconds
 					autoplay-disable-on-interaction="false"
 				>
 					<swiper-slide>
@@ -159,11 +203,11 @@ const Register = () => {
 					<div className="~mt-10/20 mb-10 lg:mb-0">
 						<form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-8">
 							<Input
-								{...register("name", {
-									required: "Name is required",
+								{...register("FULLNAME", {
+									required: "Name is required", // custom error message
 								})}
-								isInvalid={!!errors.name}
-								errorMessage={errors.name?.message}
+								isInvalid={!!errors.FULLNAME} // check if the input is invalid
+								errorMessage={errors.FULLNAME?.message} // get the error message
 								startContent={
 									<UserRound width="28" height="27" className="text-[#AFAFAF]" />
 								}
@@ -180,18 +224,18 @@ const Register = () => {
 								}}
 							/>
 							<Input
-								{...register("email", {
-									required: "Email is required",
+								{...register("EMAIL", {
+									required: "Email is required", // custom error message
 									pattern: {
-										value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-										message: "Invalid email address",
+										value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, // regex pattern for email
+										message: "Invalid email address", // custom error message
 									},
 								})}
 								startContent={
 									<Mail width="28" height="27" className="text-[#AFAFAF]" />
 								}
-								isInvalid={!!errors.email}
-								errorMessage={errors.email?.message}
+								isInvalid={!!errors.EMAIL} // check if the input is invalid
+								errorMessage={errors.EMAIL?.message} // get the error message
 								variant="bordered"
 								color="primary"
 								type="text"
@@ -205,16 +249,16 @@ const Register = () => {
 								}}
 							/>
 							<Input
-								{...register("password", {
-									required: "Password is required",
+								{...register("PASSWORD", {
+									required: "Password is required", // custom error message
 									pattern: {
-										value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+										value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/, // regex pattern for password
 										message:
 											"Password must be at least 8 characters long, contain at least one uppercase, lowercase, number and special character",
 									},
 								})}
-								isInvalid={!!errors.password}
-								errorMessage={errors.password?.message}
+								isInvalid={!!errors.PASSWORD} // check if the input is invalid
+								errorMessage={errors.PASSWORD?.message} // get the error message
 								startContent={
 									<LockKeyhole
 										width="28"
@@ -262,7 +306,7 @@ const Register = () => {
 								color="primary"
 								className="w-full py-8 text-lg font-semibold p-7"
 							>
-								Log in
+								Register
 							</Button>
 							<div className="flex flex-row justify-center">
 								<Link

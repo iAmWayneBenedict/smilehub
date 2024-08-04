@@ -25,10 +25,15 @@ class APIMethods {
 	 */
 	static async apiRequest({ method, url, data, headers }) {
 		try {
-			const response = await axios({ method, url, data, headers });
+			const response = await axios({
+				method,
+				url: import.meta.env.VITE_SERVER_URL + url,
+				data,
+				headers,
+			});
 			return response.data;
 		} catch (error) {
-			throw error.response.data;
+			throw error.response?.data || error;
 		}
 	}
 

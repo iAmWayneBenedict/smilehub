@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Image, Input, Checkbox, Link, Button } from "@nextui-org/react";
 import img from "../../assets/images/Login IMG.png";
 import rImg from "../../assets/images/Register IMG.png";
@@ -6,25 +7,82 @@ import { useForm } from "react-hook-form";
 import { useState, useRef, useEffect } from "react";
 import { Eye, EyeOff, ArrowLeft, ArrowRight } from "lucide-react";
 import { register } from "swiper/element/bundle";
+import { useMutation } from "@tanstack/react-query";
+import AuthPatientAPIManager from "@/services/api/managers/AuthPatientAPIManager";
+import { useAppStore, useAuthTokenPersisted } from "@/store/zustand";
+import { AlertCircle } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { encrypt } from "@/lib/utils";
+
 // register SwiperElement
 register();
 const Login = () => {
 	const [isVisible, setIsVisible] = useState(false);
+	const toggleVisibility = () => setIsVisible(!isVisible);
+
+	// stores alert dialog details
+	const { setAlertDialogDetails } = useAppStore();
+
+	// swiper ref
 	const swiperElRef = useRef(null);
 	const nextSlide = useRef(null);
 	const prevSlide = useRef(null);
 
-	const toggleVisibility = () => setIsVisible(!isVisible);
+	// stores auth token
+	const { setAuthToken } = useAuthTokenPersisted();
+
+	// stores error
+	const [isErrorDetails, setIsErrorDetails] = useState({
+		isError: false,
+		message: "",
+	});
+
+	// form hook
 	const {
 		register,
 		handleSubmit,
 		formState: { errors },
 	} = useForm({
 		defaultValues: {
-			email: "",
-			password: "",
+			EMAIL: "",
+			PASSWORD: "",
 		},
 	});
+
+	// mutation function
+	const mutation = useMutation({
+		mutationFn: AuthPatientAPIManager.login,
+		onSuccess: (data) => {
+			setAlertDialogDetails({
+				isOpen: true,
+				type: "success",
+				title: "Success!",
+				message: data.message,
+				actionLink: "/",
+			});
+			setIsErrorDetails({
+				isError: false,
+				message: "",
+			});
+			try {
+				const enryptedToken = encrypt(data.user);
+				setAuthToken(enryptedToken);
+			} catch (error) {
+				console.log(error);
+			}
+		},
+		onError: (error) => {
+			setIsErrorDetails({
+				isError: true,
+				message: error.message,
+			});
+		},
+	});
+
+	// on submit function
+	const onSubmit = (data) => {
+		mutation.mutate(data);
+	};
 	useEffect(() => {
 		// listen for Swiper events using addEventListener
 		swiperElRef.current?.addEventListener("swiperprogress", (e) => {
@@ -35,7 +93,7 @@ const Login = () => {
 
 		swiperElRef.current?.addEventListener("swiperslidechange", (e) => {
 			// * when slide changes do something here
-			console.log("slide changed");
+			// console.log("slide changed");
 		});
 
 		// initialize next button listener
@@ -50,7 +108,6 @@ const Login = () => {
 			swiperElRef.current?.swiper.slidePrev();
 		});
 	}, []);
-	const onSubmit = (data) => console.log(data);
 	return (
 		<div className="lg:mt-10 justify-center items-center flex flex-row overflow-auto lg:overflow-hidden px-3 lg:px-0 ~gap-2/36 w-full h-[calc(100vh-4rem-4.75rem)]">
 			<div
@@ -143,17 +200,26 @@ const Login = () => {
 					</p>
 
 					<div className="~mt-10/20">
+						{isErrorDetails.isError && (
+							<Alert
+								variant="destructive"
+								className="flex items-center mb-5 bg-red-50"
+							>
+								<AlertCircle className="w-4 h-4" />
+								<AlertDescription>{isErrorDetails.message}</AlertDescription>
+							</Alert>
+						)}
 						<form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-8">
 							<Input
-								{...register("email", {
+								{...register("EMAIL", {
 									required: "Email is required",
 									pattern: {
 										value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
 										message: "Invalid email address",
 									},
 								})}
-								isInvalid={!!errors.email}
-								errorMessage={errors.email?.message}
+								isInvalid={!!errors.EMAIL?.message}
+								errorMessage={errors.EMAIL?.message}
 								startContent={
 									<Mail width="28" height="27" className="text-[#AFAFAF]" />
 								}
@@ -170,7 +236,7 @@ const Login = () => {
 								}}
 							/>
 							<Input
-								{...register("password", {
+								{...register("PASSWORD", {
 									required: "Password is required",
 									pattern: {
 										value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
@@ -178,8 +244,8 @@ const Login = () => {
 											"Password must be at least 8 characters long, contain at least one uppercase, lowercase, number and special character",
 									},
 								})}
-								isInvalid={!!errors.password}
-								errorMessage={errors.password?.message}
+								isInvalid={!!errors.PASSWORD}
+								errorMessage={errors.PASSWORD?.message}
 								startContent={
 									<LockKeyhole
 										width="28"
