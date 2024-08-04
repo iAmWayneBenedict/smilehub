@@ -233,7 +233,7 @@ Error (400 Bad Request):
 
 ```json
 Note: This error can occur only in staff or admin account
-Error (400 Bad Request):
+Error (400 Not Found):
 {
     "message": "Patient not found."
 }
@@ -243,6 +243,35 @@ Error (400 Bad Request):
 Error (500 Internal Server Error):
 {
     "message": "Failed to create an appointment."
+}
+```
+
+### 5. Get All Patients
+
+- **Endpoints:**
+  - `GET /GET/SHARED/PATIENT/patients.php`  
+    - **Description:** Retrieve a list of all patients, including their full names and IDs.
+
+#### Response
+
+```json
+Success (200 OK):
+[
+    {
+        "ID": "10",
+        "FULLNAME": "Juan Dela Cruz"
+    },
+    {
+        "ID": "11",
+        "FULLNAME": "Jane Doe"
+    }
+]
+```
+
+```json
+Error (400 Not Found):
+{
+    "message": "No patients found."
 }
 ```
 
