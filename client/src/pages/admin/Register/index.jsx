@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
 /* eslint-disable no-unused-vars */
->>>>>>> dddf27f5f1306d623371e4827ba82ffefac92537
 import { Image, Input, Checkbox, Link, Button } from "@nextui-org/react";
 import img from "../../../assets/images/Login IMG.png";
 import rImg from "../../../assets/images/Register IMG.png";
@@ -11,22 +8,12 @@ import { useState, useRef, useEffect } from "react";
 import { Eye, EyeOff, ArrowLeft, ArrowRight } from "lucide-react";
 import { register } from "swiper/element/bundle";
 import { useMutation } from "@tanstack/react-query";
-<<<<<<< HEAD
-=======
 import { useAppStore } from "@/store/zustand";
 import AuthAdminAPIManager from "@/services/api/managers/AuthAdminAPIManager";
->>>>>>> dddf27f5f1306d623371e4827ba82ffefac92537
 // register SwiperElement
 register();
 const AdminRegister = () => {
 	const [isVisible, setIsVisible] = useState(false);
-<<<<<<< HEAD
-	const swiperElRef = useRef(null);
-	const nextSlide = useRef(null);
-	const prevSlide = useRef(null);
-	const toggleVisibility = () => setIsVisible(!isVisible);
-
-=======
 	const toggleVisibility = () => setIsVisible(!isVisible);
 
 	// swiper refs
@@ -38,18 +25,12 @@ const AdminRegister = () => {
 	const { setAlertDialogDetails } = useAppStore();
 
 	// form submit function
->>>>>>> dddf27f5f1306d623371e4827ba82ffefac92537
 	const {
 		register,
 		handleSubmit,
 		formState: { errors },
 	} = useForm({
 		defaultValues: {
-<<<<<<< HEAD
-			name: "",
-			email: "",
-			password: "",
-=======
 			FULLNAME: "",
 			EMAIL: "",
 			PASSWORD: "",
@@ -66,18 +47,17 @@ const AdminRegister = () => {
 				type: "success",
 				title: "Success!",
 				message: [data.message, "Please login to continue."].join(" "),
-				actionLink: "/login",
+				actionLink: "/admin/login",
 			});
 		},
 		onError: (error) => {
 			// show alert dialog
 			setAlertDialogDetails({
 				isOpen: true,
-				type: "error",
+				type: "danger",
 				title: "Error!",
 				message: error.message,
 			});
->>>>>>> dddf27f5f1306d623371e4827ba82ffefac92537
 		},
 	});
 	useEffect(() => {
@@ -90,11 +70,7 @@ const AdminRegister = () => {
 
 		swiperElRef.current?.addEventListener("swiperslidechange", (e) => {
 			// * when slide changes do something here
-<<<<<<< HEAD
-			console.log("slide changed");
-=======
 			// console.log("slide changed");
->>>>>>> dddf27f5f1306d623371e4827ba82ffefac92537
 		});
 
 		// initialize next button listener
@@ -109,15 +85,11 @@ const AdminRegister = () => {
 			swiperElRef.current?.swiper.slidePrev();
 		});
 	}, []);
-<<<<<<< HEAD
-	const onSubmit = (data) => console.log(data);
-=======
 
 	// form submit function
 	const onSubmit = (data) => {
 		mutation.mutate(data);
 	};
->>>>>>> dddf27f5f1306d623371e4827ba82ffefac92537
 	return (
 		<div className="mt-20 md:mt-10 justify-center items-center flex flex-row lg:overflow-hidden px-3 lg:px-0 ~gap-2/36 w-full h-[calc(100vh-2.5rem)]">
 			<div
@@ -129,11 +101,7 @@ const AdminRegister = () => {
 					ref={swiperElRef}
 					slides-per-view={"1"}
 					loop="true"
-<<<<<<< HEAD
-					autoplay-delay="2500"
-=======
 					autoplay-delay="2500" // 2.5s
->>>>>>> dddf27f5f1306d623371e4827ba82ffefac92537
 					autoplay-disable-on-interaction="false"
 				>
 					<swiper-slide>
@@ -216,19 +184,11 @@ const AdminRegister = () => {
 					<div className="~mt-10/20 mb-10 lg:mb-0">
 						<form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-8">
 							<Input
-<<<<<<< HEAD
-								{...register("name", {
-									required: "Name is required",
-								})}
-								isInvalid={!!errors.name}
-								errorMessage={errors.name?.message}
-=======
 								{...register("FULLNAME", {
 									required: "Name is required", // custom error for required. use pattern for custom regex
 								})}
 								isInvalid={!!errors.FULLNAME}
 								errorMessage={errors.FULLNAME?.message}
->>>>>>> dddf27f5f1306d623371e4827ba82ffefac92537
 								startContent={
 									<UserRound width="28" height="27" className="text-[#AFAFAF]" />
 								}
@@ -245,31 +205,18 @@ const AdminRegister = () => {
 								}}
 							/>
 							<Input
-<<<<<<< HEAD
-								{...register("email", {
-									required: "Email is required",
-									pattern: {
-										value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-										message: "Invalid email address",
-=======
 								{...register("EMAIL", {
 									required: "Email is required",
 									pattern: {
 										value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, // regex for email validation
 										message: "Invalid email address", // custom error message for pattern
->>>>>>> dddf27f5f1306d623371e4827ba82ffefac92537
 									},
 								})}
 								startContent={
 									<Mail width="28" height="27" className="text-[#AFAFAF]" />
 								}
-<<<<<<< HEAD
-								isInvalid={!!errors.email}
-								errorMessage={errors.email?.message}
-=======
 								isInvalid={!!errors.EMAIL} // check if error for email
 								errorMessage={errors.EMAIL?.message} // error message for email
->>>>>>> dddf27f5f1306d623371e4827ba82ffefac92537
 								variant="bordered"
 								color="primary"
 								type="text"
@@ -283,28 +230,16 @@ const AdminRegister = () => {
 								}}
 							/>
 							<Input
-<<<<<<< HEAD
-								{...register("password", {
-									required: "Password is required",
-									pattern: {
-										value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-=======
 								{...register("PASSWORD", {
 									required: "Password is required",
 									pattern: {
 										value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/, // regex for password validation
->>>>>>> dddf27f5f1306d623371e4827ba82ffefac92537
 										message:
 											"Password must be at least 8 characters long, contain at least one uppercase, lowercase, number and special character",
 									},
 								})}
-<<<<<<< HEAD
-								isInvalid={!!errors.password}
-								errorMessage={errors.password?.message}
-=======
 								isInvalid={!!errors.PASSWORD} // check if error exists
 								errorMessage={errors.PASSWORD?.message} // error message for password
->>>>>>> dddf27f5f1306d623371e4827ba82ffefac92537
 								startContent={
 									<LockKeyhole
 										width="28"
@@ -352,11 +287,7 @@ const AdminRegister = () => {
 								color="primary"
 								className="w-full py-8 text-lg font-semibold p-7"
 							>
-<<<<<<< HEAD
-								Log in
-=======
 								Register
->>>>>>> dddf27f5f1306d623371e4827ba82ffefac92537
 							</Button>
 							<div className="flex flex-row justify-center">
 								<Link

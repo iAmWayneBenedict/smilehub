@@ -213,22 +213,7 @@ const Contact = () => {
 											inputWrapper: "rounded-lg h-full bg-white",
 											mainWrapper: "max-h-[4rem]",
 										}}
-										startContent={
-											<div className="flex items-center">
-												<label className="sr-only" htmlFor="country">
-													Country
-												</label>
-												<select
-													className="bg-transparent border-0 outline-none text-default-400 text-small"
-													id="country"
-													name="country"
-												>
-													<option>PH</option>
-													<option>US</option>
-													<option>EU</option>
-												</select>
-											</div>
-										}
+										startContent={"+63"}
 									/>
 									<Controller
 										name="date"

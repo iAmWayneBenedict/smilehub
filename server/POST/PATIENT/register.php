@@ -69,6 +69,19 @@ function register($conn, $data) {
         exit;
     }
 
+    // Check if the email already exists in the employee database
+    $queryEmailEmployee = "SELECT * FROM employee_table WHERE EMAIL=?";
+    $stmtEmailEmployee = $conn->prepare($queryEmailEmployee);
+    $stmtEmailEmployee->bind_param('s', $data->EMAIL);
+    $stmtEmailEmployee->execute();
+    $resultEmailEmployee = $stmtEmailEmployee->get_result();
+
+    if($resultEmailEmployee->num_rows > 0) {
+        http_response_code(400);
+        echo json_encode(array("message" => "Email already exists."));
+        exit;
+    }
+
     $ROLE = "PATIENT";
     // Hash the password
     $HASHED_PASSWORD = password_hash($data->PASSWORD, PASSWORD_DEFAULT);

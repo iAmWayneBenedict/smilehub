@@ -34,7 +34,8 @@ export const theme = {
 			Mukta: ["Mukta", "sans-serif"],
 		},
 		width: {
-			120: "30rem",
+			120: "33rem",
+			// 120: "40rem",
 		},
 		colors: {
 			border: "hsl(var(--border))",
@@ -69,6 +70,10 @@ export const theme = {
 			secondaryText: {
 				DEFAULT: "var(--secondary-text-color)",
 				secondary: "var(--secondary-text-color)",
+			},
+			lightText: {
+				DEFAULT: "var(--light-text-color)",
+				secondary: "var(--light-text-color)",
 			},
 			popover: {
 				DEFAULT: "hsl(var(--popover))",

@@ -6,15 +6,19 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Eye, EyeOff } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
-import AuthPatientAPIManager from "@/services/api/managers/AuthPatientAPIManager";
 import { useAppStore, useAuthTokenPersisted } from "@/store/zustand";
 import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { encrypt } from "@/lib/utils";
+import { useLocation } from "react-router-dom";
+import AuthStaffAPIManager from "@/services/api/managers/AuthStaffAPIManager";
+import AuthAdminAPIManager from "@/services/api/managers/AuthAdminAPIManager";
 
 const SharedLogin = () => {
 	const [isVisible, setIsVisible] = useState(false);
 	const toggleVisibility = () => setIsVisible(!isVisible);
+
+	const location = useLocation();
 
 	// stores alert dialog details
 	const { setAlertDialogDetails } = useAppStore();
@@ -42,7 +46,9 @@ const SharedLogin = () => {
 
 	// mutation function
 	const mutation = useMutation({
-		mutationFn: AuthPatientAPIManager.login,
+		mutationFn: location.pathname.includes("admin")
+			? AuthAdminAPIManager.login
+			: AuthStaffAPIManager.login,
 		onSuccess: (data) => {
 			// set alert dialog details
 			setAlertDialogDetails({
@@ -50,7 +56,9 @@ const SharedLogin = () => {
 				type: "success",
 				title: "Success!",
 				message: data.message,
-				actionLink: "/",
+				actionLink: location.pathname.includes("admin")
+					? "/admin/dashboard"
+					: "/staff/dashboard",
 			});
 
 			// reset error details
@@ -190,7 +198,11 @@ const SharedLogin = () => {
 						</Button>
 						<div className="flex flex-row justify-center">
 							<Link
-								href="/admin/register"
+								href={
+									location.pathname.includes("admin")
+										? "/admin/register"
+										: "/staff/register"
+								}
 								className="font-semibold text-center text-white underline"
 							>
 								Not member yet? Create an account

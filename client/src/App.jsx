@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import { useNavigate } from "react-router-dom";
@@ -15,7 +16,12 @@ import StaffRegister from "./pages/staff/Register";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import AlertDialog from "./components/layout/AlertDialog";
 import SharedLogin from "./pages/shared/Login";
-import { DisableAuthRoutes } from "./lib/routeHelper";
+import { AdminAuthRoutes, DisableAuthRoutes, StaffAuthRoutes } from "./lib/routeHelper";
+import AdminDashboard from "./pages/shared/dashboard";
+import Patients from "./pages/shared/patients";
+import Appointments from "./pages/shared/appointments";
+import AddPatient from "./pages/shared/patients/components/AddPatient";
+import PatientInfo from "./pages/shared/patients/components/PatientInfo";
 function App() {
 	const navigate = useNavigate();
 	const queryClient = new QueryClient();
@@ -24,6 +30,7 @@ function App() {
 			<QueryClientProvider client={queryClient}>
 				<Routes>
 					<Route path="/" element={<LayoutWrapper child={<Home />} />} />
+
 					{/* //* disable auth routes if there is a token */}
 					<Route element={<DisableAuthRoutes />}>
 						<Route path="/login" element={<LayoutWrapper child={<Login />} />} />
@@ -33,20 +40,58 @@ function App() {
 					<Route path="/blogs" element={<LayoutWrapper child={<Blogs />} />} />
 					<Route path="/about" element={<LayoutWrapper child={<About />} />} />
 					<Route path="/contact" element={<LayoutWrapper child={<Contact />} />} />
+
 					<Route path="/admin">
 						{/* //* disable auth routes if there is a token */}
 						<Route element={<DisableAuthRoutes />}>
 							<Route path="login" element={<SharedLogin />} />
 							<Route path="register" element={<AdminRegister />} />
 						</Route>
+						{/* <Route element={<AdminAuthRoutes />}> */}
+						<Route
+							path="dashboard"
+							element={<LayoutWrapper child={<AdminDashboard />} />}
+						/>
+						<Route path="patients">
+							<Route index element={<LayoutWrapper child={<Patients />} />} />
+							<Route path="add" element={<LayoutWrapper child={<AddPatient />} />} />
+							<Route
+								path="info"
+								element={<LayoutWrapper child={<PatientInfo />} />}
+							/>
+						</Route>
+						<Route
+							path="appointments/:type"
+							element={<LayoutWrapper child={<Appointments />} />}
+						/>
+						{/* </Route> */}
 					</Route>
+
 					<Route path="/staff">
 						{/* //* disable auth routes if there is a token */}
 						<Route element={<DisableAuthRoutes />}>
 							<Route path="login" element={<SharedLogin />} />
 							<Route path="register" element={<StaffRegister />} />
 						</Route>
+						{/* <Route element={<StaffAuthRoutes />}> */}
+						<Route
+							path="dashboard"
+							element={<LayoutWrapper child={<AdminDashboard />} />}
+						/>
+						<Route path="patients">
+							<Route index element={<LayoutWrapper child={<Patients />} />} />
+							<Route path="add" element={<LayoutWrapper child={<AddPatient />} />} />
+							<Route
+								path="info"
+								element={<LayoutWrapper child={<PatientInfo />} />}
+							/>
+						</Route>
+						<Route
+							path="appointments/:type"
+							element={<LayoutWrapper child={<Appointments />} />}
+						/>
 					</Route>
+					{/* </Route> */}
 				</Routes>
 
 				{/* ALERT Dialog */}
