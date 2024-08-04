@@ -85,7 +85,6 @@ function appointment($conn, $data) {
         exit;
     }
 
-
     // Appointment Status
     $STATUS = "Pending";
 

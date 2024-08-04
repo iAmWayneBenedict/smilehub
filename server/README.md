@@ -33,7 +33,7 @@ Note: Request body for Patient
 ```
 
 ```json
-Note: Request body for Staff and admin
+Note: Request body for Staff and admin account
 {
     "FULLNAME": "John Doe",
     "EMAIL": "johndoe@example.com",
@@ -165,6 +165,8 @@ Error (404 Not Found):
 - **Endpoints:**
   - `POST /POST/PATIENT/appointment.php`  
     - **Description:** Create a new appointment for a user (This route is for patients account only).
+  - `POST /POST/SHARED/appointment.php`  
+    - **Description:** Create a new appointment for a user (This route is for staff and admin account only).
 
 #### Request Body
 
@@ -183,7 +185,7 @@ Note: Request body for patients account
 ```
 
 ```json
-Note: Request body for staff account
+Note: Request body for staff or admin account
 {
     "PATIENT_ID": "123",
     "APPOINTMENT_DATE": "2024-08-04",
@@ -226,6 +228,14 @@ Error (400 Bad Request):
 Error (400 Bad Request):
 {
     "message": "The date and time you've selected is booked already."
+}
+```
+
+```json
+Note: This error can occur only in staff or admin account
+Error (400 Bad Request):
+{
+    "message": "Patient not found."
 }
 ```
 
