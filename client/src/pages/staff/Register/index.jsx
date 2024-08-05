@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
 /* eslint-disable no-unused-vars */
->>>>>>> dddf27f5f1306d623371e4827ba82ffefac92537
 import { Image, Input, Checkbox, Link, Button } from "@nextui-org/react";
 import img from "../../../assets/images/Login IMG.png";
 import rImg from "../../../assets/images/Register IMG.png";
@@ -10,23 +7,13 @@ import { useForm } from "react-hook-form";
 import { useState, useRef, useEffect } from "react";
 import { Eye, EyeOff, ArrowLeft, ArrowRight } from "lucide-react";
 import { register } from "swiper/element/bundle";
-<<<<<<< HEAD
-=======
 import { useMutation } from "@tanstack/react-query";
 import { useAppStore } from "@/store/zustand";
 import AuthStaffAPIManager from "@/services/api/managers/AuthStaffAPIManager";
->>>>>>> dddf27f5f1306d623371e4827ba82ffefac92537
 // register SwiperElement
 register();
 const StaffRegister = () => {
 	const [isVisible, setIsVisible] = useState(false);
-<<<<<<< HEAD
-	const swiperElRef = useRef(null);
-	const nextSlide = useRef(null);
-	const prevSlide = useRef(null);
-	const toggleVisibility = () => setIsVisible(!isVisible);
-
-=======
 	const toggleVisibility = () => setIsVisible(!isVisible);
 
 	// swiper refs
@@ -62,22 +49,15 @@ const StaffRegister = () => {
 	});
 
 	// form hook
->>>>>>> dddf27f5f1306d623371e4827ba82ffefac92537
 	const {
 		register,
 		handleSubmit,
 		formState: { errors },
 	} = useForm({
 		defaultValues: {
-<<<<<<< HEAD
-			name: "",
-			email: "",
-			password: "",
-=======
 			FULLNAME: "",
 			EMAIL: "",
 			PASSWORD: "",
->>>>>>> dddf27f5f1306d623371e4827ba82ffefac92537
 		},
 	});
 	useEffect(() => {
@@ -90,11 +70,7 @@ const StaffRegister = () => {
 
 		swiperElRef.current?.addEventListener("swiperslidechange", (e) => {
 			// * when slide changes do something here
-<<<<<<< HEAD
-			console.log("slide changed");
-=======
 			// console.log("slide changed");
->>>>>>> dddf27f5f1306d623371e4827ba82ffefac92537
 		});
 
 		// initialize next button listener
@@ -109,15 +85,11 @@ const StaffRegister = () => {
 			swiperElRef.current?.swiper.slidePrev();
 		});
 	}, []);
-<<<<<<< HEAD
-	const onSubmit = (data) => console.log(data);
-=======
 
 	// form submission
 	const onSubmit = (data) => {
 		mutation.mutate(data);
 	};
->>>>>>> dddf27f5f1306d623371e4827ba82ffefac92537
 	return (
 		<div className="mt-20 md:mt-10 justify-center items-center flex flex-row lg:overflow-hidden px-3 lg:px-0 ~gap-2/36 w-full h-[calc(100vh-2.5rem)]">
 			<div
@@ -212,19 +184,11 @@ const StaffRegister = () => {
 					<div className="~mt-10/20 mb-10 lg:mb-0">
 						<form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-8">
 							<Input
-<<<<<<< HEAD
-								{...register("name", {
-									required: "Name is required",
-								})}
-								isInvalid={!!errors.name}
-								errorMessage={errors.name?.message}
-=======
 								{...register("FULLNAME", {
 									required: "Name is required",
 								})}
 								isInvalid={!!errors.FULLNAME}
 								errorMessage={errors.FULLNAME?.message}
->>>>>>> dddf27f5f1306d623371e4827ba82ffefac92537
 								startContent={
 									<UserRound width="28" height="27" className="text-[#AFAFAF]" />
 								}
@@ -241,11 +205,7 @@ const StaffRegister = () => {
 								}}
 							/>
 							<Input
-<<<<<<< HEAD
-								{...register("email", {
-=======
 								{...register("EMAIL", {
->>>>>>> dddf27f5f1306d623371e4827ba82ffefac92537
 									required: "Email is required",
 									pattern: {
 										value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
@@ -255,13 +215,8 @@ const StaffRegister = () => {
 								startContent={
 									<Mail width="28" height="27" className="text-[#AFAFAF]" />
 								}
-<<<<<<< HEAD
-								isInvalid={!!errors.email}
-								errorMessage={errors.email?.message}
-=======
 								isInvalid={!!errors.EMAIL}
 								errorMessage={errors.EMAIL?.message}
->>>>>>> dddf27f5f1306d623371e4827ba82ffefac92537
 								variant="bordered"
 								color="primary"
 								type="text"
@@ -275,11 +230,7 @@ const StaffRegister = () => {
 								}}
 							/>
 							<Input
-<<<<<<< HEAD
-								{...register("password", {
-=======
 								{...register("PASSWORD", {
->>>>>>> dddf27f5f1306d623371e4827ba82ffefac92537
 									required: "Password is required",
 									pattern: {
 										value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
@@ -287,13 +238,8 @@ const StaffRegister = () => {
 											"Password must be at least 8 characters long, contain at least one uppercase, lowercase, number and special character",
 									},
 								})}
-<<<<<<< HEAD
-								isInvalid={!!errors.password}
-								errorMessage={errors.password?.message}
-=======
 								isInvalid={!!errors.PASSWORD}
 								errorMessage={errors.PASSWORD?.message}
->>>>>>> dddf27f5f1306d623371e4827ba82ffefac92537
 								startContent={
 									<LockKeyhole
 										width="28"
@@ -341,11 +287,7 @@ const StaffRegister = () => {
 								color="primary"
 								className="w-full py-8 text-lg font-semibold p-7"
 							>
-<<<<<<< HEAD
-								Log in
-=======
 								Register
->>>>>>> dddf27f5f1306d623371e4827ba82ffefac92537
 							</Button>
 							<div className="flex flex-row justify-center">
 								<Link

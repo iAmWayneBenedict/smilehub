@@ -197,11 +197,15 @@ const Contact = () => {
 									<Input
 										{...register("phone_number", {
 											required: "Phone Number is required",
+											pattern: {
+												value: /^9\d{9}$/,
+												message: "Invalid phone number",
+											},
 										})}
 										isInvalid={!!errors.phone_number}
 										errorMessage={errors.phone_number?.message}
 										label="Phone Number"
-										placeholder="+63 900-000-0000"
+										placeholder="900-000-0000"
 										labelPlacement="outside"
 										type="number"
 										size="lg"
@@ -210,7 +214,7 @@ const Contact = () => {
 										className="w-full"
 										classNames={{
 											label: "text-darkText font-semibold ",
-											inputWrapper: "rounded-lg h-full bg-white",
+											inputWrapper: "rounded-lg h-[4rem] bg-white",
 											mainWrapper: "max-h-[4rem]",
 										}}
 										startContent={"+63"}
@@ -227,6 +231,7 @@ const Contact = () => {
 												setValue={(value) => {
 													field.onChange(value);
 												}}
+												minValue={today(getLocalTimeZone())}
 											/>
 										)}
 									/>

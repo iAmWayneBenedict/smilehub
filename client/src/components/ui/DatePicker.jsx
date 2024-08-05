@@ -10,6 +10,8 @@ export default function CustomDatePicker({
 	label,
 	showTimeSelect = true,
 	classNames,
+	minValue = null,
+	isDateUnavailable = null,
 	...props
 }) {
 	let defaultDate = today(getLocalTimeZone());
@@ -85,6 +87,8 @@ export default function CustomDatePicker({
 				variant="bordered"
 				color="primary"
 				className="w-full bg-white"
+				minValue={minValue}
+				isDateUnavailable={isDateUnavailable}
 				dateInputClassNames={{
 					label: cn("text-darkText font-semibold ", classNames?.label),
 					inputWrapper: cn("rounded-lg h-full", classNames?.inputWrapper),
@@ -106,5 +110,7 @@ CustomDatePicker.propTypes = {
 	props: PropTypes.any,
 	label: PropTypes.string,
 	showTimeSelect: PropTypes.bool,
+	minValue: PropTypes.any,
+	isDateUnavailable: PropTypes.any,
 	classNames: PropTypes.object,
 };

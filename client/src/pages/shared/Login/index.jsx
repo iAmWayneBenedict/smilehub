@@ -11,8 +11,7 @@ import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { encrypt } from "@/lib/utils";
 import { useLocation } from "react-router-dom";
-import AuthStaffAPIManager from "@/services/api/managers/AuthStaffAPIManager";
-import AuthAdminAPIManager from "@/services/api/managers/AuthAdminAPIManager";
+import AuthSharedAPIManager from "@/services/api/managers/AuthSharedAPIManager";
 
 const SharedLogin = () => {
 	const [isVisible, setIsVisible] = useState(false);
@@ -46,9 +45,7 @@ const SharedLogin = () => {
 
 	// mutation function
 	const mutation = useMutation({
-		mutationFn: location.pathname.includes("admin")
-			? AuthAdminAPIManager.login
-			: AuthStaffAPIManager.login,
+		mutationFn: AuthSharedAPIManager.login,
 		onSuccess: (data) => {
 			// set alert dialog details
 			setAlertDialogDetails({
