@@ -147,7 +147,11 @@ export default function TableAppointments() {
 					<div className="relative flex items-center justify-start gap-2">
 						<Dropdown>
 							<DropdownTrigger>
-								<Button variant="light" className="text-primary">
+								<Button
+									variant="light"
+									aria-label="resched"
+									className="text-primary"
+								>
 									Reschedule
 								</Button>
 							</DropdownTrigger>
@@ -179,6 +183,7 @@ export default function TableAppointments() {
 							color="danger"
 							size="sm"
 							isIconOnly
+							aria-label="delete"
 							onClick={() => {
 								// display the alert dialog
 								setAlertDialogDetails({
@@ -260,6 +265,7 @@ export default function TableAppointments() {
 				<div className="flex items-end justify-between gap-3">
 					<Input
 						isClearable
+						aria-label="Search"
 						className="w-full sm:max-w-[44%]"
 						placeholder="Search by name..."
 						startContent={<Search />}
@@ -268,7 +274,7 @@ export default function TableAppointments() {
 						onValueChange={onSearchChange}
 					/>
 					<div className="flex gap-3">
-						<Dropdown>
+						<Dropdown aria-label="Dropdown">
 							<DropdownTrigger className="hidden sm:flex">
 								<Button
 									endContent={<ChevronDown className="text-small" />}
@@ -293,6 +299,7 @@ export default function TableAppointments() {
 							</DropdownMenu>
 						</Dropdown>
 						<Button
+							aria-label="New Appointment"
 							color="primary"
 							onClick={() =>
 								setNewAppointmentModal({
@@ -347,6 +354,7 @@ export default function TableAppointments() {
 
 				<div className="hidden sm:flex w-[30%] justify-end gap-2">
 					<Button
+						aria-label="Previous Page"
 						isDisabled={page === 1}
 						size="sm"
 						variant="flat"
@@ -355,6 +363,7 @@ export default function TableAppointments() {
 						Previous
 					</Button>
 					<Pagination
+						aria-label="Pagination"
 						showControls={false}
 						showShadow
 						color="primary"
@@ -363,6 +372,7 @@ export default function TableAppointments() {
 						onChange={setPage}
 					/>
 					<Button
+						aria-label="Next Page"
 						isDisabled={page === pages}
 						size="sm"
 						variant="flat"
@@ -391,6 +401,7 @@ export default function TableAppointments() {
 			onSortChange={setSortDescriptor}
 			topContent={topContent}
 			bottomContent={bottomContent}
+			aria-label="Appointments Table"
 		>
 			<TableHeader columns={headerColumns}>
 				{(column) => (

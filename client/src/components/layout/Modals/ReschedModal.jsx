@@ -15,7 +15,7 @@ import {
 import { useAppStore } from "@/store/zustand.js";
 import { useEffect, useState } from "react";
 import { getLocalTimeZone, today } from "@internationalized/date";
-import { Controller, set, useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { convertDateYYYYMMDD } from "@/services/api/utils";
 import AppointmentsAPIManager from "@/services/api/managers/appointments/AppointmentsAPIManager";
 import { useMutation } from "@tanstack/react-query";

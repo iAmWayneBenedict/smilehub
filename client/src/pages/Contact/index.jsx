@@ -53,6 +53,7 @@ const Contact = () => {
 		register,
 		handleSubmit,
 		control,
+		setError,
 		formState: { errors },
 	} = useForm({
 		defaultValues: {
@@ -81,6 +82,7 @@ const Contact = () => {
 					title: "Error!",
 					message: error.message,
 				});
+			setError("APPOINTMENT_DATE", { type: "manual", message: error.message });
 		}
 	};
 	const mutation = useMutation({

@@ -22,6 +22,9 @@ import { getLocalTimeZone, today } from "@internationalized/date";
 import { convertDateYYYYMMDD } from "@/services/api/utils";
 import AppointmentsAPIManager from "@/services/api/managers/appointments/AppointmentsAPIManager";
 import PatientsAPIManager from "@/services/api/managers/patients/PatientsAPIManager";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { AlertCircle } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const purposes = [
 	"Dental Bonding",
@@ -200,7 +203,23 @@ export default function AppointmentModal() {
 											<h4>Mololos, Bulacan</h4>
 										</div>
 									</div>
-									<div className="flex flex-col gap-4 mt-10">
+									{isErrorDetails.isError && (
+										<Alert
+											variant="destructive"
+											className="flex items-center mb-5 bg-red-50"
+										>
+											<AlertCircle className="w-4 h-4" />
+											<AlertDescription>
+												{isErrorDetails.message}
+											</AlertDescription>
+										</Alert>
+									)}
+									<div
+										className={cn(
+											"flex flex-col gap-4 mt-10",
+											isErrorDetails.isError && "mt-0"
+										)}
+									>
 										<div className="flex items-center">
 											<div style={{ flex: 1 }}>Patient</div>
 											<div style={{ flex: 2 }}>
@@ -213,15 +232,16 @@ export default function AppointmentModal() {
 															variant="bordered"
 															color="primary"
 															radius="sm"
+															aria-label="Patient"
 															className="w-full bg-white"
 															defaultItems={patients}
 															placeholder="Search a patient"
 															size="lg"
-															inputValue={field.value}
 															isInvalid={!!errors.PATIENT_ID}
 															errorMessage={
 																errors.PATIENT_ID?.message
 															}
+															selectedKey={field.value}
 															onSelectionChange={(value) => {
 																field.onChange(value);
 															}}
@@ -252,6 +272,7 @@ export default function AppointmentModal() {
 																inputWrapper: "rounded-lg h-full",
 																innerWrapper: "h-fit",
 															}}
+															aria-label="Appointment Date"
 															className="max-w-full"
 															label={""}
 															value={field.value}
@@ -278,6 +299,7 @@ export default function AppointmentModal() {
 													render={({ field, formState: { errors } }) => (
 														<Select
 															{...field}
+															aria-label="Appointment Time"
 															selectedKeys={[field.value]}
 															onChange={(selectedKeys) => {
 																field.onChange(selectedKeys);
@@ -319,6 +341,7 @@ export default function AppointmentModal() {
 													render={({ field, formState: { errors } }) => (
 														<Select
 															{...field}
+															aria-label="Purpose"
 															selectedKeys={[field.value]}
 															onChange={(selectedKeys) => {
 																field.onChange(selectedKeys);
@@ -381,16 +404,6 @@ export default function AppointmentModal() {
 									Close
 								</Button>
 								<Button
-									color="primary"
-									onPress={() => {
-										onClose();
-										setNewAppointmentModal({});
-									}}
-								>
-									Begin Appointment
-								</Button>
-								<Button
-									variant="bordered"
 									color="primary"
 									type="submit"
 									// onPress={(e) => {
