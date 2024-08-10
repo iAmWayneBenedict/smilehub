@@ -11,6 +11,9 @@ dependencies:
   '@nextui-org/accordion':
     specifier: ^2.0.35
     version: 2.0.38(@nextui-org/system@2.2.5)(@nextui-org/theme@2.2.9)(framer-motion@11.3.8)(react-dom@18.3.1)(react@18.3.1)
+  '@nextui-org/autocomplete':
+    specifier: ^2.1.5
+    version: 2.1.5(@nextui-org/system@2.2.5)(@nextui-org/theme@2.2.9)(@types/react@18.3.3)(framer-motion@11.3.8)(react-dom@18.3.1)(react@18.3.1)
   '@nextui-org/breadcrumbs':
     specifier: ^2.0.12
     version: 2.0.12(@nextui-org/system@2.2.5)(@nextui-org/theme@2.2.9)(react-dom@18.3.1)(react@18.3.1)

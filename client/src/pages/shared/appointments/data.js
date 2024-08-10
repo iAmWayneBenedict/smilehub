@@ -6,6 +6,7 @@ const columns = [
 	{ name: "PATIENT AGE", uid: "patient_age", sortable: true },
 	{ name: "DENTIST", uid: "dentist", sortable: true },
 	{ name: "STATUS", uid: "status" },
+	{ name: "OPTIONS", uid: "options" },
 ];
 
 const statusOptions = [

@@ -9,29 +9,34 @@ import {
 	Settings,
 	MessageCircleQuestion,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, decrypt } from "@/lib/utils";
 import { useLocation } from "react-router-dom";
 import { Link, Divider } from "@nextui-org/react";
+import "./styles.css";
+import { useAuthTokenPersisted } from "@/store/zustand";
 
 const SideNav = () => {
 	const location = useLocation();
-
+	const { authToken } = useAuthTokenPersisted();
+	const user = decrypt(authToken);
+	const userRole = user?.role?.toLowerCase();
+	console.log(userRole);
 	// update this based on the menu links
 	const menuLinks = [
 		{
 			name: "Dashboard",
 			icon: <LayoutDashboard />,
-			href: "/admin/dashboard",
+			href: "/" + userRole + "/dashboard",
 		},
 		{
 			name: "Calendar",
 			icon: <Calendar />,
-			href: "/admin/calendar",
+			href: "/" + userRole + "/calendar",
 		},
 		{
 			name: "Patients",
 			icon: <UsersRound />,
-			href: "/admin/patients",
+			href: "/" + userRole + "/patients",
 		},
 		{
 			name: "Dentists",
@@ -54,22 +59,22 @@ const SideNav = () => {
 					/>
 				</svg>
 			),
-			href: "/admin/dentists",
+			href: "/" + userRole + "/dentists",
 		},
 		{
 			name: "Tasks",
 			icon: <ClipboardCheck />,
-			href: "/admin/tasks",
+			href: "/" + userRole + "/tasks",
 		},
 		{
 			name: "Appointments",
 			icon: <CalendarPlus />,
-			href: "/admin/appointments/new",
+			href: "/" + userRole + "/appointments/new",
 		},
 		{
 			name: "Inventory",
 			icon: <Package />,
-			href: "/admin/inventory",
+			href: "/" + userRole + "/inventory",
 		},
 	];
 
@@ -78,37 +83,44 @@ const SideNav = () => {
 		{
 			name: "Settings",
 			icon: <Settings />,
-			href: "/admin/settings",
+			href: "/" + userRole + "/settings",
 		},
 		{
 			name: "Support",
 			icon: <MessageCircleQuestion />,
-			href: "/admin/support",
+			href: "/" + userRole + "/support",
 		},
 	];
 	const activeLinkClasses =
 		"text-primary font-semibold before:absolute before:content-[''] before:top-0 before:left-0 before:h-full before:w-1 before:rounded-tr-lg before:rounded-br-lg before:bg-primary";
 	return (
-		<div className="w-72 h-[calc(100vh-5.3rem)] border-gray-300 border-r-1">
+		<div id="sideNav" className="h-[calc(100vh-5.3rem)] border-gray-300 border-r-1">
 			<div className="~mt-5/10">
 				<small className="px-4 text-lightText">MENU</small>
 				<div className="flex flex-col gap-3 mt-4">
-					{menuLinks.map((item, index) => (
-						<React.Fragment key={index}>
-							<Link
-								href={item.href}
-								className={cn(
-									"relative text-lightText flex items-center gap-5 px-5 text-base py-2",
+					{menuLinks.map((item, index) => {
+						if (
+							(item.name === "Dentists" || item.name === "Patients") &&
+							!location.pathname.includes("/admin")
+						)
+							return null;
+						return (
+							<React.Fragment key={index}>
+								<Link
+									href={item.href}
+									className={cn(
+										"relative text-lightText flex items-center gap-5 px-5 text-base py-2",
 
-									// if current route then, make it active state
-									location.pathname.includes(item.href) && activeLinkClasses
-								)}
-							>
-								<div>{item.icon}</div>
-								<span>{item.name}</span>
-							</Link>
-						</React.Fragment>
-					))}
+										// if current route then, make it active state
+										location.pathname.includes(item.href) && activeLinkClasses
+									)}
+								>
+									<div>{item.icon}</div>
+									<span>{item.name}</span>
+								</Link>
+							</React.Fragment>
+						);
+					})}
 				</div>
 				<br />
 				<div className="flex justify-center w-full">

@@ -1,13 +1,20 @@
-import { Image, Input, Button } from "@nextui-org/react";
+import { Image, Input, Button, Link } from "@nextui-org/react";
 import { Search, LogOut } from "lucide-react";
 import logoText from "../../../../assets/icons/SMILEHUB.png";
-import { useAppStore } from "@/store/zustand";
+import { useAppStore, useAuthTokenPersisted } from "@/store/zustand";
+import "./styles.css";
+import { decrypt } from "@/lib/utils";
+import { useLocation } from "react-router-dom";
 
 const SharedNavBar = () => {
 	const { setAlertDialogDetails } = useAppStore();
+	const { setAuthToken, authToken } = useAuthTokenPersisted();
+	const userDetails = decrypt(authToken);
+	const location = useLocation();
+	const currentUserType = userDetails?.role?.toLowerCase();
 	return (
 		<div className="flex items-center border-gray-300 border-b-1">
-			<div className="flex justify-center px-5 border-gray-300 w-72 py-7 border-r-1">
+			<div id="logoNav" className="flex justify-center px-5 border-gray-300 py-7 border-r-1">
 				<div className="">
 					<Image src={logoText} removeWrapper className="rounded-none" />
 				</div>
@@ -32,7 +39,7 @@ const SharedNavBar = () => {
 				<div style={{ flex: 1 }} className="flex justify-evenly max-w-[40rem]">
 					<div>
 						{/* TODO: make this dynamic */}
-						<h5>John Doe</h5>
+						<h5>{userDetails?.fullname}</h5>
 						<h6 className="text-sm font-bold">Admin</h6>
 					</div>
 					<div>
@@ -45,7 +52,18 @@ const SharedNavBar = () => {
 						/>
 					</div>
 					<div>
-						<Button variant="light">My Profile</Button>
+						<Button
+							variant="light"
+							as={Link}
+							color={
+								location.pathname === `/${currentUserType}/profile`
+									? "primary"
+									: "default"
+							}
+							href={`/${currentUserType}/profile`}
+						>
+							My Profile
+						</Button>
 					</div>
 					<div>
 						<Button
@@ -59,6 +77,19 @@ const SharedNavBar = () => {
 									message: "Are you sure you want to logout?",
 									isOpen: true,
 									dialogType: "confirm",
+									confirmCallback: () => {
+										// log out user
+										setAuthToken(false);
+										setTimeout(() => {
+											setAlertDialogDetails({
+												isOpen: true,
+												type: "success",
+												title: "Success!",
+												message: "You have been successfully logged out.",
+												actionLink: "/",
+											});
+										}, 1000);
+									},
 								});
 							}}
 						>

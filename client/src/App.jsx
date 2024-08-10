@@ -22,6 +22,11 @@ import Patients from "./pages/shared/patients";
 import Appointments from "./pages/shared/appointments";
 import AddPatient from "./pages/shared/patients/components/AddPatient";
 import PatientInfo from "./pages/shared/patients/components/PatientInfo";
+import Dentists from "./pages/admin/dentists";
+import { default as DentistRegistration } from "./pages/shared/profile/Registration";
+import Profile from "./pages/shared/profile/Profile";
+import InvalidSmallScreen from "./components/layout/shared/invalids/InvalidSmallScreen";
+
 function App() {
 	const navigate = useNavigate();
 	const queryClient = new QueryClient();
@@ -47,24 +52,39 @@ function App() {
 							<Route path="login" element={<SharedLogin />} />
 							<Route path="register" element={<AdminRegister />} />
 						</Route>
-						{/* <Route element={<AdminAuthRoutes />}> */}
-						<Route
-							path="dashboard"
-							element={<LayoutWrapper child={<AdminDashboard />} />}
-						/>
-						<Route path="patients">
-							<Route index element={<LayoutWrapper child={<Patients />} />} />
-							<Route path="add" element={<LayoutWrapper child={<AddPatient />} />} />
+						<Route element={<AdminAuthRoutes />}>
 							<Route
-								path="info"
-								element={<LayoutWrapper child={<PatientInfo />} />}
+								path="dashboard"
+								element={<LayoutWrapper child={<AdminDashboard />} />}
 							/>
+							<Route path="patients">
+								<Route index element={<LayoutWrapper child={<Patients />} />} />
+								<Route
+									path="add"
+									element={<LayoutWrapper child={<AddPatient />} />}
+								/>
+								<Route
+									path="info"
+									element={<LayoutWrapper child={<PatientInfo />} />}
+								/>
+							</Route>
+							<Route path="dentists">
+								<Route index element={<LayoutWrapper child={<Dentists />} />} />
+								<Route
+									path="registration"
+									element={<LayoutWrapper child={<DentistRegistration />} />}
+								/>
+								<Route
+									path="profile"
+									element={<LayoutWrapper child={<Profile />} />}
+								/>
+							</Route>
+							<Route
+								path="appointments/:type"
+								element={<LayoutWrapper child={<Appointments />} />}
+							/>
+							<Route path="profile" element={<LayoutWrapper child={<Profile />} />} />
 						</Route>
-						<Route
-							path="appointments/:type"
-							element={<LayoutWrapper child={<Appointments />} />}
-						/>
-						{/* </Route> */}
 					</Route>
 
 					<Route path="/staff">
@@ -73,29 +93,36 @@ function App() {
 							<Route path="login" element={<SharedLogin />} />
 							<Route path="register" element={<StaffRegister />} />
 						</Route>
-						{/* <Route element={<StaffAuthRoutes />}> */}
-						<Route
-							path="dashboard"
-							element={<LayoutWrapper child={<AdminDashboard />} />}
-						/>
-						<Route path="patients">
-							<Route index element={<LayoutWrapper child={<Patients />} />} />
-							<Route path="add" element={<LayoutWrapper child={<AddPatient />} />} />
+						<Route element={<StaffAuthRoutes />}>
 							<Route
-								path="info"
-								element={<LayoutWrapper child={<PatientInfo />} />}
+								path="dashboard"
+								element={<LayoutWrapper child={<AdminDashboard />} />}
 							/>
+							<Route path="patients">
+								<Route index element={<LayoutWrapper child={<Patients />} />} />
+								<Route
+									path="add"
+									element={<LayoutWrapper child={<AddPatient />} />}
+								/>
+								<Route
+									path="info"
+									element={<LayoutWrapper child={<PatientInfo />} />}
+								/>
+							</Route>
+							<Route
+								path="appointments/:type"
+								element={<LayoutWrapper child={<Appointments />} />}
+							/>
+							<Route path="profile" element={<LayoutWrapper child={<Profile />} />} />
 						</Route>
-						<Route
-							path="appointments/:type"
-							element={<LayoutWrapper child={<Appointments />} />}
-						/>
 					</Route>
-					{/* </Route> */}
 				</Routes>
 
 				{/* ALERT Dialog */}
 				<AlertDialog />
+
+				{/* Invalid Screen Size for ADMIN and STAFF routes */}
+				<InvalidSmallScreen />
 			</QueryClientProvider>
 		</NextUIProvider>
 	);

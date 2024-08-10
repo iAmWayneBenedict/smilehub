@@ -15,6 +15,7 @@ register();
 const StaffRegister = () => {
 	const [isVisible, setIsVisible] = useState(false);
 	const toggleVisibility = () => setIsVisible(!isVisible);
+	const [agreedTerms, setAgreedTerms] = useState(false);
 
 	// swiper refs
 	const swiperElRef = useRef(null);
@@ -278,6 +279,7 @@ const StaffRegister = () => {
 									classNames={{
 										label: "text-darkText font-semibold",
 									}}
+									onChange={(e) => setAgreedTerms(e.target.checked)}
 								>
 									I agree with Terms and Privacy
 								</Checkbox>
@@ -285,6 +287,7 @@ const StaffRegister = () => {
 							<Button
 								type="submit"
 								color="primary"
+								isDisabled={!agreedTerms}
 								className="w-full py-8 text-lg font-semibold p-7"
 							>
 								Register

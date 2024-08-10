@@ -32,7 +32,7 @@ const ArticleCard = ({ image, classNames, alt = false }) => {
 	);
 };
 ArticleCard.propTypes = {
-	classNames: PropTypes.obj,
+	classNames: PropTypes.object,
 	image: PropTypes.string,
 	alt: PropTypes.bool,
 };

@@ -12,6 +12,7 @@ export default function CustomDatePicker({
 	classNames,
 	minValue = null,
 	isDateUnavailable = null,
+	onChange = null,
 	...props
 }) {
 	let defaultDate = today(getLocalTimeZone());
@@ -53,7 +54,7 @@ export default function CustomDatePicker({
 	};
 
 	return (
-		<div className="flex flex-col w-full max-w-sm gap-2">
+		<div className="flex flex-col w-full gap-2">
 			<DatePicker
 				CalendarTopContent={
 					<ButtonGroup
@@ -79,24 +80,28 @@ export default function CustomDatePicker({
 					},
 				}}
 				{...props}
+				showMonthAndYearPickers
 				value={value}
-				onChange={setValue}
+				onChange={(e) => {
+					setValue(e);
+					onChange && onChange(e);
+				}}
 				label={label === undefined ? "Select a date" : label}
 				labelPlacement={"outside"}
 				size="lg"
 				variant="bordered"
 				color="primary"
-				className="w-full bg-white"
+				className="w-full "
 				minValue={minValue}
 				isDateUnavailable={isDateUnavailable}
 				dateInputClassNames={{
 					label: cn("text-darkText font-semibold ", classNames?.label),
-					inputWrapper: cn("rounded-lg h-full", classNames?.inputWrapper),
+					inputWrapper: cn("rounded-lg h-full bg-white", classNames?.inputWrapper),
 					innerWrapper: cn("h-[4rem]", classNames?.innerWrapper),
 				}}
 			/>
 			{showTimeSelect && (
-				<p className="text-sm text-default-500">
+				<p className="text-xs text-default-500">
 					Selected date:{" "}
 					{value ? formatter.format(value.toDate(getLocalTimeZone())) : "--"}
 				</p>
@@ -113,4 +118,5 @@ CustomDatePicker.propTypes = {
 	minValue: PropTypes.any,
 	isDateUnavailable: PropTypes.any,
 	classNames: PropTypes.object,
+	onChange: PropTypes.func,
 };

@@ -1,0 +1,11 @@
+#sideNav {
+	width: 16rem;
+	min-width: 16rem;
+}
+
+@media only screen and (min-device-width: 900px) and (max-device-width: 1600px) {
+	#sideNav {
+		width: 14rem;
+		min-width: 14rem;
+	}
+}

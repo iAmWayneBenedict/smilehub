@@ -68,25 +68,25 @@ export default function TableDashboard() {
 		switch (columnKey) {
 			case "time":
 				return (
-					<div className="flex flex-col">
+					<div className="flex flex-col min-w-16">
 						<p className="capitalize text-bold text-small">{cellValue}</p>
 					</div>
 				);
 			case "date":
 				return (
-					<div className="flex flex-col">
+					<div className="flex flex-col min-w-16">
 						<p className="capitalize text-bold text-small">{cellValue}</p>
 					</div>
 				);
 			case "patient_name":
 				return (
-					<div className="flex flex-col">
+					<div className="flex flex-col min-w-16">
 						<p className="capitalize text-bold text-small">{cellValue}</p>
 					</div>
 				);
 			case "dentist":
 				return (
-					<div className="flex flex-col">
+					<div className="flex flex-col min-w-16">
 						<p className="capitalize text-bold text-small">{cellValue}</p>
 					</div>
 				);

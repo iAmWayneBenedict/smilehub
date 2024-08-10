@@ -16,19 +16,21 @@ import {
 	Pagination,
 } from "@nextui-org/react";
 import { columns, appointments } from "../data";
-import { X, Search, Plus, ChevronDown } from "lucide-react";
+import {
+	X,
+	Search,
+	Plus,
+	ChevronDown,
+	Clock,
+	CheckCheck,
+	CalendarDays,
+	Trash2,
+} from "lucide-react";
 import { capitalize } from "@/lib/utils";
 import { useAppStore } from "@/store/zustand";
 
 //! change this based on the columns in the db
-const INITIAL_VISIBLE_COLUMNS = [
-	"time",
-	"date",
-	"patient_name",
-	"patient_age",
-	"dentist",
-	"status",
-];
+const INITIAL_VISIBLE_COLUMNS = ["time", "date", "patient_name", "dentist", "status"];
 
 export default function TableAppointments() {
 	const [filterValue, setFilterValue] = React.useState("");
@@ -40,7 +42,7 @@ export default function TableAppointments() {
 		column: "time", //! update this based on the column in the db
 		direction: "ascending",
 	});
-	const { setAlertDialogDetails, setNewAppointmentModal } = useAppStore();
+	const { setAlertDialogDetails, setNewAppointmentModal, setNewScheduleModal } = useAppStore();
 
 	const [page, setPage] = React.useState(1);
 
@@ -88,6 +90,33 @@ export default function TableAppointments() {
 	// renders the cell based on the column
 	const renderCell = React.useCallback((appointment, columnKey) => {
 		const cellValue = appointment[columnKey];
+		const handleAction = (key) => {
+			if (key === "reschedule") {
+				setNewScheduleModal({
+					isOpen: true,
+					title: "Change Status",
+					data: null,
+				});
+			} else if (key === "delete") {
+				// display the alert dialog
+				setAlertDialogDetails({
+					isOpen: true,
+					title: "Delete Appointment",
+					message: "Are you sure you want to delete this appointment?",
+					type: "danger",
+					dialogType: "confirm",
+				});
+			} else if (key === "cancel") {
+				// display the alert dialog
+				setAlertDialogDetails({
+					isOpen: true,
+					title: "Cancel Appointment",
+					message: "Are you sure you want to cancel this appointment?",
+					type: "warning",
+					dialogType: "confirm",
+				});
+			}
+		};
 		switch (columnKey) {
 			case "time":
 				return (
@@ -107,12 +136,6 @@ export default function TableAppointments() {
 						<p className="capitalize text-bold text-small">{cellValue}</p>
 					</div>
 				);
-			case "patient_age":
-				return (
-					<div className="flex flex-col">
-						<p className="capitalize text-bold text-small">{cellValue}</p>
-					</div>
-				);
 			case "dentist":
 				return (
 					<div className="flex flex-col">
@@ -122,9 +145,36 @@ export default function TableAppointments() {
 			case "status":
 				return (
 					<div className="relative flex items-center justify-start gap-2">
-						<Button variant="light" className="text-primary">
-							Reschedule
-						</Button>
+						<Dropdown>
+							<DropdownTrigger>
+								<Button variant="light" className="text-primary">
+									Reschedule
+								</Button>
+							</DropdownTrigger>
+							<DropdownMenu variant="faded" onAction={handleAction}>
+								<DropdownItem key={"on_going"} startContent={<Clock size={20} />}>
+									On-going
+								</DropdownItem>
+								<DropdownItem key={"done"} startContent={<CheckCheck size={20} />}>
+									Done
+								</DropdownItem>
+								<DropdownItem
+									key={"reschedule"}
+									startContent={<CalendarDays size={20} />}
+								>
+									Reschedule
+								</DropdownItem>
+								<DropdownItem
+									key={"cancel"}
+									startContent={<Trash2 size={20} />}
+									className="text-danger"
+									color="danger"
+								>
+									Cancel
+								</DropdownItem>
+							</DropdownMenu>
+						</Dropdown>
+
 						<Button
 							color="danger"
 							size="sm"
@@ -144,6 +194,24 @@ export default function TableAppointments() {
 						</Button>
 					</div>
 				);
+			// case "options":
+			// 	return (
+			// 		<div className="relative flex items-end justify-end gap-2 max-w-24">
+			// 			<Dropdown>
+			// 				<DropdownTrigger>
+			// 					<Button isIconOnly size="sm" variant="light">
+			// 						<EllipsisVertical className="text-default-300" />
+			// 					</Button>
+			// 				</DropdownTrigger>
+			// 				<DropdownMenu onAction={handleAction}>
+			// 					<DropdownItem key={"reschedule"}>Reschedule</DropdownItem>
+			// 					<DropdownItem key={"delete"} className="text-danger" color="danger">
+			// 						Delete
+			// 					</DropdownItem>
+			// 				</DropdownMenu>
+			// 			</Dropdown>
+			// 		</div>
+			// 	);
 			default:
 				return cellValue;
 		}
@@ -330,6 +398,7 @@ export default function TableAppointments() {
 						key={column.uid}
 						align={column.uid === "actions" ? "center" : "start"}
 						allowsSorting={column.sortable}
+						className={column.uid === "options" ? "w-24" : ""}
 					>
 						{column.name}
 					</TableColumn>

@@ -2,6 +2,7 @@ import { Tabs, Tab } from "@nextui-org/react";
 import { useState } from "react";
 import TableAppointments from "./components/Table";
 import AppointmentModal from "@/components/layout/shared/appointment";
+import ReschedModal from "@/components/layout/Modals/ReschedModal";
 
 const Appointments = () => {
 	// controlled tabs
@@ -30,6 +31,7 @@ const Appointments = () => {
 					</Tabs>
 				</div>
 				<AppointmentModal />
+				<ReschedModal />
 				{/* <div className="absolute right-0 flex justify-end px-10 top-4">
 					<Button color="primary">New Appointment</Button>
 				</div> */}

@@ -30,6 +30,18 @@ export const useAppStore = create((set) => {
 		 */
 		newAppointmentModal: {},
 		setNewAppointmentModal: (details) => set({ newAppointmentModal: details }),
+
+		/**
+			* The details of the new schedule modal.
+
+			* @typedef {Object} NewScheduleModal
+			* @property {string} title - The title of the new schedule modal.
+			* @property {object} data - The data of the new schedule modal.
+			* @property {boolean} isOpen - Whether the new schedule modal is open.
+			* @property {string} actionLink - The link to redirect to when the action button is clicked.
+		 */
+		newScheduleModal: {},
+		setNewScheduleModal: (details) => set({ newScheduleModal: details }),
 	};
 });
 

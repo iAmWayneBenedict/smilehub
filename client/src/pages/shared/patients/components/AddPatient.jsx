@@ -175,7 +175,7 @@ const Form = () => {
 								}}
 								aria-label="Appointment date"
 								// isDateUnavailable={isDateUnavailable}
-								maxValue={sixMonthsAgo}
+								// maxValue={sixMonthsAgo}
 							/>
 						)}
 					/>

@@ -9,6 +9,12 @@ import CustomDatePicker from "@/components/ui/DatePicker";
 import FAQ from "@/components/layout/patient/FAQ";
 import { useForm, Controller } from "react-hook-form";
 import { getLocalTimeZone, today } from "@internationalized/date";
+import AppointmentsAPIManager from "@/services/api/managers/appointments/AppointmentsAPIManager";
+import { convertDateYYYYMMDD } from "@/services/api/utils";
+import { useAppStore } from "@/store/zustand";
+import { useState } from "react";
+import { useEffect } from "react";
+import { useMutation } from "@tanstack/react-query";
 
 const contactAddressCard = [
 	{
@@ -37,18 +43,11 @@ const purpose = [
 	"Dental Sealants",
 	"Tooth Extractions",
 ];
-const timeDropdownList = [
-	"8:00 AM - 9:00 AM",
-	"9:00 AM - 10:00 AM",
-	"10:00 AM - 11:00 AM",
-	"11:00 AM - 12:00 PM",
-	"1:00 PM - 2:00 PM",
-	"2:00 PM - 3:00 PM",
-	"3:00 PM - 4:00 PM",
-	"4:00 PM - 5:00 PM",
-];
 
 const Contact = () => {
+	const { setAlertDialogDetails } = useAppStore();
+	const [timeDropdownList, setTimeDropdownList] = useState([]);
+
 	// Form hook
 	const {
 		register,
@@ -57,16 +56,57 @@ const Contact = () => {
 		formState: { errors },
 	} = useForm({
 		defaultValues: {
-			first_name: "",
-			last_name: "",
-			email: "",
-			phone_number: "",
-			date: today(getLocalTimeZone()), // default date (today)
-			time: "",
-			purpose: "",
+			FULLNAME: "",
+			EMAIL: "",
+			PHONE: "",
+			APPOINTMENT_DATE: today(getLocalTimeZone()), // default date (today)
+			APPOINTMENT_TIME: "",
+			PURPOSE: "",
 		},
 	});
-	const onSubmit = (data) => console.log(data);
+	useEffect(() => {
+		handleGetDate(today(getLocalTimeZone()), false);
+	}, []);
+	const handleGetDate = async (date, isForm = true) => {
+		try {
+			const response = await AppointmentsAPIManager.getAppointmentDates({
+				APPOINTMENT_DATE: convertDateYYYYMMDD(date),
+			});
+			setTimeDropdownList(response.available_times);
+		} catch (error) {
+			if (!isForm)
+				setAlertDialogDetails({
+					isOpen: true,
+					type: "danger",
+					title: "Error!",
+					message: error.message,
+				});
+		}
+	};
+	const mutation = useMutation({
+		mutationFn: AppointmentsAPIManager.postPatientAppointment,
+		onSuccess: () => {
+			setAlertDialogDetails({
+				isOpen: true,
+				type: "success",
+				title: "Success!",
+				message: "Appointment booked successfully!",
+				actionLink: "/", // redirect to home page
+			});
+		},
+		onError: (error) => {
+			setAlertDialogDetails({
+				isOpen: true,
+				type: "danger",
+				title: "Error!",
+				message: error.message,
+			});
+		},
+	});
+	const onSubmit = (data) => {
+		data.APPOINTMENT_DATE = convertDateYYYYMMDD(data.APPOINTMENT_DATE);
+		mutation.mutate(data);
+	};
 	return (
 		<>
 			<div id="banner-pages">
@@ -127,14 +167,14 @@ const Contact = () => {
 								>
 									<div className="flex flex-row gap-5">
 										<Input
-											{...register("first_name", {
-												required: "First Name is required",
+											{...register("FULLNAME", {
+												required: "Full Name is required",
 											})}
-											isInvalid={!!errors.first_name}
-											errorMessage={errors.first_name?.message}
+											isInvalid={!!errors.FULLNAME}
+											errorMessage={errors.FULLNAME?.message}
 											key={"f_name"}
 											type="text"
-											label="First Name"
+											label="Full Name"
 											size="lg"
 											variant="bordered"
 											color="primary"
@@ -144,10 +184,10 @@ const Contact = () => {
 												inputWrapper: "rounded-lg h-full bg-white",
 												mainWrapper: "h-[4rem]",
 											}}
-											placeholder="First Name"
+											placeholder="Full Name"
 											labelPlacement={"outside"}
 										/>
-										<Input
+										{/* <Input
 											{...register("last_name", {
 												required: "Last Name is required",
 											})}
@@ -167,18 +207,18 @@ const Contact = () => {
 											}}
 											placeholder="Last Name"
 											labelPlacement={"outside"}
-										/>
+										/> */}
 									</div>
 									<Input
-										{...register("email", {
+										{...register("EMAIL", {
 											required: "Email is required",
 											pattern: {
 												value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
 												message: "Invalid email address",
 											},
 										})}
-										isInvalid={!!errors.email}
-										errorMessage={errors.email?.message}
+										isInvalid={!!errors.EMAIL}
+										errorMessage={errors.EMAIL?.message}
 										key={"email"}
 										type="text"
 										label="Email"
@@ -195,15 +235,15 @@ const Contact = () => {
 										labelPlacement={"outside"}
 									/>
 									<Input
-										{...register("phone_number", {
+										{...register("PHONE", {
 											required: "Phone Number is required",
 											pattern: {
 												value: /^9\d{9}$/,
 												message: "Invalid phone number",
 											},
 										})}
-										isInvalid={!!errors.phone_number}
-										errorMessage={errors.phone_number?.message}
+										isInvalid={!!errors.PHONE}
+										errorMessage={errors.PHONE?.message}
 										label="Phone Number"
 										placeholder="900-000-0000"
 										labelPlacement="outside"
@@ -220,23 +260,24 @@ const Contact = () => {
 										startContent={"+63"}
 									/>
 									<Controller
-										name="date"
+										name="APPOINTMENT_DATE"
 										control={control}
 										rules={{ required: "Date is required" }}
 										render={({ field, formState: { errors } }) => (
 											<CustomDatePicker
 												value={field.value}
-												isInvalid={!!errors.date}
-												errorMessage={errors.date?.message}
+												isInvalid={!!errors.APPOINTMENT_DATE}
+												errorMessage={errors.APPOINTMENT_DATE?.message}
 												setValue={(value) => {
 													field.onChange(value);
 												}}
+												onChange={handleGetDate}
 												minValue={today(getLocalTimeZone())}
 											/>
 										)}
 									/>
 									<Controller
-										name="time"
+										name="APPOINTMENT_TIME"
 										control={control}
 										rules={{ required: "Time is required" }}
 										render={({ field, formState: { errors } }) => (
@@ -246,8 +287,9 @@ const Contact = () => {
 												onChange={(selectedKeys) => {
 													field.onChange(selectedKeys);
 												}}
-												isInvalid={!!errors.time}
-												errorMessage={errors.time?.message}
+												isDisabled={!timeDropdownList.length}
+												isInvalid={!!errors.APPOINTMENT_TIME}
+												errorMessage={errors.APPOINTMENT_TIME?.message}
 												labelPlacement={"outside"}
 												placeholder="Select Time"
 												label="Time of Visit"
@@ -270,7 +312,7 @@ const Contact = () => {
 										)}
 									/>
 									<Controller
-										name="purpose"
+										name="PURPOSE"
 										control={control}
 										rules={{ required: "Time is required" }}
 										render={({ field, formState: { errors } }) => (
@@ -280,8 +322,8 @@ const Contact = () => {
 												onChange={(selectedKeys) => {
 													field.onChange(selectedKeys);
 												}}
-												isInvalid={!!errors.purpose}
-												errorMessage={errors.purpose?.message}
+												isInvalid={!!errors.PURPOSE}
+												errorMessage={errors.PURPOSE?.message}
 												labelPlacement={"outside"}
 												placeholder="Select Purpose"
 												label="Purpose of Visit"

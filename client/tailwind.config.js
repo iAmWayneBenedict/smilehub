@@ -37,6 +37,12 @@ export const theme = {
 			120: "33rem",
 			// 120: "40rem",
 		},
+		maxWidth: {
+			120: "33rem",
+		},
+		minWidth: {
+			120: "33rem",
+		},
 		colors: {
 			border: "hsl(var(--border))",
 			input: "hsl(var(--input))",
