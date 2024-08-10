@@ -13,7 +13,7 @@ import {
 	Image,
 	Link,
 } from "@nextui-org/react";
-import { columns } from "../data";
+import { columns, dentistsData } from "../data";
 import { Plus, UserRoundPlus } from "lucide-react";
 import { useAppStore } from "@/store/zustand";
 import RightArrow from "../../../../assets/icons/Right-2.svg";
@@ -30,7 +30,7 @@ export default function TableDentists() {
 	const [rowsPerPage, setRowsPerPage] = React.useState(10);
 	const navigate = useNavigate();
 	const [sortDescriptor, setSortDescriptor] = React.useState({
-		column: "time", //! update this based on the column in the db
+		column: "name", //! update this based on the column in the db
 		direction: "ascending",
 	});
 	const { setAlertDialogDetails, setNewAppointmentModal, setNewScheduleModal } = useAppStore();
@@ -38,7 +38,6 @@ export default function TableDentists() {
 	const [page, setPage] = React.useState(1);
 
 	const hasSearchFilter = Boolean(filterValue);
-
 	// checks if all items are selected
 	const headerColumns = React.useMemo(() => {
 		if (visibleColumns === "all") return columns;
@@ -49,7 +48,6 @@ export default function TableDentists() {
 	// filters the dentists based on the search value
 	const filteredItems = React.useMemo(() => {
 		let filteredDentist = [...dentistsData];
-
 		if (hasSearchFilter) {
 			filteredDentist = filteredDentist.filter((dentist) => {
 				return dentist.name.toLowerCase().includes(filterValue?.toLowerCase());
@@ -288,25 +286,3 @@ export default function TableDentists() {
 		</Table>
 	);
 }
-const dentistsData = [
-	{
-		id: 87364569,
-		name: "John Doe",
-		image: "https://i.pravatar.cc/150?u=a04258114e29026702d",
-		role: "Dentist",
-		email: "doe.john@gmail.com",
-		phone_number: "09123456789",
-		date_added: "04/18/2024",
-		time_added: "10:40 AM",
-	},
-	{
-		id: 51348679,
-		name: "Nalyn Bagono",
-		image: "https://i.pravatar.cc/150?u=a04258114e29026702d",
-		role: "Dentist",
-		email: "bagono.nalyn@gmail.com",
-		phone_number: "09123456789",
-		date_added: "04/18/2024",
-		time_added: "6:00 PM",
-	},
-];
