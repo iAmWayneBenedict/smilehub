@@ -19,9 +19,10 @@ import DropFileInput from "./DropFileInput";
 import AssessmentPatient from "@/components/layout/Modals/AssessmentPatient";
 import TeethDiagram from "@/components/layout/Modals/TeethDiagram";
 import { useAppStore } from "@/store/zustand";
+import { HeartPulse } from "lucide-react";
 
 const PatientInfo = () => {
-	const { setTeethDiagramModalDetails } = useAppStore();
+	const { setTeethDiagramModalDetails, setAssessmentPatientModal } = useAppStore();
 	return (
 		<div style={{ flex: 1 }} className="bg-[#f9f9f9]">
 			<div className="w-full h-full">
@@ -50,14 +51,14 @@ const PatientInfo = () => {
 									as={Link}
 									href="/admin/patients/progress-notes"
 									variant="bordered"
-									className="py-2 pr-6 text-base font-bold text-primary h-fit"
+									className="~w-32/56 py-2 pr-6 text-base font-bold text-primary h-fit"
 									startContent={<Image src={noteImg} removeWrapper alt="notes" />}
 								>
 									Progress Notes
 								</Button>
 								<Button
 									variant="bordered"
-									className="py-2 pr-6 text-base font-bold text-primary h-fit"
+									className="~w-32/56 py-2 pr-6 text-base font-bold text-primary h-fit"
 									startContent={
 										<Image src={teethImg} removeWrapper alt="notes" />
 									}
@@ -69,6 +70,23 @@ const PatientInfo = () => {
 									}}
 								>
 									Teeth Diagram
+								</Button>
+								<Button
+									variant="bordered"
+									className="~w-32/56 py-3 pr-6 text-base font-bold text-primary h-fit"
+									startContent={
+										<div className="rounded-xl bg-[#c8dfff] p-1 mr-3">
+											<HeartPulse className="w-[40px] h-[40px] text-[#549bff]" />
+										</div>
+									}
+									onClick={() => {
+										setAssessmentPatientModal({
+											isOpen: true,
+											title: "Teeth Diagram",
+										});
+									}}
+								>
+									Assessment
 								</Button>
 							</div>
 						</div>

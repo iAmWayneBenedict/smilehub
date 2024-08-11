@@ -16,12 +16,8 @@ import {
 } from "@nextui-org/react";
 import { useAppStore } from "@/store/zustand.js";
 import { useEffect, useState } from "react";
-import { getLocalTimeZone, today, isWeekend, CalendarDate } from "@internationalized/date";
+import { getLocalTimeZone, today } from "@internationalized/date";
 import { Controller, useForm } from "react-hook-form";
-import { convertDateYYYYMMDD, isWeekEndDate } from "@/services/api/utils";
-import AppointmentsAPIManager from "@/services/api/managers/appointments/AppointmentsAPIManager";
-import { useMutation } from "@tanstack/react-query";
-import CustomDatePicker from "@/components/ui/DatePicker";
 import AssessmentSample from "../../../assets/images/assessment-sample.png";
 
 export default function AssessmentPatient() {
