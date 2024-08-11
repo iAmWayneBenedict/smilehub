@@ -16,15 +16,21 @@ import { isWeekend } from "@internationalized/date";
 import noteImg from "../../../../assets/icons/notes.png";
 import teethImg from "../../../../assets/icons/teeth.png";
 import DropFileInput from "./DropFileInput";
+import AssessmentPatient from "@/components/layout/Modals/AssessmentPatient";
+import TeethDiagram from "@/components/layout/Modals/TeethDiagram";
+import { useAppStore } from "@/store/zustand";
 
 const PatientInfo = () => {
+	const { setTeethDiagramModalDetails } = useAppStore();
 	return (
 		<div style={{ flex: 1 }} className="bg-[#f9f9f9]">
 			<div className="w-full h-full">
 				<h3 className="p-5 text-lg font-darkText">
 					<Breadcrumbs>
 						<BreadcrumbItem href="/admin/patients">Patients</BreadcrumbItem>
-						<BreadcrumbItem href="/admin/patients/add">Add Patient</BreadcrumbItem>
+						<BreadcrumbItem href="/admin/patients/info">
+							Patient Information
+						</BreadcrumbItem>
 					</Breadcrumbs>
 				</h3>
 				<div className="flex flex-col gap-3">
@@ -41,6 +47,8 @@ const PatientInfo = () => {
 								className="flex flex-col items-end gap-5 mr-10"
 							>
 								<Button
+									as={Link}
+									href="/admin/patients/progress-notes"
 									variant="bordered"
 									className="py-2 pr-6 text-base font-bold text-primary h-fit"
 									startContent={<Image src={noteImg} removeWrapper alt="notes" />}
@@ -53,6 +61,12 @@ const PatientInfo = () => {
 									startContent={
 										<Image src={teethImg} removeWrapper alt="notes" />
 									}
+									onClick={() => {
+										setTeethDiagramModalDetails({
+											isOpen: true,
+											title: "Teeth Diagram",
+										});
+									}}
 								>
 									Teeth Diagram
 								</Button>
@@ -61,6 +75,8 @@ const PatientInfo = () => {
 					</div>
 				</div>
 			</div>
+			<AssessmentPatient />
+			<TeethDiagram />
 		</div>
 	);
 };
@@ -110,6 +126,7 @@ const Form = () => {
 						{...register("record_number", {
 							required: "Record Number is required",
 						})}
+						aria-label="Record Number"
 						isInvalid={!!errors.record_number}
 						errorMessage={errors.record_number?.message}
 						key={"f_name"}
@@ -136,6 +153,7 @@ const Form = () => {
 						{...register("fore_name", {
 							required: "Forename is required",
 						})}
+						aria-label="Forename"
 						isInvalid={!!errors.fore_name}
 						errorMessage={errors.fore_name?.message}
 						key={"f_name"}
@@ -162,6 +180,7 @@ const Form = () => {
 						{...register("surname", {
 							required: "Surname is required",
 						})}
+						aria-label="Surname"
 						isInvalid={!!errors.surname}
 						errorMessage={errors.surname?.message}
 						key={"f_name"}
@@ -221,6 +240,7 @@ const Form = () => {
 						render={({ field, formState: { errors } }) => (
 							<Select
 								{...field}
+								aria-label="Gender"
 								selectedKeys={[field.value]}
 								onChange={(selectedKeys) => {
 									field.onChange(selectedKeys);
@@ -261,6 +281,7 @@ const Form = () => {
 								message: "Invalid email address",
 							},
 						})}
+						aria-label="Email"
 						isInvalid={!!errors.email}
 						errorMessage={errors.email?.message}
 						key={"email"}

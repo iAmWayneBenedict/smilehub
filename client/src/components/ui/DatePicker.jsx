@@ -10,7 +10,6 @@ export default function CustomDatePicker({
 	label,
 	showTimeSelect = true,
 	classNames,
-	minValue = null,
 	isDateUnavailable = null,
 	onChange = null,
 	...props
@@ -79,8 +78,7 @@ export default function CustomDatePicker({
 						variant: "bordered",
 					},
 				}}
-				{...props}
-				showMonthAndYearPickers
+				showMonthAndYearPickers={true}
 				value={value}
 				onChange={(e) => {
 					setValue(e);
@@ -92,13 +90,13 @@ export default function CustomDatePicker({
 				variant="bordered"
 				color="primary"
 				className="w-full "
-				minValue={minValue}
 				isDateUnavailable={isDateUnavailable}
 				dateInputClassNames={{
 					label: cn("text-darkText font-semibold ", classNames?.label),
 					inputWrapper: cn("rounded-lg h-full bg-white", classNames?.inputWrapper),
 					innerWrapper: cn("h-[4rem]", classNames?.innerWrapper),
 				}}
+				{...props}
 			/>
 			{showTimeSelect && (
 				<p className="text-xs text-default-500">
@@ -115,7 +113,6 @@ CustomDatePicker.propTypes = {
 	props: PropTypes.any,
 	label: PropTypes.string,
 	showTimeSelect: PropTypes.bool,
-	minValue: PropTypes.any,
 	isDateUnavailable: PropTypes.any,
 	classNames: PropTypes.object,
 	onChange: PropTypes.func,

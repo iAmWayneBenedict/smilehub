@@ -10,7 +10,7 @@ import FAQ from "@/components/layout/patient/FAQ";
 import { useForm, Controller } from "react-hook-form";
 import { getLocalTimeZone, today } from "@internationalized/date";
 import AppointmentsAPIManager from "@/services/api/managers/appointments/AppointmentsAPIManager";
-import { convertDateYYYYMMDD } from "@/services/api/utils";
+import { convertDateYYYYMMDD, isWeekEndDate } from "@/services/api/utils";
 import { useAppStore } from "@/store/zustand";
 import { useState } from "react";
 import { useEffect } from "react";
@@ -69,6 +69,7 @@ const Contact = () => {
 		handleGetDate(today(getLocalTimeZone()), false);
 	}, []);
 	const handleGetDate = async (date, isForm = true) => {
+		if (isWeekEndDate(date)) return;
 		try {
 			const response = await AppointmentsAPIManager.getAppointmentDates({
 				APPOINTMENT_DATE: convertDateYYYYMMDD(date),
@@ -275,6 +276,7 @@ const Contact = () => {
 												}}
 												onChange={handleGetDate}
 												minValue={today(getLocalTimeZone())}
+												isDateUnavailable={isWeekEndDate}
 											/>
 										)}
 									/>

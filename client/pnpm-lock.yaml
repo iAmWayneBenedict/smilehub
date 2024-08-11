@@ -41,6 +41,9 @@ dependencies:
   '@nextui-org/select':
     specifier: ^2.2.5
     version: 2.2.5(@nextui-org/system@2.2.5)(@nextui-org/theme@2.2.9)(@types/react@18.3.3)(framer-motion@11.3.8)(react-dom@18.3.1)(react@18.3.1)
+  '@nextui-org/slider':
+    specifier: ^2.2.15
+    version: 2.2.15(@nextui-org/system@2.2.5)(@nextui-org/theme@2.2.9)(framer-motion@11.3.8)(react-dom@18.3.1)(react@18.3.1)
   '@nextui-org/system':
     specifier: ^2.2.2
     version: 2.2.5(@nextui-org/theme@2.2.9)(framer-motion@11.3.8)(react-dom@18.3.1)(react@18.3.1)
@@ -104,6 +107,9 @@ dependencies:
   react-hook-form:
     specifier: ^7.52.1
     version: 7.52.1(react@18.3.1)
+  react-painter:
+    specifier: ^0.4.0
+    version: 0.4.0(prop-types@15.8.1)(react@18.3.1)
   react-responsive:
     specifier: ^10.0.0
     version: 10.0.0(react@18.3.1)
@@ -5350,6 +5356,16 @@ packages:
 
   /react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
+
+  /react-painter@0.4.0(prop-types@15.8.1)(react@18.3.1):
+    resolution: {integrity: sha512-GNW5SI4JvRKzHQoMOjekhBirg3dCoRmnM+uBsHlgqFVQ0Flmdp+5dPQXfvZHkC0nqoRUL3xQPfFB3jyC0NT9Kw==}
+    peerDependencies:
+      prop-types: '>=15'
+      react: '>=0.14.x'
+    dependencies:
+      prop-types: 15.8.1
+      react: 18.3.1
+    dev: false
 
   /react-remove-scroll-bar@2.3.6(@types/react@18.3.3)(react@18.3.1):
     resolution: {integrity: sha512-DtSYaao4mBmX+HDo5YWYdBWQwYIQQshUV/dVxFxK+KM26Wjwp1gZ6rv6OC3oujI6Bfu6Xyg3TwK533AQutsn/g==}

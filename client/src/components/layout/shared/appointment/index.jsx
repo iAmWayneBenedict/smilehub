@@ -19,7 +19,7 @@ import { useAppStore } from "@/store/zustand";
 import { useEffect } from "react";
 import CustomDatePicker from "@/components/ui/DatePicker";
 import { getLocalTimeZone, today } from "@internationalized/date";
-import { convertDateYYYYMMDD } from "@/services/api/utils";
+import { convertDateYYYYMMDD, isWeekEndDate } from "@/services/api/utils";
 import AppointmentsAPIManager from "@/services/api/managers/appointments/AppointmentsAPIManager";
 import PatientsAPIManager from "@/services/api/managers/patients/PatientsAPIManager";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -76,6 +76,7 @@ export default function AppointmentModal() {
 		handleGetPatients();
 	}, []);
 	const handleGetDate = async (date, isForm = true) => {
+		if (isWeekEndDate(date)) return;
 		try {
 			const response = await AppointmentsAPIManager.getAppointmentDates({
 				APPOINTMENT_DATE: convertDateYYYYMMDD(date),
@@ -284,6 +285,7 @@ export default function AppointmentModal() {
 																field.onChange(value);
 															}}
 															minValue={today(getLocalTimeZone())}
+															isDateUnavailable={isWeekEndDate}
 														/>
 													)}
 												/>

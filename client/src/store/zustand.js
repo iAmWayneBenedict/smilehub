@@ -42,6 +42,30 @@ export const useAppStore = create((set) => {
 		 */
 		newScheduleModal: {},
 		setNewScheduleModal: (details) => set({ newScheduleModal: details }),
+
+		/**
+			* The details of the assessment patient modal.
+
+			* @typedef {Object} AssessmentPatientModal
+			* @property {string} title - The title of the assessment patient modal.
+			* @property {object} data - The data of the assessment patient modal.
+			* @property {boolean} isOpen - Whether the assessment patient modal is open.
+			* @property {string} actionLink - The link to redirect to when the action button is clicked.
+		 */
+		assessmentPatientModal: {},
+		setAssessmentPatientModal: (details) => set({ assessmentPatientModal: details }),
+
+		/**
+			* The details of the teeth diagram.
+
+			* @typedef {Object} TeethDiagramDetails
+			* @property {string} title - The title of the teeth diagram.
+			* @property {object} data - The data of the teeth diagram.
+			* @property {boolean} isOpen - Whether the teeth diagram is open.
+			* @property {string} actionLink - The link to redirect to when the action button is clicked.
+		 */
+		teethDiagramModalDetails: {},
+		setTeethDiagramModalDetails: (details) => set({ teethDiagramModalDetails: details }),
 	};
 });
 

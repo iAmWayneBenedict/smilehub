@@ -6,6 +6,7 @@ import {
 	Breadcrumbs,
 	BreadcrumbItem,
 	Link,
+	DatePicker,
 } from "@nextui-org/react";
 import { useForm, Controller } from "react-hook-form";
 import { getLocalTimeZone, today } from "@internationalized/date";
@@ -70,7 +71,7 @@ const Form = () => {
 			last_name: "",
 			email: "",
 			phone_number: "",
-			date: today(getLocalTimeZone()), // default date (today)
+			BIRTH_DATE: today(getLocalTimeZone()), // default date (today)
 			time: "",
 			purpose: "",
 		},
@@ -156,24 +157,25 @@ const Form = () => {
 					Date of Birth
 				</div>
 				<div style={{ flex: 3 }}>
+					{/* <DatePicker label="Birth Date" variant="bordered" showMonthAndYearPickers /> */}
 					<Controller
-						name="date"
+						name="BIRTH_DATE"
 						control={control}
 						rules={{ required: "Date is required" }}
 						render={({ field, formState: { errors } }) => (
 							<CustomDatePicker
 								value={field.value}
-								isInvalid={!!errors.date}
-								errorMessage={errors.date?.message}
+								isInvalid={!!errors.BIRTH_DATE}
+								errorMessage={errors.BIRTH_DATE?.message}
 								setValue={(value) => {
 									field.onChange(value);
 								}}
 								label={""}
-								showTimeSelect={false}
 								classNames={{
 									innerWrapper: "h-full",
 								}}
 								aria-label="Appointment date"
+								maxValue={today(getLocalTimeZone())}
 								// isDateUnavailable={isDateUnavailable}
 								// maxValue={sixMonthsAgo}
 							/>

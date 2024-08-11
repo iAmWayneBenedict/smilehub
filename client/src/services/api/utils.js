@@ -1,4 +1,7 @@
 /* eslint-disable no-unused-vars */
+
+import { isWeekend } from "@internationalized/date";
+
 /**
  * Formats the given parameters into a query string.
  *
@@ -159,3 +162,7 @@ export const clinicRoles = [
 	{ name: "Receptionist", uid: "receptionist" },
 	{ name: "Lab Technician", uid: "lab_technician" },
 ];
+
+export const isWeekEndDate = (date) => {
+	return isWeekend(date, "en-PH");
+};

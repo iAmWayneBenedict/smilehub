@@ -26,6 +26,7 @@ import Dentists from "./pages/admin/dentists";
 import { default as DentistRegistration } from "./pages/shared/profile/Registration";
 import Profile from "./pages/shared/profile/Profile";
 import InvalidSmallScreen from "./components/layout/shared/invalids/InvalidSmallScreen";
+import ProgressNotes from "./pages/shared/patients/components/ProgressNotes";
 
 function App() {
 	const navigate = useNavigate();
@@ -66,6 +67,10 @@ function App() {
 								<Route
 									path="info"
 									element={<LayoutWrapper child={<PatientInfo />} />}
+								/>
+								<Route
+									path="progress-notes"
+									element={<LayoutWrapper child={<ProgressNotes />} />}
 								/>
 							</Route>
 							<Route path="dentists">

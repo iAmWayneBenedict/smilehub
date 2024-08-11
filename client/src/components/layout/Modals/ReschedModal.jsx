@@ -14,9 +14,9 @@ import {
 } from "@nextui-org/react";
 import { useAppStore } from "@/store/zustand.js";
 import { useEffect, useState } from "react";
-import { getLocalTimeZone, today } from "@internationalized/date";
+import { getLocalTimeZone, today, isWeekend, CalendarDate } from "@internationalized/date";
 import { Controller, useForm } from "react-hook-form";
-import { convertDateYYYYMMDD } from "@/services/api/utils";
+import { convertDateYYYYMMDD, isWeekEndDate } from "@/services/api/utils";
 import AppointmentsAPIManager from "@/services/api/managers/appointments/AppointmentsAPIManager";
 import { useMutation } from "@tanstack/react-query";
 import CustomDatePicker from "@/components/ui/DatePicker";
@@ -25,7 +25,6 @@ export default function ReschedModal() {
 	const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 	const { newScheduleModal, setNewScheduleModal, setAlertDialogDetails } = useAppStore();
 	const [timeDropdownList, setTimeDropdownList] = useState([]);
-
 	useEffect(() => {
 		if (newScheduleModal.isOpen) {
 			onOpen();
@@ -50,11 +49,12 @@ export default function ReschedModal() {
 		handleGetDate(today(getLocalTimeZone()), false);
 	}, []);
 	const handleGetDate = async (date, isForm = true) => {
+		if (isWeekEndDate(date)) return;
 		try {
 			const response = await AppointmentsAPIManager.getAppointmentDates({
 				APPOINTMENT_DATE: convertDateYYYYMMDD(date),
 			});
-			setTimeDropdownList(response.available_times);
+			setTimeDropdownList(response.available_times || []);
 		} catch (error) {
 			if (!isForm)
 				setAlertDialogDetails({
@@ -121,6 +121,7 @@ export default function ReschedModal() {
 											classNames={{
 												innerWrapper: "h-12",
 											}}
+											isDateUnavailable={isWeekEndDate}
 											onChange={handleGetDate}
 											minValue={today(getLocalTimeZone())}
 										/>
@@ -137,7 +138,7 @@ export default function ReschedModal() {
 											onChange={(selectedKeys) => {
 												field.onChange(selectedKeys);
 											}}
-											isDisabled={!timeDropdownList.length}
+											isDisabled={!timeDropdownList?.length}
 											isInvalid={!!errors.APPOINTMENT_TIME}
 											errorMessage={errors.APPOINTMENT_TIME?.message}
 											labelPlacement={"outside"}
