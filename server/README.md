@@ -246,7 +246,297 @@ Error (500 Internal Server Error):
 }
 ```
 
-### 5. Get All Patients
+### 5. Fetch All Appointments
+
+- **Endpoints:**
+  - `GET /GET/SHARED/APPOINTMENT/appointments.php`  
+    - **Description:** Retrieve a list of all appointments.
+- **Query Parameters:**
+  - `GET /GET/SHARED/APPOINTMENT/appointments.php?status=Completed`  
+    - **status (Optional):** Filter appointments by their status (e.g., Pending, Completed). If this parameter is not provided, all appointments will be retrieved.   
+
+- **Note:**
+  - When the status parameter is provided, only appointments that match the specified status will be returned.
+
+#### Response
+
+```json
+Success (200 OK):
+[
+    {
+        "ID": "1",
+        "FULLNAME": "Juan Dela Cruz",
+        "EMAIL": "juan@gmail.com",
+        "PHONE": "9396164115",
+        "APPOINTMENT_DATE": "2024-08-15",
+        "APPOINTMENT_TIME": "8:00 AM - 9:00 AM",
+        "PURPOSE": "Dental Bonding",
+        "STATUS": "Pending"
+    },
+    {
+        "ID": "2",
+        "FULLNAME": "John Doe",
+        "EMAIL": "john@gmail.com",
+        "PHONE": "9396164116",
+        "APPOINTMENT_DATE": "2024-08-15",
+        "APPOINTMENT_TIME": "9:00 AM - 10:00 AM",
+        "PURPOSE": "Dental Bonding",
+        "STATUS": "On-going"
+    }
+]
+```
+
+```json
+Error (404 Not Found):
+{
+    "message": "No available appointment."
+}
+```
+
+### 6. Reschedule an Appointment
+
+- **Endpoints:**
+  - `POST /EDIT/SHARED/APPOINTMENT/reschedule.php`  
+    - **Description:** Allows a staff or admin to reschedule an appointment by providing the new appointment date and time based on the appointment ID.
+
+- **Note:**
+  - Only appointments with a status of Pending can be rescheduled.
+
+#### Request Body
+
+The request should be sent as JSON with the following structure:
+
+```json
+{
+    "ID": 1,
+    "APPOINTMENT_DATE": "2024-09-01",
+    "APPOINTMENT_TIME": "10:00 AM - 11:00 AM"
+}
+```
+
+#### Response
+
+```json
+Success (200 OK):
+{
+    "message": "Appointment rescheduled successfully."
+}
+```
+
+```json
+Error (400 Bad Request):
+{
+    "errors": {
+        "ID": "Appointment ID is required.",
+        "APPOINTMENT_DATE": "New appointment date is required.",
+        "APPOINTMENT_TIME": "New appointment time is required."
+    }
+}
+Note: The exact error messages depend on which validations fail.
+```
+
+```json
+Error (400 Bad Request):
+{
+    "message": "You can only reschedule a pending appointment."
+}
+```
+
+```json
+Error (400 Bad Request):
+{
+    "message": "The new date and time you've selected is already booked."
+}
+```
+
+```json
+Error (404 Not Found):
+{
+    "message": "Appointment not found."
+}
+```
+
+```json
+Error (500 Internal Server Error):
+{
+    "message": "Failed to reschedule the appointment."
+}
+```
+
+### 7. Update Appointment Status
+
+- **Endpoints:**
+  - `POST /EDIT/SHARED/APPOINTMENT/changeStatus.php`  
+    - **Description:** Allows a user to update the status of an appointment by providing the appointment ID and the new status.
+
+- **Note:**
+  - Only appointments with a status of Pending can be rescheduled.
+
+#### Request Body
+
+```json
+Note: Allowed values for status are "Pending", "On-going", "Completed", "Cancelled".
+{
+    "ID": 1,
+    "STATUS": "Completed"
+}
+```
+
+#### Response
+
+```json
+Success (200 OK):
+{
+    "message": "Appointment status updated successfully."
+}
+```
+
+```json
+Error (400 Bad Request):
+{
+    "errors": {
+        "ID": "Appointment ID is required.",
+        "STATUS": "Status is required."
+    }
+}
+Note: The exact error messages depend on which validations fail.
+```
+
+```json
+Error (400 Bad Request):
+{
+    "errors": {
+        "STATUS": "Invalid status value."
+    }
+}
+```
+
+```json
+Error (404 Not Found):
+{
+    "message": "Appointment not found."
+}
+```
+
+```json
+Error (500 Internal Server Error):
+{
+    "message": "Failed to update appointment status."
+}
+```
+
+### 8. Remove an Appointment
+
+- **Endpoints:**
+  - `POST /DELETE/SHARED/APPOINTMENT/appointment.php`  
+    - **Description:** Allows a user to delete an appointment by providing the appointment ID.
+
+#### Request Body
+
+```json
+{
+    "ID": 1
+}
+```
+
+#### Response
+
+```json
+Success (200 OK):
+{
+    "message": "Appointment deleted successfully."
+}
+```
+
+```json
+Error (400 Bad Request):
+{
+    "errors": {
+        "ID": "Appointment ID is required."
+    }
+}
+```
+
+```json
+Error (404 Not Found):
+{
+    "message": "Appointment not found."
+}
+```
+
+```json
+Error (500 Internal Server Error):
+{
+    "message": "Failed to delete the appointment."
+}
+```
+
+### 9. Fetch Appointments by Date
+
+- **Endpoints:**
+  - `GET /GET/SHARED/APPOINTMENT/appointmentsByDate.php`  
+    - **Description:** Retrieves all appointments scheduled for a specific date.
+
+#### Request Body
+
+```json
+{
+    "APPOINTMENT_DATE": "2024-08-15"
+}
+```
+
+#### Response
+
+```json
+Success (200 OK):
+[
+    {
+        "ID": "1",
+        "FULLNAME": "Juan Dela Cruz",
+        "EMAIL": "juan@gmail.com",
+        "PHONE": "9396164115",
+        "APPOINTMENT_DATE": "2024-08-15",
+        "APPOINTMENT_TIME": "8:00 AM - 9:00 AM",
+        "PURPOSE": "Dental Bonding",
+        "STATUS": "Pending"
+    },
+    {
+        "ID": "2",
+        "FULLNAME": "John Doe",
+        "EMAIL": "john@gmail.com",
+        "PHONE": "9396164116",
+        "APPOINTMENT_DATE": "2024-08-15",
+        "APPOINTMENT_TIME": "9:00 AM - 10:00 AM",
+        "PURPOSE": "Dental Bonding",
+        "STATUS": "On-going"
+    }
+]
+```
+
+```json
+Error (400 Bad Request):
+{
+    "errors": {
+        "APPOINTMENT_DATE": "Appointment date is required."
+    }
+}
+```
+
+```json
+Error (404 Not Found):
+{
+    "message": "No appointments found for the given date."
+}
+```
+
+```json
+Error (500 Internal Server Error):
+{
+    "message": "Failed to fetch appointments."
+}
+```
+
+### 10. Fetch All Patients
 
 - **Endpoints:**
   - `GET /GET/SHARED/PATIENT/patients.php`  
@@ -269,7 +559,7 @@ Success (200 OK):
 ```
 
 ```json
-Error (400 Not Found):
+Error (404 Not Found):
 {
     "message": "No patients found."
 }
@@ -300,6 +590,7 @@ The API uses HTTP status codes to indicate the outcome of requests:
 
 - **200 OK:** The request was successful.
 - **400 Bad Request:** There was a problem with the request, such as validation errors.
+- **404 Not Found:** The requested resource could not be found. This may indicate that the resource does not exist or was not found.
 - **500 Internal Server Error:** An error occurred on the server.
 
 ### Tips for Error Handling
