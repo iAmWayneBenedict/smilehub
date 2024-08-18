@@ -63,6 +63,13 @@ Note: The exact error messages depend on which validations fail.
 ```
 
 ```json
+Error (400 Bad Request):
+{
+    "message": "Email already exists."
+}
+```
+
+```json
 Error (500 Internal Server Error):
 {
     "message": "Failed to register user."
@@ -562,6 +569,267 @@ Success (200 OK):
 Error (404 Not Found):
 {
     "message": "No patients found."
+}
+```
+
+### 11. Add New Patient
+
+- **Endpoints:**
+  - `POST /POST/SHARED/patient.php`  
+    - **Description:** Register a new patient in the system (This is for staff and admin account only).
+
+#### Request Body
+
+The request should be sent as JSON with the following structure:
+
+```json
+{
+    "FIRSTNAME": "John",
+    "LASTNAME": "Doe",
+    "BIRTHDATE": "1990-01-01",
+    "GENDER": "Male",
+    "PHONE": "1234567890",
+    "EMAIL": "john.doe@example.com"
+}
+```
+
+#### Response
+
+```json
+Success (200 OK):
+{
+    "message": "User registered successfully.",
+    "email": "john.doe@example.com",
+    "generated_password": "BUJAiZO283"
+}
+```
+
+```json
+Error (400 Bad Request):
+{
+    "errors": {
+        "fullname": "Full name is required.",
+        "EMAIL": "Invalid email address",
+        "PASSWORD": "Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one special character."
+    }
+}
+Note: The exact error messages depend on which validations fail.
+```
+
+```json
+Error (400 Bad Request):
+{
+    "message": "Email already exists."
+}
+```
+
+```json
+Error (500 Internal Server Error):
+{
+    "message": "Failed to register user."
+}
+```
+
+
+
+### 12. Fetch Patient Details by ID
+
+- **Endpoints:**
+  - `GET /GET/SHARED/PATIENT/patient.php`  
+    - **Description:** Retrieve details of a specific patient by their ID.
+
+#### Request Body
+
+The request should be sent as JSON with the following structure:
+
+```json
+{
+    "ID": 15
+}
+```
+
+#### Response
+
+```json
+Success (200 OK):
+{
+    "ID": 15,
+    "FIRSTNAME": "John",
+    "LASTNAME": "Doe",
+    "BIRTHDATE": "1990-01-01",
+    "GENDER": "Male",
+    "PHONE": "1234567890",
+    "EMAIL": "john.doe@example.com",
+    "ROLE": "PATIENT"
+}
+```
+
+```json
+Error (400 Bad Request):
+{
+    "errors": {
+        "ID": "Patient ID is required."
+    }
+}
+```
+
+```json
+Error (404 Not Found):
+{
+    "message": "Patient not found."
+}
+```
+
+### 13. Update Patient Account Status
+
+- **Endpoints:**
+  - `POST /EDIT/SHARED/PATIENT/changeStatus.php`  
+    - **Description:** Update the account status of a patient based on their ID.
+
+#### Request Body
+
+The request should be sent as JSON with the following structure:
+
+```json
+Note: Allowed values for ROLE are "PATIENT", "ARCHIVE", Uppercase is necessary.
+{
+    "ID": 15,
+    "ROLE": "ARCHIVE"
+}
+```
+
+#### Response
+
+```json
+Success (200 OK):
+{
+    "message": "Patient account status updated successfully."
+}
+```
+
+```json
+Error (400 Bad Request):
+{
+    "errors": {
+        "ID": "Patient ID is required.",
+        "ROLE": "Role is required."
+    }
+}
+Note: The exact error messages depend on which validations fail.
+```
+
+```json
+Error (500 Internal Server Error):
+{
+    "message": "Failed to update patient account status. Please check the patient ID."
+}
+```
+
+### 14. Update Patient Information
+
+- **Endpoints:**
+  - `POST /EDIT/SHARED/PATIENT/patient.php`  
+    - **Description:** Update a patient's information, including their first name, last name, birthdate, gender, phone number, and email.
+
+#### Request Body
+
+The request should be sent as JSON with the following structure:
+
+```json
+{
+    "ID": 15,
+    "FIRSTNAME": "John",
+    "LASTNAME": "Doe",
+    "BIRTHDATE": "1990-01-01",
+    "GENDER": "Male",
+    "PHONE": "1234567890",
+    "EMAIL": "john.doe@example.com"
+}
+```
+
+#### Response
+
+```json
+Success (200 OK):
+{
+    "message": "Patient information updated successfully."
+}
+```
+
+```json
+Error (400 Bad Request):
+{
+    "errors": {
+        "ID": "Patient ID is required.",
+        "FIRSTNAME": "First name is required.",
+        "LASTNAME": "Last name is required.",
+        "BIRTHDATE": "Date of birth is required.",
+        "GENDER": "Gender is required.",
+        "PHONE": "Phone number is required.",
+        "EMAIL": "Invalid email address."
+    }
+}
+Note: The exact error messages depend on which validations fail.
+```
+
+```json
+Error (400 Bad Request):
+{
+    "message": "Email already exists."
+}
+```
+
+```json
+Error (500 Internal Server Error):
+{
+    "message": "Failed to update patient information."
+}
+```
+
+### 15. Fetch Appointments and Patient Data
+
+- **Endpoints:**
+  - `GET /GET/SHARED/PATIENT/patientsWithAppointment.php`  
+    - **Description:** Retrieve a list of all patients along with their appointment details. This includes the last and next appointments, diagnosis, and status. If a patient has no appointments, they will still be listed with null values for the appointment details.
+
+#### Response
+
+```json
+Success (200 OK):
+{
+    "patients": [
+        {
+            "ID": "29",
+            "FULLNAME": "John Doe",
+            "Last_Appointment": null,
+            "Next_Appointment": "2024-08-20",
+            "DIAGNOSIS": "Dentures",
+            "STATUS": "Pending"
+        },
+        {
+            "ID": "10",
+            "FULLNAME": "Juan Dela Cruz",
+            "Last_Appointment": "2024-08-11",
+            "Next_Appointment": "2024-08-19",
+            "DIAGNOSIS": "Cleaning",
+            "STATUS": "Completed"
+        },
+        {
+            "ID": "11",
+            "FULLNAME": "Jane Doe",
+            "Last_Appointment": null,
+            "Next_Appointment": null,
+            "DIAGNOSIS": null,
+            "STATUS": null
+        }
+    ]
+}
+```
+
+```json
+Error (404 Not Found):
+{
+    "message": "No data found."
 }
 ```
 

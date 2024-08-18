@@ -30,7 +30,7 @@ function login($conn, $email, $password) {
     }
 
     // Prepare the query to fetch user by email
-    $query = "SELECT * FROM patient_table WHERE EMAIL = ?";
+    $query = "SELECT * FROM patient_table WHERE EMAIL = ? AND ROLE = 'PATIENT'";
     $stmt = $conn->prepare($query);
     $stmt->bind_param('s', $email);
     $stmt->execute();
