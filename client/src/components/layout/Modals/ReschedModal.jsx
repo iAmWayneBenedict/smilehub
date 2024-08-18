@@ -6,25 +6,24 @@ import {
 	ModalFooter,
 	Button,
 	useDisclosure,
-	Checkbox,
-	Input,
-	Link,
 	Select,
 	SelectItem,
 } from "@nextui-org/react";
 import { useAppStore } from "@/store/zustand.js";
 import { useEffect, useState } from "react";
-import { getLocalTimeZone, today, isWeekend, CalendarDate } from "@internationalized/date";
+import { getLocalTimeZone, today } from "@internationalized/date";
 import { Controller, useForm } from "react-hook-form";
 import { convertDateYYYYMMDD, isWeekEndDate } from "@/services/api/utils";
 import AppointmentsAPIManager from "@/services/api/managers/appointments/AppointmentsAPIManager";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import CustomDatePicker from "@/components/ui/DatePicker";
 
 export default function ReschedModal() {
-	const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+	const { isOpen, onOpen, onClose } = useDisclosure();
 	const { newScheduleModal, setNewScheduleModal, setAlertDialogDetails } = useAppStore();
 	const [timeDropdownList, setTimeDropdownList] = useState([]);
+
+	const queryClient = useQueryClient();
 	useEffect(() => {
 		if (newScheduleModal.isOpen) {
 			onOpen();
@@ -34,13 +33,9 @@ export default function ReschedModal() {
 	}, [newScheduleModal]);
 
 	// Form hook
-	const {
-		register,
-		handleSubmit,
-		control,
-		formState: { errors },
-	} = useForm({
+	const { handleSubmit, control } = useForm({
 		defaultValues: {
+			ID: newScheduleModal.ID || "",
 			APPOINTMENT_DATE: today(getLocalTimeZone()), // default date (today)
 			APPOINTMENT_TIME: "",
 		},
@@ -48,6 +43,7 @@ export default function ReschedModal() {
 	useEffect(() => {
 		handleGetDate(today(getLocalTimeZone()), false);
 	}, []);
+
 	const handleGetDate = async (date, isForm = true) => {
 		if (isWeekEndDate(date)) return;
 		try {
@@ -66,14 +62,20 @@ export default function ReschedModal() {
 		}
 	};
 	const mutation = useMutation({
-		mutationFn: AppointmentsAPIManager.postPatientAppointment,
+		mutationFn: AppointmentsAPIManager.postRescheduleAppointment,
 		onSuccess: () => {
+			queryClient.invalidateQueries({
+				queryKey: ["getAllAppointments"],
+			});
+
 			setAlertDialogDetails({
 				isOpen: true,
 				type: "success",
 				title: "Success!",
 				message: "Appointment schedule changed successfully!",
 			});
+
+			onClose();
 		},
 		onError: (error) => {
 			setAlertDialogDetails({
@@ -86,6 +88,7 @@ export default function ReschedModal() {
 	});
 	const onSubmit = (data) => {
 		data.APPOINTMENT_DATE = convertDateYYYYMMDD(data.APPOINTMENT_DATE);
+		data.ID = newScheduleModal?.data?.ID;
 		mutation.mutate(data);
 	};
 	return (
@@ -101,7 +104,7 @@ export default function ReschedModal() {
 			>
 				<ModalContent>
 					{(onClose) => (
-						<>
+						<form onSubmit={handleSubmit(onSubmit)}>
 							<ModalHeader className="flex flex-col gap-1">
 								{newScheduleModal.title}
 							</ModalHeader>
@@ -167,11 +170,15 @@ export default function ReschedModal() {
 								<Button color="light" variant="flat" onPress={onClose}>
 									Close
 								</Button>
-								<Button color="primary" onPress={onClose}>
-									Change
+								<Button
+									color="primary"
+									type="submit"
+									isLoading={mutation.isPending}
+								>
+									{mutation.isPending ? "Changing..." : "Change"}
 								</Button>
 							</ModalFooter>
-						</>
+						</form>
 					)}
 				</ModalContent>
 			</Modal>

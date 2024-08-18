@@ -74,7 +74,7 @@ export default function AppointmentModal() {
 	useEffect(() => {
 		handleGetDate(today(getLocalTimeZone()), false);
 		handleGetPatients();
-	}, []);
+	}, [isOpen]);
 	const handleGetDate = async (date, isForm = true) => {
 		if (isWeekEndDate(date)) return;
 		try {
@@ -284,6 +284,7 @@ export default function AppointmentModal() {
 															setValue={(value) => {
 																field.onChange(value);
 															}}
+															onChange={handleGetDate}
 															minValue={today(getLocalTimeZone())}
 															isDateUnavailable={isWeekEndDate}
 														/>

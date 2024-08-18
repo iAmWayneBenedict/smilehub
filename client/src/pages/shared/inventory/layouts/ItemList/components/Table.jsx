@@ -1,5 +1,4 @@
-/* eslint-disable no-unused-vars */
-import React, { useEffect } from "react";
+import React from "react";
 import {
 	Table,
 	TableHeader,
@@ -14,31 +13,15 @@ import {
 	DropdownMenu,
 	DropdownItem,
 	Pagination,
+	Link,
 } from "@nextui-org/react";
-import { columns, appointments } from "../data";
-import {
-	X,
-	Search,
-	Plus,
-	ChevronDown,
-	Clock,
-	CheckCheck,
-	CalendarDays,
-	Trash2,
-} from "lucide-react";
-import { capitalize } from "@/lib/utils";
+import { columns, itemsData } from "../data";
+import { Search, Plus, ChevronsRight } from "lucide-react";
 import { useAppStore } from "@/store/zustand";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import AppointmentsAPIManager from "@/services/api/managers/appointments/AppointmentsAPIManager";
+import { useLocation } from "react-router-dom";
 
 //! change this based on the columns in the db
-const INITIAL_VISIBLE_COLUMNS = [
-	"APPOINTMENT_TIME",
-	"APPOINTMENT_DATE",
-	"FULLNAME",
-	"dentist",
-	"STATUS",
-];
+const INITIAL_VISIBLE_COLUMNS = ["item_name", "item_id", "group", "stock_in_qty", "actions"];
 
 export default function TableAppointments() {
 	const [filterValue, setFilterValue] = React.useState("");
@@ -47,9 +30,11 @@ export default function TableAppointments() {
 	const [statusFilter, setStatusFilter] = React.useState("all");
 	const [rowsPerPage, setRowsPerPage] = React.useState(10);
 	const [sortDescriptor, setSortDescriptor] = React.useState({
-		column: "APPOINTMENT_TIME", //! update this based on the column in the db
+		column: "item_name", //! update this based on the column in the db
 		direction: "ascending",
 	});
+	const location = useLocation();
+	const currentUser = location.pathname.includes("admin") ? "admin" : "staff";
 	const { setAlertDialogDetails, setNewAppointmentModal, setNewScheduleModal } = useAppStore();
 
 	const [page, setPage] = React.useState(1);
@@ -63,77 +48,18 @@ export default function TableAppointments() {
 		return columns.filter((column) => Array.from(visibleColumns).includes(column.uid));
 	}, [visibleColumns]);
 
-	const { data, isLoading, isSuccess } = useQuery({
-		queryKey: ["getAllAppointments"],
-		queryFn: AppointmentsAPIManager.getPatientAppointments,
-	});
-
-	const queryClient = useQueryClient();
-
-	const changeStatusMutation = useMutation({
-		mutationFn: AppointmentsAPIManager.postChangeStatusAppointment,
-		onSuccess: () => {
-			setAlertDialogDetails({
-				isOpen: true,
-				type: "success",
-				title: "Success!",
-				message: "Appointment status changed successfully!",
-			});
-			queryClient.invalidateQueries({
-				queryKey: ["getAllAppointments"],
-			});
-		},
-		onError: (error) => {
-			setAlertDialogDetails({
-				isOpen: true,
-				type: "danger",
-				title: "Error!",
-				message: error
-					? error.message
-					: "An error occurred while changing the status of the appointment",
-			});
-		},
-	});
-	const deleteAppointmentMutation = useMutation({
-		mutationFn: AppointmentsAPIManager.postDeleteAppointment,
-		onSuccess: () => {
-			setAlertDialogDetails({
-				isOpen: true,
-				type: "success",
-				title: "Success!",
-				message: "Appointment status deleted successfully!",
-			});
-			queryClient.invalidateQueries({
-				queryKey: ["getAllAppointments"],
-			});
-		},
-		onError: (error) => {
-			setAlertDialogDetails({
-				isOpen: true,
-				type: "danger",
-				title: "Error!",
-				message: error ? error.message : "An error occurred while deleting the appointment",
-			});
-		},
-	});
-
-	useEffect(() => {
-		console.log(data);
-	}, [data, isLoading, isSuccess]);
-
-	// filters the appointments based on the search value
+	// filters the itemsData based on the search value
 	const filteredItems = React.useMemo(() => {
-		if (isLoading) return [];
-		let filteredAppointments = [...data];
+		let filteredItemsData = [...itemsData];
 
 		if (hasSearchFilter) {
-			filteredAppointments = filteredAppointments.filter((appointment) => {
-				return appointment.FULLNAME.toLowerCase().includes(filterValue?.toLowerCase());
+			filteredItemsData = filteredItemsData.filter((item) => {
+				return item.item_name.toLowerCase().includes(filterValue?.toLowerCase());
 			});
 		}
 
-		return filteredAppointments;
-	}, [filterValue, statusFilter, data, isSuccess]);
+		return filteredItemsData;
+	}, [itemsData, filterValue, statusFilter]);
 
 	// paginates the filtered items
 	const items = React.useMemo(() => {
@@ -155,24 +81,21 @@ export default function TableAppointments() {
 	const pages = Math.ceil(filteredItems.length / rowsPerPage);
 
 	// renders the cell based on the column
-	const renderCell = React.useCallback((appointment, columnKey) => {
-		const cellValue = appointment[columnKey];
+	const renderCell = React.useCallback((item, columnKey) => {
+		const cellValue = item[columnKey];
 		const handleAction = (key) => {
 			if (key === "reschedule") {
 				setNewScheduleModal({
 					isOpen: true,
 					title: "Change Status",
-					data: {
-						...appointment,
-						APPOINTMENT_DATE: new Date(appointment.APPOINTMENT_DATE),
-					},
+					data: null,
 				});
 			} else if (key === "delete") {
 				// display the alert dialog
 				setAlertDialogDetails({
 					isOpen: true,
 					title: "Delete Appointment",
-					message: "Are you sure you want to delete this appointment?",
+					message: "Are you sure you want to delete this item?",
 					type: "danger",
 					dialogType: "confirm",
 				});
@@ -181,78 +104,26 @@ export default function TableAppointments() {
 				setAlertDialogDetails({
 					isOpen: true,
 					title: "Cancel Appointment",
-					message: "Are you sure you want to cancel this appointment?",
+					message: "Are you sure you want to cancel this item?",
 					type: "warning",
 					dialogType: "confirm",
-					confirmCallback: () => {
-						changeStatusMutation.mutate({
-							ID: appointment.ID,
-							STATUS: "Cancelled",
-						});
-					},
-				});
-			} else if (key === "on_going") {
-				// display the alert dialog
-				setAlertDialogDetails({
-					isOpen: true,
-					title: "Change to 'On Going' Appointment",
-					message: "Are you sure you want to change the status of this appointment?",
-					type: "info",
-					dialogType: "confirm",
-					confirmCallback: () => {
-						changeStatusMutation.mutate({
-							ID: appointment.ID,
-							STATUS: "On-going",
-						});
-					},
-				});
-			} else if (key === "done") {
-				// display the alert dialog
-				setAlertDialogDetails({
-					isOpen: true,
-					title: "Change to 'Done' Appointment",
-					message: "Are you sure you want to change the status of this appointment?",
-					type: "info",
-					dialogType: "confirm",
-					confirmCallback: () => {
-						changeStatusMutation.mutate({
-							ID: appointment.ID,
-							STATUS: "Completed",
-						});
-					},
-				});
-			} else if (key === "pending") {
-				// display the alert dialog
-				setAlertDialogDetails({
-					isOpen: true,
-					title: "Change to 'Pending' Appointment",
-					message: "Are you sure you want to change the status of this appointment?",
-					type: "info",
-					dialogType: "confirm",
-					confirmCallback: () => {
-						changeStatusMutation.mutate({
-							ID: appointment.ID,
-							STATUS: "Pending",
-						});
-					},
 				});
 			}
 		};
-		console.log(cellValue);
 		switch (columnKey) {
-			case "APPOINTMENT_TIME":
+			case "item_name":
 				return (
 					<div className="flex flex-col">
 						<p className="capitalize text-bold text-small">{cellValue}</p>
 					</div>
 				);
-			case "APPOINTMENT_DATE":
+			case "item_id":
 				return (
 					<div className="flex flex-col">
 						<p className="capitalize text-bold text-small">{cellValue}</p>
 					</div>
 				);
-			case "FULLNAME":
+			case "group":
 				return (
 					<div className="flex flex-col">
 						<p className="capitalize text-bold text-small">{cellValue}</p>
@@ -261,71 +132,20 @@ export default function TableAppointments() {
 			case "dentist":
 				return (
 					<div className="flex flex-col">
-						<p className="capitalize text-bold text-small">Dr. John Doe</p>
+						<p className="capitalize text-bold text-small">{cellValue}</p>
 					</div>
 				);
-			case "STATUS":
+			case "actions":
 				return (
 					<div className="relative flex items-center justify-start gap-2">
-						<Dropdown>
-							<DropdownTrigger>
-								<Button
-									variant="light"
-									aria-label="resched"
-									className="text-primary"
-								>
-									{cellValue}
-								</Button>
-							</DropdownTrigger>
-							<DropdownMenu variant="faded" onAction={handleAction}>
-								<DropdownItem key={"pending"} startContent={<Clock size={20} />}>
-									Pending
-								</DropdownItem>
-								<DropdownItem key={"on_going"} startContent={<Clock size={20} />}>
-									On-going
-								</DropdownItem>
-								<DropdownItem key={"done"} startContent={<CheckCheck size={20} />}>
-									Done
-								</DropdownItem>
-								<DropdownItem
-									key={"reschedule"}
-									startContent={<CalendarDays size={20} />}
-								>
-									Reschedule
-								</DropdownItem>
-								<DropdownItem
-									key={"cancel"}
-									startContent={<Trash2 size={20} />}
-									className="text-danger"
-									color="danger"
-								>
-									Cancel
-								</DropdownItem>
-							</DropdownMenu>
-						</Dropdown>
-
 						<Button
-							color="danger"
-							size="sm"
-							isIconOnly
-							aria-label="delete"
-							onClick={() => {
-								// display the alert dialog
-								setAlertDialogDetails({
-									isOpen: true,
-									title: "Delete Appointment",
-									message: "Are you sure you want to delete this appointment?",
-									type: "danger",
-									dialogType: "confirm",
-									confirmCallback: () => {
-										deleteAppointmentMutation.mutate({
-											ID: appointment.ID,
-										});
-									},
-								});
-							}}
+							as={Link}
+							href={`/${currentUser}/inventory/item-list/${item.item_name}`}
+							variant="light"
+							className="data-[hover=true]:bg-transparent"
+							endContent={<ChevronsRight />}
 						>
-							<X />
+							View Full Detail
 						</Button>
 					</div>
 				);
@@ -388,7 +208,7 @@ export default function TableAppointments() {
 		setPage(1);
 	}, []);
 
-	// table top content with search and new appointment button
+	// table top content with search and new item button
 	const topContent = React.useMemo(() => {
 		return (
 			<div className="flex flex-col gap-4">
@@ -404,49 +224,20 @@ export default function TableAppointments() {
 						onValueChange={onSearchChange}
 					/>
 					<div className="flex gap-3">
-						<Dropdown aria-label="Dropdown">
-							<DropdownTrigger className="hidden sm:flex">
-								<Button
-									endContent={<ChevronDown className="text-small" />}
-									variant="flat"
-								>
-									Columns
-								</Button>
-							</DropdownTrigger>
-							<DropdownMenu
-								disallowEmptySelection
-								aria-label="Table Columns"
-								closeOnSelect={false}
-								selectedKeys={visibleColumns}
-								selectionMode="multiple"
-								onSelectionChange={setVisibleColumns}
-							>
-								{columns.map((column) => (
-									<DropdownItem key={column.uid} className="capitalize">
-										{capitalize(column.name)}
-									</DropdownItem>
-								))}
-							</DropdownMenu>
-						</Dropdown>
 						<Button
 							aria-label="New Appointment"
 							color="primary"
-							onClick={() =>
-								setNewAppointmentModal({
-									isOpen: true,
-									title: "New Appointment",
-									data: null,
-								})
-							}
+							as={Link}
+							href={`/${currentUser}/inventory/item-list/add`}
 							startContent={<Plus />}
 						>
-							New Appointment
+							Add new item
 						</Button>
 					</div>
 				</div>
 				<div className="flex items-center justify-between">
 					<span className="text-default-400 text-small">
-						Total {appointments.length} appointments
+						Total {itemsData.length} itemsData
 					</span>
 					<label className="flex items-center text-default-400 text-small">
 						Rows per page:
@@ -539,15 +330,15 @@ export default function TableAppointments() {
 						key={column.uid}
 						align={column.uid === "actions" ? "center" : "start"}
 						allowsSorting={column.sortable}
-						className={column.uid === "options" ? "w-24" : ""}
+						className={column.uid === "actions" ? "w-24" : ""}
 					>
 						{column.name}
 					</TableColumn>
 				)}
 			</TableHeader>
-			<TableBody emptyContent={"No appointments found"} items={sortedItems}>
+			<TableBody emptyContent={"No itemsData found"} items={sortedItems}>
 				{(item) => (
-					<TableRow key={item.ID}>
+					<TableRow key={item.id}>
 						{(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
 					</TableRow>
 				)}

@@ -1,7 +1,7 @@
 import SplineChart from "@/components/layout/shared/chart/spline";
 import { Select, SelectItem, Button, Tabs, Tab, Divider } from "@nextui-org/react";
 import TableDashboard from "./Table";
-import { useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { Ellipsis, Plus, ChevronUp, Trash, UserRound, Pencil, Triangle } from "lucide-react";
 import DonutChart from "@/components/layout/shared/chart/donut";
 import {
@@ -13,7 +13,11 @@ import {
 import { cn } from "@/lib/utils";
 import "./styles.css";
 import { useMediaQuery } from "react-responsive";
-import { extractTime, validateTimeStatus } from "@/services/api/utils";
+import { convertDateYYYYMMDD, extractTime, validateTimeStatus } from "@/services/api/utils";
+import { useQuery } from "@tanstack/react-query";
+import AppointmentsAPIManager from "@/services/api/managers/appointments/AppointmentsAPIManager";
+import { getLocalTimeZone, today } from "@internationalized/date";
+import { formatTimeAccordionData } from "./utils";
 
 const AdminDashboard = () => {
 	const zoomedDevices = useMediaQuery({
@@ -172,23 +176,43 @@ const data = [
 
 // AccordionSchedule component
 const AccordionSchedule = () => {
-	const [selectedChapter, setSelectedChapter] = useState("item-0");
+	const [selectedChapter, setSelectedChapter] = useState("");
 	const [upcomingActiveIndex, setUpcomingActiveIndex] = useState(undefined);
+	const [upcomingActiveTime, setUpcomingActiveTime] = useState("");
+
+	const [appointmentsArr, setAppointmentsArr] = useState([]);
+
 	const zoomedDevices = useMediaQuery({
 		query: "(min-device-width: 900px) and (max-device-width: 1600px)",
 	});
+	const { data, isLoading, isSuccess } = useQuery({
+		queryKey: ["appointments-today"],
+		queryFn: async () =>
+			await AppointmentsAPIManager.getTodaysAppointment({
+				APPOINTMENT_DATE: convertDateYYYYMMDD(today(getLocalTimeZone())),
+			}),
+	});
+
+	useEffect(() => {
+		if (isSuccess) {
+			const timesArray = formatTimeAccordionData(data);
+			setAppointmentsArr(timesArray);
+		}
+	}, [data, isSuccess]);
 	useLayoutEffect(() => {
+		if (!isSuccess) return;
 		const timeChecker = () => {
 			let firstUpcomingIndex = undefined;
-			data.forEach((item, index) => {
-				const status = validateTimeStatus(item.time);
+			data?.forEach((item, index) => {
+				const status = validateTimeStatus(item.APPOINTMENT_TIME);
+				console.log(status);
 				if (status === "active") {
 					setUpcomingActiveIndex(index + 1);
-					setSelectedChapter(`item-${index + 1}`);
+					setSelectedChapter(`item-${data[index + 1]?.FULLNAME}`);
 				} else if (status === "upcoming" && !firstUpcomingIndex) {
 					setUpcomingActiveIndex(index);
 					firstUpcomingIndex = index;
-					setSelectedChapter(`item-${index}`);
+					setSelectedChapter(`item-${data[index]?.FULLNAME}`);
 				}
 			});
 		};
@@ -200,246 +224,253 @@ const AccordionSchedule = () => {
 		return () => {
 			clearInterval(timer);
 		};
-	}, []);
+	}, [data, isSuccess]);
 	return (
-		<div data-per-time-container className="relative">
-			<div
-				className={cn(
-					"absolute h-full mt-2 w-[1px] bg-[#cbd5e1] top-0 ",
-					zoomedDevices ? "left-[3.5rem]" : "left-[4.5rem]"
-				)}
-			/>
-			<div
-				className={cn(
-					"absolute -bottom-2 h-4 w-4 rounded-full bg-black",
-					zoomedDevices ? "left-[3rem]" : "left-[4rem]"
-				)}
-			/>
-			<div data-per-time-indicator className="relative">
-				<div
-					className={cn(
-						"absolute top-1 h-4 w-4 rounded-full bg-black",
-						zoomedDevices ? "left-[3rem]" : "left-[4rem]"
-					)}
-				/>
-				<h6>8 : 00</h6>
-			</div>
-			<div data-per-time-content>
-				<div className={cn("", zoomedDevices ? "ml-16" : "~ml-16/24")}>
-					<Accordion
-						type="single"
-						value={selectedChapter}
-						onValueChange={setSelectedChapter}
-						collapsible
-						className="flex flex-col gap-2"
-					>
-						{data &&
-							data.map((item, index) => {
-								const { startTime } = extractTime(item.time);
+		<>
+			{appointmentsArr.map(({ time, appointments: items }, index) => (
+				<div key={index} data-per-time-container className="relative">
+					<div
+						className={cn(
+							"absolute h-full mt-2 w-[1px] bg-[#cbd5e1] top-0 ",
+							zoomedDevices ? "left-[3.5rem]" : "left-[4.5rem]"
+						)}
+					/>
 
-								// format the time
-								const firstTime = `${startTime?.hour}:${
-									startTime?.minute < 10
-										? "0" + startTime?.minute
-										: startTime?.minute
-								} ${startTime?.meridian}`;
+					<div data-per-time-indicator className="relative">
+						<div
+							className={cn(
+								"absolute top-1 h-4 w-4 rounded-full bg-black",
+								zoomedDevices ? "left-[3rem]" : "left-[4rem]"
+							)}
+						/>
+						<h6>{time}</h6>
+					</div>
+					<div data-per-time-content>
+						<div className={cn("", zoomedDevices ? "ml-16" : "~ml-16/24")}>
+							<Accordion
+								type="single"
+								value={selectedChapter}
+								onValueChange={setSelectedChapter}
+								collapsible
+								className="flex flex-col gap-2"
+							>
+								{items.map((item, index) => {
+									const { startTime } = extractTime(item.APPOINTMENT_TIME);
 
-								const status = validateTimeStatus(item.time);
-								return (
-									<AccordionItem
-										key={index}
-										value={`item-${index}`}
-										aria-label="index"
-										className="border-0"
-									>
-										<AccordionTrigger
-											showChevron={false}
-											className={cn(
-												"relative px-3 py-1 rounded-xl hover:no-underline",
-												selectedChapter !== `item-${index}`
-													? "border-0"
-													: "border"
-											)}
+									// format the time
+									const firstTime = `${startTime?.hour}:${
+										startTime?.minute < 10
+											? "0" + startTime?.minute
+											: startTime?.minute
+									} ${startTime?.meridian}`;
+
+									const status = validateTimeStatus(item.APPOINTMENT_TIME);
+									return (
+										<AccordionItem
+											key={index}
+											value={`item-${item.FULLNAME}`}
+											aria-label="index"
+											className="border-0"
 										>
-											{upcomingActiveIndex == index && (
-												<div
-													data-accordion-item-arrow
-													className="absolute -left-[1rem] -translate-y-1/2 top-1/2"
-												>
-													<Triangle
-														fill="#2f80ed"
-														color="#2f80ed"
-														className="transform rotate-90"
-														size={10}
-													/>
-												</div>
-											)}
-											<div
+											<AccordionTrigger
+												showChevron={false}
 												className={cn(
-													"flex items-center",
-													zoomedDevices ? "gap-3" : "gap-10"
+													"relative px-3 py-1 rounded-xl hover:no-underline",
+													selectedChapter !== `item-${item.FULLNAME}`
+														? "border-0"
+														: "border"
 												)}
 											>
-												<div className="flex items-center gap-5">
+												{upcomingActiveIndex == index && (
 													<div
-														className={cn(
-															"h-3 w-3 bg-[#bdbdbd] rounded-full",
-
-															// For the active appointment
-															upcomingActiveIndex === index &&
-																"bg-[#27ae60]",
-
-															// For the upcoming appointment except the active one
-															upcomingActiveIndex !== index &&
-																status === "upcoming" &&
-																"bg-[#2F80ED]"
-														)}
-													/>
-													<h6
-														className={cn(
-															"text-sm font-bold",
-															status == "inactive" ||
-																status == "active"
-																? "line-through opacity-70"
-																: ""
-														)}
-														id="time-item-accordion"
+														data-accordion-item-arrow
+														className="absolute -left-[1rem] -translate-y-1/2 top-1/2"
 													>
-														{firstTime}
-													</h6>
-												</div>
-												<div>
-													<h6
-														className={cn(
-															zoomedDevices ? "text-sm" : "text-base",
-															status == "inactive" ||
-																status == "active"
-																? "line-through opacity-70"
-																: ""
-														)}
-													>
-														{item.patient_name}
-													</h6>
-												</div>
-											</div>
-											<div className="flex items-center gap-3">
-												{status === "upcoming" &&
-													upcomingActiveIndex === index &&
-													selectedChapter === `item-${index}` && (
-														<small className="block text-xs text-gray-400 lg:hidden xl:block">
-															Upcoming
-														</small>
-													)}
-												{selectedChapter === `item-${index}` && (
-													<div className="p-1 border rounded-lg">
-														<ChevronUp
-															strokeWidth={3}
-															className="text-[#2F80ED]"
+														<Triangle
+															fill="#2f80ed"
+															color="#2f80ed"
+															className="transform rotate-90"
+															size={10}
 														/>
 													</div>
 												)}
-											</div>
-										</AccordionTrigger>
-										<AccordionContent>
-											<div className="flex flex-col mt-3 border rounded-xl">
-												<div className="flex flex-col gap-2 p-3">
-													<div className="flex items-center gap-2">
-														<h5
-															style={{ flex: 1 }}
-															className="~text-base font-semibold"
-														>
-															Patient
-														</h5>
+												<div
+													className={cn(
+														"flex items-center",
+														zoomedDevices ? "gap-3" : "gap-10"
+													)}
+												>
+													<div className="flex items-center gap-5">
+														<div
+															className={cn(
+																"h-3 w-3 bg-[#bdbdbd] rounded-full",
+
+																// For the active appointment
+																upcomingActiveIndex === index &&
+																	"bg-[#27ae60]",
+
+																// For the upcoming appointment except the active one
+																upcomingActiveIndex !== index &&
+																	status === "upcoming" &&
+																	"bg-[#2F80ED]"
+															)}
+														/>
 														<h6
-															style={{ flex: 3 }}
-															className="~text-base"
+															className={cn(
+																"text-sm font-bold",
+																status == "inactive" ||
+																	status == "active"
+																	? "line-through opacity-70"
+																	: ""
+															)}
+															id="time-item-accordion"
 														>
-															{item.patient_name}
+															{firstTime}
 														</h6>
-													</div>
-													<div className="flex items-center gap-2">
-														<h5
-															style={{ flex: 1 }}
-															className="~text-base font-semibold"
-														>
-															Time
-														</h5>
-														<h6
-															style={{ flex: 3 }}
-															className="~text-base"
-														>
-															{item.time}
-														</h6>
-													</div>
-													<div className="flex items-center gap-2">
-														<h5
-															style={{ flex: 1 }}
-															className="~text-base font-semibold"
-														>
-															Purpose
-														</h5>
-														<h6
-															style={{ flex: 3 }}
-															className="~text-base"
-														>
-															{item.purpose}
-														</h6>
-													</div>
-												</div>
-												<Divider />
-												<div className="flex justify-between p-2">
-													<div className="flex gap-2">
-														<Button
-															isIconOnly
-															variant="light"
-															className="border"
-															size={zoomedDevices ? "sm" : "md"}
-														>
-															<Trash
-																size={20}
-																className="text-red-500"
-															/>
-														</Button>
-														<Button
-															isIconOnly
-															variant="light"
-															className="border"
-															size={zoomedDevices ? "sm" : "md"}
-														>
-															<UserRound
-																size={20}
-																className="text-[#2F80ED]"
-															/>
-														</Button>
-														<Button
-															isIconOnly
-															variant="light"
-															className="border"
-															size={zoomedDevices ? "sm" : "md"}
-														>
-															<Pencil
-																size={20}
-																className="text-[#2F80ED]"
-															/>
-														</Button>
 													</div>
 													<div>
-														<Button
-															color="primary"
-															size={zoomedDevices ? "sm" : "md"}
+														<h6
+															className={cn(
+																zoomedDevices
+																	? "text-sm"
+																	: "text-base",
+																status == "inactive" ||
+																	status == "active"
+																	? "line-through opacity-70"
+																	: ""
+															)}
 														>
-															Begin Appointment
-														</Button>
+															{item.FULLNAME}
+														</h6>
 													</div>
 												</div>
-											</div>
-										</AccordionContent>
-									</AccordionItem>
-								);
-							})}
-					</Accordion>
+												<div className="flex items-center gap-3">
+													{status === "upcoming" &&
+														upcomingActiveIndex === index &&
+														selectedChapter ===
+															`item-${item.FULLNAME}` && (
+															<small className="block text-xs text-gray-400 lg:hidden xl:block">
+																Upcoming
+															</small>
+														)}
+													{selectedChapter ===
+														`item-${item.FULLNAME}` && (
+														<div className="p-1 border rounded-lg">
+															<ChevronUp
+																strokeWidth={3}
+																className="text-[#2F80ED]"
+															/>
+														</div>
+													)}
+												</div>
+											</AccordionTrigger>
+											<AccordionContent>
+												<div className="flex flex-col mt-3 border rounded-xl">
+													<div className="flex flex-col gap-2 p-3">
+														<div className="flex items-center gap-2">
+															<h5
+																style={{ flex: 1 }}
+																className="~text-base font-semibold"
+															>
+																Patient
+															</h5>
+															<h6
+																style={{ flex: 3 }}
+																className="~text-base"
+															>
+																{item.FULLNAME}
+															</h6>
+														</div>
+														<div className="flex items-center gap-2">
+															<h5
+																style={{ flex: 1 }}
+																className="~text-base font-semibold"
+															>
+																Time
+															</h5>
+															<h6
+																style={{ flex: 3 }}
+																className="~text-base"
+															>
+																{item.APPOINTMENT_TIME}
+															</h6>
+														</div>
+														<div className="flex items-center gap-2">
+															<h5
+																style={{ flex: 1 }}
+																className="~text-base font-semibold"
+															>
+																Purpose
+															</h5>
+															<h6
+																style={{ flex: 3 }}
+																className="~text-base"
+															>
+																{item.PURPOSE}
+															</h6>
+														</div>
+													</div>
+													<Divider />
+													<div className="flex justify-between p-2">
+														<div className="flex gap-2">
+															<Button
+																isIconOnly
+																variant="light"
+																className="border"
+																size={zoomedDevices ? "sm" : "md"}
+															>
+																<Trash
+																	size={20}
+																	className="text-red-500"
+																/>
+															</Button>
+															<Button
+																isIconOnly
+																variant="light"
+																className="border"
+																size={zoomedDevices ? "sm" : "md"}
+															>
+																<UserRound
+																	size={20}
+																	className="text-[#2F80ED]"
+																/>
+															</Button>
+															<Button
+																isIconOnly
+																variant="light"
+																className="border"
+																size={zoomedDevices ? "sm" : "md"}
+															>
+																<Pencil
+																	size={20}
+																	className="text-[#2F80ED]"
+																/>
+															</Button>
+														</div>
+														<div>
+															<Button
+																color="primary"
+																size={zoomedDevices ? "sm" : "md"}
+															>
+																Begin Appointment
+															</Button>
+														</div>
+													</div>
+												</div>
+											</AccordionContent>
+										</AccordionItem>
+									);
+								})}
+							</Accordion>
+						</div>
+					</div>
 				</div>
-			</div>
-		</div>
+			))}
+			{appointmentsArr.length === 0 && (
+				<div className="flex items-center justify-center h-28">
+					<h6 className="text-gray-400">No appointments for today</h6>
+				</div>
+			)}
+		</>
 	);
 };

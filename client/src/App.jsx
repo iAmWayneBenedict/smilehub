@@ -27,9 +27,20 @@ import { default as DentistRegistration } from "./pages/shared/profile/Registrat
 import Profile from "./pages/shared/profile/Profile";
 import InvalidSmallScreen from "./components/layout/shared/invalids/InvalidSmallScreen";
 import ProgressNotes from "./pages/shared/patients/components/ProgressNotes";
+import Inventory from "./pages/shared/inventory";
+import useValidateLoggedUser from "./hooks/useValidateLoggedUser";
+import ItemGroup from "./pages/shared/inventory/layouts/ItemGroup";
+import ItemList from "./pages/shared/inventory/layouts/ItemList";
+import ItemGroupProduct from "./pages/shared/inventory/layouts/ItemGroup/layouts";
+import Item from "./pages/shared/inventory/layouts/ItemList/layout/Item";
+import AddItem from "./pages/shared/inventory/layouts/ItemList/layout/AddItem";
 
 function App() {
 	const navigate = useNavigate();
+
+	// validate if user has been expired
+	useValidateLoggedUser();
+
 	const queryClient = new QueryClient();
 	return (
 		<NextUIProvider navigate={navigate}>
@@ -58,6 +69,7 @@ function App() {
 								path="dashboard"
 								element={<LayoutWrapper child={<AdminDashboard />} />}
 							/>
+
 							<Route path="patients">
 								<Route index element={<LayoutWrapper child={<Patients />} />} />
 								<Route
@@ -73,6 +85,7 @@ function App() {
 									element={<LayoutWrapper child={<ProgressNotes />} />}
 								/>
 							</Route>
+
 							<Route path="dentists">
 								<Route index element={<LayoutWrapper child={<Dentists />} />} />
 								<Route
@@ -84,11 +97,37 @@ function App() {
 									element={<LayoutWrapper child={<Profile />} />}
 								/>
 							</Route>
+
 							<Route
 								path="appointments/:type"
 								element={<LayoutWrapper child={<Appointments />} />}
 							/>
 							<Route path="profile" element={<LayoutWrapper child={<Profile />} />} />
+
+							<Route path="inventory">
+								<Route index element={<LayoutWrapper child={<Inventory />} />} />
+								<Route
+									path="item-group"
+									element={<LayoutWrapper child={<ItemGroup />} />}
+								/>
+								<Route
+									path="item-group/:group"
+									element={<LayoutWrapper child={<ItemGroupProduct />} />}
+								/>
+								<Route
+									path="item-list"
+									element={<LayoutWrapper child={<ItemList />} />}
+								/>
+								<Route
+									exact
+									path="item-list/add"
+									element={<LayoutWrapper child={<AddItem />} />}
+								/>
+								<Route
+									path="item-list/:item"
+									element={<LayoutWrapper child={<Item />} />}
+								/>
+							</Route>
 						</Route>
 					</Route>
 

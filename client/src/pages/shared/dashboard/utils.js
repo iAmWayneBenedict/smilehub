@@ -1,3 +1,5 @@
+import { extractTime } from "@/services/api/utils";
+
 /**
  * Capitalizes the first letter of a given string.
  *
@@ -33,4 +35,26 @@ export function getDateTime({ isDateOnly, isTimeOnly, date }) {
 		return dateTime.toLocaleTimeString("en-US", options);
 	}
 	return dateTime.toLocaleString("en-US", options);
+}
+
+export function formatTimeAccordionData(appointments) {
+	const timesArray = [];
+	appointments.forEach((appointment) => {
+		const { startTime } = extractTime(appointment.APPOINTMENT_TIME);
+		const firstTime = `${startTime?.hour}:${
+			startTime?.minute < 10 ? "0" + startTime?.minute : startTime?.minute
+		}`;
+		if (timesArray.some((timeObj) => timeObj.time === firstTime)) {
+			const index = timesArray.findIndex((timeObj) => timeObj.time === firstTime);
+			timesArray[index].appointments.push(appointment);
+			return;
+		}
+		const timeObj = {
+			time: firstTime,
+			appointments: appointment ? [appointment] : [],
+		};
+		timesArray.push(timeObj);
+	});
+
+	return timesArray;
 }

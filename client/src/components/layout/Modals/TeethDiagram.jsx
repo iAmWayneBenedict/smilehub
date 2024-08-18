@@ -42,7 +42,11 @@ const TeethDiagram = () => {
 	const handleSave = () => {
 		const canvas = canvasRef.current;
 		const dataUrl = canvas.toDataURL();
+
+		// Save the image to the history
 		setHistory([...history, dataUrl]);
+
+		// Clear the redo stack
 		setRedoStack([]);
 	};
 
@@ -50,12 +54,21 @@ const TeethDiagram = () => {
 		if (history.length > 0) {
 			const newHistory = [...history];
 			const lastState = newHistory.pop();
+
+			// Add the last state to the redo stack
 			setRedoStack([lastState, ...redoStack]);
+
+			// Set the history to the new history
 			setHistory(newHistory);
+
 			const img = new Image();
 
+			// If the last state is undefined, set the image to the initial image
 			if (newHistory[newHistory.length - 1] === undefined) img.src = teethDiagramImg;
+			// Else set the image to the last state
 			else img.src = newHistory[newHistory.length - 1];
+
+			// Draw the image on the canvas
 			img.onload = () => {
 				const ctx = canvasRef.current.getContext("2d");
 				ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
@@ -68,10 +81,19 @@ const TeethDiagram = () => {
 		if (redoStack.length > 0) {
 			const newRedoStack = [...redoStack];
 			const nextState = newRedoStack.shift();
+
+			// Add the next state to the history
 			setHistory([...history, nextState]);
+
+			// Set the redo stack to the new redo stack
 			setRedoStack(newRedoStack);
+
 			const img = new Image();
+
+			// set the image to the next state
 			img.src = nextState;
+
+			// Draw the image on the canvas
 			img.onload = () => {
 				const ctx = canvasRef.current.getContext("2d");
 				ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);

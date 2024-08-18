@@ -17,6 +17,7 @@ import { getLocalTimeZone } from "@internationalized/date";
 register();
 const Register = () => {
 	const [isVisible, setIsVisible] = useState(false);
+	const [agreedTerms, setAgreedTerms] = useState(false);
 	const toggleVisibility = () => setIsVisible(!isVisible);
 
 	// swiper refs
@@ -339,23 +340,12 @@ const Register = () => {
 							<Input
 								{...register("PHONE", {
 									required: "Phone Number is required",
+									pattern: {
+										value: /^9\d{9}$/,
+										message: "Invalid phone number",
+									},
 								})}
-								startContent={
-									<div className="flex items-center">
-										<label className="sr-only" htmlFor="country">
-											Country
-										</label>
-										<select
-											className="bg-transparent border-0 outline-none text-default-400 text-small"
-											id="country"
-											name="country"
-										>
-											<option>PH</option>
-											<option>US</option>
-											<option>EU</option>
-										</select>
-									</div>
-								}
+								startContent={"+63"}
 								isInvalid={!!errors.PHONE} // check if the input is invalid
 								errorMessage={errors.PHONE?.message} // get the error message
 								variant="bordered"
@@ -415,6 +405,7 @@ const Register = () => {
 							/>
 							<div className="flex flex-row justify-between">
 								<Checkbox
+									onChange={(e) => setAgreedTerms(e.target.checked)}
 									classNames={{
 										label: "text-darkText font-semibold",
 									}}
@@ -425,6 +416,7 @@ const Register = () => {
 							<Button
 								type="submit"
 								color="primary"
+								isDisabled={!agreedTerms}
 								className="w-full py-8 text-lg font-semibold p-7"
 							>
 								Register

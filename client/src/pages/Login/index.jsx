@@ -65,6 +65,9 @@ const Login = () => {
 				message: "",
 			});
 			try {
+				const date = new Date();
+				date.setDate(date.getDate() + 1); // set expiry to the next day
+				data.user["expiry"] = date;
 				const enryptedToken = encrypt(data.user);
 				setAuthToken(enryptedToken);
 			} catch (error) {

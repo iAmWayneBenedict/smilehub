@@ -20,12 +20,15 @@ import { useEffect, useRef, useState } from "react";
 import "./styles.css";
 import { useLocation } from "react-router-dom";
 import { useAppStore, useAuthTokenPersisted } from "@/store/zustand";
+import { decrypt } from "@/lib/utils";
 const NavigationBar = () => {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const nav = useRef(null);
 	const { setAlertDialogDetails } = useAppStore();
 	const location = useLocation();
 	const { authToken, setAuthToken } = useAuthTokenPersisted();
+
+	const user = decrypt(authToken);
 
 	useEffect(() => {
 		// change navbar color on specific pages
@@ -70,6 +73,7 @@ const NavigationBar = () => {
 		{ name: "About", href: "/about" },
 		{ name: "Contact", href: "/contact" },
 	];
+
 	return (
 		<Navbar
 			id="navbar"
@@ -141,25 +145,41 @@ const NavigationBar = () => {
 							<DropdownMenu aria-label="Profile Actions" variant="flat">
 								<DropdownItem key="profile" className="gap-2 h-14">
 									<p className="font-semibold">Signed in as</p>
-									<p className="font-semibold">zoey@example.com</p>
+									<p className="font-semibold">{user?.fullname}</p>
 								</DropdownItem>
-								<DropdownItem key="settings">My Settings</DropdownItem>
-								<DropdownItem key="team_settings">Team Settings</DropdownItem>
-								<DropdownItem key="analytics">Analytics</DropdownItem>
-								<DropdownItem key="system">System</DropdownItem>
-								<DropdownItem key="configurations">Configurations</DropdownItem>
-								<DropdownItem key="help_and_feedback">Help & Feedback</DropdownItem>
+								{user?.role === "ADMIN" && (
+									<DropdownItem key="admin" href="/admin/dashboard">
+										Admin Panel
+									</DropdownItem>
+								)}
+								{user?.role === "STAFF" && (
+									<DropdownItem key="staff" href="/staff/dashboard">
+										Staff Panel
+									</DropdownItem>
+								)}
 								<DropdownItem
 									key="logout"
 									color="danger"
 									onClick={() => {
-										setAuthToken(false);
 										setAlertDialogDetails({
+											type: "danger",
+											message: "Are you sure you want to logout?",
 											isOpen: true,
-											type: "success",
-											title: "Success!",
-											message: "You have been successfully logged out.",
-											actionLink: "/",
+											dialogType: "confirm",
+											confirmCallback: () => {
+												// log out user
+												setAuthToken(false);
+												setTimeout(() => {
+													setAlertDialogDetails({
+														isOpen: true,
+														type: "success",
+														title: "Success!",
+														message:
+															"You have been successfully logged out.",
+														actionLink: "/",
+													});
+												}, 1000);
+											},
 										});
 									}}
 								>
@@ -190,24 +210,28 @@ const NavigationBar = () => {
 					"--navbar-height": "6rem",
 				}}
 			>
-				{menuItems.map((item, index) => (
-					<NavbarMenuItem key={`${item}-${index}`}>
+				{navItems.map((item, index) => (
+					<NavbarMenuItem key={`${item.name}-${index}`}>
 						<Link
-							color={
-								index === 2
-									? "primary"
-									: index === menuItems.length - 1
-									? "danger"
-									: "foreground"
-							}
+							color={location.pathname === item.href ? "primary" : "foreground"}
 							className="w-full"
-							href="#"
+							href={item.href}
 							size="lg"
 						>
-							{item}
+							{item.name}
 						</Link>
 					</NavbarMenuItem>
 				))}
+				<NavbarMenuItem>
+					<Button
+						variant="light"
+						color={"danger"}
+						className="min-w-0 p-0 data-[hover=true]:bg-transparent w-fit h-fit text-base"
+						size="lg"
+					>
+						Logout
+					</Button>
+				</NavbarMenuItem>
 			</NavbarMenu>
 		</Navbar>
 	);

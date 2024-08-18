@@ -11,10 +11,11 @@ import { useForm, Controller } from "react-hook-form";
 import { getLocalTimeZone, today } from "@internationalized/date";
 import AppointmentsAPIManager from "@/services/api/managers/appointments/AppointmentsAPIManager";
 import { convertDateYYYYMMDD, isWeekEndDate } from "@/services/api/utils";
-import { useAppStore } from "@/store/zustand";
+import { useAppStore, useAuthTokenPersisted } from "@/store/zustand";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 
 const contactAddressCard = [
 	{
@@ -47,7 +48,8 @@ const purpose = [
 const Contact = () => {
 	const { setAlertDialogDetails } = useAppStore();
 	const [timeDropdownList, setTimeDropdownList] = useState([]);
-
+	const { authToken } = useAuthTokenPersisted();
+	const navigate = useNavigate();
 	// Form hook
 	const {
 		register,
@@ -165,7 +167,14 @@ const Contact = () => {
 						<div style={{ flex: 7 }}>
 							<div className="border-2 rounded-lg border-[#25b4f8] p-10">
 								<form
-									onSubmit={handleSubmit(onSubmit)}
+									onSubmit={(e) => {
+										e.preventDefault();
+										if (!authToken) {
+											navigate("/login");
+											return;
+										}
+										handleSubmit(onSubmit)();
+									}}
 									className="flex flex-col gap-6"
 								>
 									<div className="flex flex-row gap-5">
