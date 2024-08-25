@@ -7,9 +7,10 @@ import {
 	BreadcrumbItem,
 	Link,
 	Image,
+	Skeleton,
 } from "@nextui-org/react";
 import { useForm, Controller } from "react-hook-form";
-import { getLocalTimeZone, today } from "@internationalized/date";
+import { getLocalTimeZone, parseDate, today } from "@internationalized/date";
 import CustomDatePicker from "@/components/ui/DatePicker";
 import { useLocale } from "@react-aria/i18n";
 import { isWeekend } from "@internationalized/date";
@@ -18,11 +19,25 @@ import teethImg from "../../../../assets/icons/teeth.png";
 import DropFileInput from "./DropFileInput";
 import AssessmentPatient from "@/components/layout/Modals/AssessmentPatient";
 import TeethDiagram from "@/components/layout/Modals/TeethDiagram";
-import { useAppStore } from "@/store/zustand";
+import { useAppStore, useAuthTokenPersisted } from "@/store/zustand";
 import { HeartPulse } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import PatientsAPIManager from "@/services/api/managers/patients/PatientsAPIManager";
+import { useParams, useLocation } from "react-router-dom";
+import PropTypes from "prop-types";
+import { useEffect, useMemo } from "react";
+import { convertDateYYYYMMDD } from "@/services/api/utils";
+import { useMutation } from "@tanstack/react-query";
+import { decrypt } from "@/lib/utils";
 
 const PatientInfo = () => {
 	const { setTeethDiagramModalDetails, setAssessmentPatientModal } = useAppStore();
+	const params = useParams();
+
+	const { data, isLoading, isSuccess, refetch } = useQuery({
+		queryKey: ["patients", "info", params?.id],
+		queryFn: () => PatientsAPIManager.getDetailPatient({ ID: params?.id }),
+	});
 	return (
 		<div style={{ flex: 1 }} className="bg-[#f9f9f9]">
 			<div className="w-full h-full">
@@ -37,11 +52,79 @@ const PatientInfo = () => {
 				<div className="flex flex-col gap-3">
 					<div className="w-full p-6 pt-10 mt-5 bg-white">
 						<div className="mb-10">
-							<h2 className="text-2xl font-semibold">Mary Joseph</h2>
+							<h2 className="text-2xl font-semibold">
+								{(data?.FIRSTNAME || "") + " " + (data?.LASTNAME || "")}
+							</h2>
 						</div>
 						<div className="flex">
 							<div style={{ flex: 3 }}>
-								<Form />
+								{!isLoading && (
+									<Form data={data} params={params} refetch={refetch} />
+								)}
+								{isLoading && (
+									<div className="max-w-4xl space-y-8">
+										<Skeleton className="mb-20 rounded-lg w-96">
+											<div className="w-full h-16 rounded-lg bg-default-200"></div>
+										</Skeleton>
+										<div className="flex gap-10">
+											<Skeleton style={{ flex: 1 }} className="rounded-lg">
+												<div className="w-full h-10 rounded-lg bg-default-200"></div>
+											</Skeleton>
+											<Skeleton style={{ flex: 4 }} className="rounded-lg">
+												<div className="w-full h-10 rounded-lg bg-default-200"></div>
+											</Skeleton>
+										</div>
+										<div className="flex gap-10">
+											<Skeleton style={{ flex: 1 }} className="rounded-lg">
+												<div className="w-full h-10 rounded-lg bg-default-200"></div>
+											</Skeleton>
+											<Skeleton style={{ flex: 4 }} className="rounded-lg">
+												<div className="w-full h-10 rounded-lg bg-default-200"></div>
+											</Skeleton>
+										</div>
+										<div className="flex gap-10">
+											<Skeleton style={{ flex: 1 }} className="rounded-lg">
+												<div className="w-full h-10 rounded-lg bg-default-200"></div>
+											</Skeleton>
+											<Skeleton style={{ flex: 4 }} className="rounded-lg">
+												<div className="w-full h-10 rounded-lg bg-default-200"></div>
+											</Skeleton>
+										</div>
+										<div className="flex gap-10">
+											<Skeleton style={{ flex: 1 }} className="rounded-lg">
+												<div className="w-full h-10 rounded-lg bg-default-200"></div>
+											</Skeleton>
+											<Skeleton style={{ flex: 4 }} className="rounded-lg">
+												<div className="w-full h-10 rounded-lg bg-default-200"></div>
+											</Skeleton>
+										</div>
+										<div className="flex gap-10">
+											<Skeleton style={{ flex: 1 }} className="rounded-lg">
+												<div className="w-full h-10 rounded-lg bg-default-200"></div>
+											</Skeleton>
+											<Skeleton style={{ flex: 4 }} className="rounded-lg">
+												<div className="w-full h-10 rounded-lg bg-default-200"></div>
+											</Skeleton>
+										</div>
+										<div className="flex gap-10">
+											<Skeleton style={{ flex: 1 }} className="rounded-lg">
+												<div className="w-full h-10 rounded-lg bg-default-200"></div>
+											</Skeleton>
+											<Skeleton style={{ flex: 4 }} className="rounded-lg">
+												<div className="w-full h-10 rounded-lg bg-default-200"></div>
+											</Skeleton>
+										</div>
+										<div className="flex gap-10">
+											<Skeleton style={{ flex: 1 }} className="rounded-lg">
+												<div className="w-full h-10 rounded-lg bg-default-200"></div>
+											</Skeleton>
+											<Skeleton style={{ flex: 4 }} className="rounded-lg">
+												<div className="w-full h-10 rounded-lg bg-default-200"></div>
+											</Skeleton>
+										</div>
+										<br />
+									</div>
+								)}
 							</div>
 							<div
 								style={{ flex: 1 }}
@@ -49,7 +132,7 @@ const PatientInfo = () => {
 							>
 								<Button
 									as={Link}
-									href="/admin/patients/progress-notes"
+									href={"/admin/patients/progress-notes/" + params?.id}
 									variant="bordered"
 									className="~w-32/56 py-2 pr-6 text-base font-bold text-primary h-fit"
 									startContent={<Image src={noteImg} removeWrapper alt="notes" />}
@@ -101,38 +184,104 @@ const PatientInfo = () => {
 
 export default PatientInfo;
 
-const Form = () => {
+const Form = ({ data, params, refetch }) => {
+	const location = useLocation();
+	const { setAlertDialogDetails } = useAppStore();
+	const { authToken } = useAuthTokenPersisted();
+	const userDetails = decrypt(authToken);
+	const currentUserType = userDetails?.role?.toLowerCase();
 	// Form hook
 	const {
 		register,
 		handleSubmit,
 		control,
+		setValue,
+		reset,
+		setError,
 		formState: { errors },
 	} = useForm({
-		defaultValues: {
-			record_number: "#2345",
-			fore_name: "Mary",
-			surname: "Joseph",
-			email: "maryjoseph@gmail.com",
-			phone_number: "09707359742",
-			date: today(getLocalTimeZone()), // default date (today)
-			gender: "Female",
+		defaultValues: useMemo(() => {
+			if (!data)
+				return {
+					record_number: "",
+					FIRSTNAME: "",
+					LASTNAME: "",
+					EMAIL: "",
+					PHONE: "",
+					BIRTHDATE: today(getLocalTimeZone()), // default date (today)
+					GENDER: "",
+					FILES: [],
+				};
+			return {
+				record_number: "",
+				FIRSTNAME: data?.FIRSTNAME,
+				LASTNAME: data?.LASTNAME,
+				EMAIL: data?.EMAIL,
+				PHONE: data?.PHONE,
+				BIRTHDATE:
+					parseDate(convertDateYYYYMMDD(data?.BIRTHDATE)) || today(getLocalTimeZone()),
+				GENDER: data?.GENDER,
+				FILES: [],
+			};
+		}, [data]),
+	});
+
+	const mutation = useMutation({
+		mutationFn: PatientsAPIManager.editAppointmentPatient,
+		onSuccess: () => {
+			reset();
+			refetch();
+			setAlertDialogDetails({
+				isOpen: true,
+				type: "success",
+				title: "Success!",
+				message: "Patient added successfully",
+				actionLink: `/${currentUserType}/patients/info/${params?.id}`,
+			});
+		},
+		onError: (error) => {
+			console.error(error);
+			if (error.message === "Email already exists.") {
+				setError("EMAIL", {
+					type: "manual",
+					message: "Email already exists",
+				});
+			} else
+				setAlertDialogDetails({
+					isOpen: true,
+					type: "danger",
+					title: "Error!",
+					message: error.message,
+				});
 		},
 	});
-	const onSubmit = (data) => console.log(data);
+
+	useEffect(() => {
+		if (!data) return;
+		reset({
+			record_number: "",
+			FIRSTNAME: data?.FIRSTNAME,
+			LASTNAME: data?.LASTNAME,
+			EMAIL: data?.EMAIL,
+			PHONE: data?.PHONE,
+			BIRTHDATE: parseDate(convertDateYYYYMMDD(data?.BIRTHDATE)) || today(getLocalTimeZone()),
+			GENDER: data?.GENDER,
+			FILES: [],
+		});
+	}, [data]);
+	const onSubmit = (data) => {
+		data["ID"] = params?.id ? parseInt(params?.id) : null;
+		data["BIRTHDATE"] = convertDateYYYYMMDD(data["BIRTHDATE"]);
+		mutation.mutate(data);
+	};
 
 	// prepare date ranges
 	let now = today(getLocalTimeZone());
 	const sixMonthsAgo = now.add({ months: -6 });
-	let disabledRanges = [[now, sixMonthsAgo]];
 
-	let { locale } = useLocale();
-
-	//  Check if the date is unavailable
-	let isDateUnavailable = (date) =>
-		isWeekend(date, locale) ||
-		disabledRanges.some((range) => date >= range[0] && date <= range[1]);
-
+	const onFileChange = (e) => {
+		setValue("FILES", e);
+	};
 	return (
 		<form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
 			<div className="flex items-center max-w-4xl ">
@@ -141,9 +290,7 @@ const Form = () => {
 				</div>
 				<div style={{ flex: 3 }}>
 					<Input
-						{...register("record_number", {
-							required: "Record Number is required",
-						})}
+						{...register("record_number")}
 						aria-label="Record Number"
 						isInvalid={!!errors.record_number}
 						errorMessage={errors.record_number?.message}
@@ -153,6 +300,7 @@ const Form = () => {
 						color="primary"
 						radius="sm"
 						size="lg"
+						isReadOnly={location.pathname.includes("info")}
 						className="w-full"
 						classNames={{
 							label: "text-darkText font-semibold ",
@@ -164,55 +312,72 @@ const Form = () => {
 			</div>
 			<div className="flex items-center max-w-4xl ">
 				<div style={{ flex: 1 }} className="text-darkText">
-					Forename
+					First Name
 				</div>
 				<div style={{ flex: 3 }}>
-					<Input
-						{...register("fore_name", {
-							required: "Forename is required",
-						})}
-						aria-label="Forename"
-						isInvalid={!!errors.fore_name}
-						errorMessage={errors.fore_name?.message}
-						key={"f_name"}
-						type="text"
-						variant="bordered"
-						color="primary"
-						radius="sm"
-						size="lg"
-						className="w-full"
-						classNames={{
-							label: "text-darkText font-semibold ",
-							inputWrapper: "h-full bg-white",
-						}}
-						labelPlacement={"outside"}
+					<Controller
+						name="FIRSTNAME"
+						control={control}
+						rules={{ required: "First name is required" }}
+						render={({ field, formState: { errors } }) => (
+							<Input
+								value={field.value}
+								onValueChange={(value) => {
+									field.onChange(value);
+								}}
+								isReadOnly={location.pathname.includes("info")}
+								aria-label="Forename"
+								isInvalid={!!errors.FIRSTNAME}
+								errorMessage={errors.FIRSTNAME?.message}
+								key={"f_name"}
+								type="text"
+								variant="bordered"
+								color="primary"
+								radius="sm"
+								size="lg"
+								className="w-full"
+								classNames={{
+									label: "text-darkText font-semibold ",
+									inputWrapper: "h-full bg-white",
+								}}
+								labelPlacement={"outside"}
+							/>
+						)}
 					/>
 				</div>
 			</div>
 			<div className="flex items-center max-w-4xl">
 				<div style={{ flex: 1 }} className="text-darkText">
-					Surname
+					Last Name
 				</div>
 				<div style={{ flex: 3 }}>
-					<Input
-						{...register("surname", {
-							required: "Surname is required",
-						})}
-						aria-label="Surname"
-						isInvalid={!!errors.surname}
-						errorMessage={errors.surname?.message}
-						key={"f_name"}
-						type="text"
-						variant="bordered"
-						color="primary"
-						radius="sm"
-						size="lg"
-						className="w-full"
-						classNames={{
-							label: "text-darkText font-semibold ",
-							inputWrapper: "h-full bg-white",
-						}}
-						labelPlacement={"outside"}
+					<Controller
+						name="LASTNAME"
+						control={control}
+						rules={{ required: "Last name is required" }}
+						render={({ field, formState: { errors } }) => (
+							<Input
+								value={field.value}
+								onValueChange={(value) => {
+									field.onChange(value);
+								}}
+								isReadOnly={location.pathname.includes("info")}
+								aria-label="Surname"
+								isInvalid={!!errors.LASTNAME}
+								errorMessage={errors.LASTNAME?.message}
+								type="text"
+								variant="bordered"
+								color="primary"
+								radius="sm"
+								size="lg"
+								className="w-full"
+								classNames={{
+									label: "text-darkText font-semibold ",
+									inputWrapper: "h-full bg-white",
+								}}
+								labelPlacement={"outside"}
+							/>
+						)}
 					/>
 				</div>
 			</div>
@@ -222,23 +387,24 @@ const Form = () => {
 				</div>
 				<div style={{ flex: 3 }}>
 					<Controller
-						name="date"
+						name="BIRTHDATE"
 						control={control}
 						rules={{ required: "Date is required" }}
 						render={({ field, formState: { errors } }) => (
 							<CustomDatePicker
 								value={field.value}
-								isInvalid={!!errors.date}
-								errorMessage={errors.date?.message}
+								isInvalid={!!errors.BIRTHDATE}
+								errorMessage={errors.BIRTHDATE?.message}
 								setValue={(value) => {
 									field.onChange(value);
 								}}
+								isReadOnly={location.pathname.includes("info")}
 								label={""}
 								showTimeSelect={false}
 								classNames={{
 									innerWrapper: "h-full",
 								}}
-								aria-label="Appointment date"
+								aria-label="Birthdate"
 								// isDateUnavailable={isDateUnavailable}
 								maxValue={sixMonthsAgo}
 							/>
@@ -252,7 +418,7 @@ const Form = () => {
 				</div>
 				<div style={{ flex: 3 }}>
 					<Controller
-						name="gender"
+						name="GENDER"
 						control={control}
 						rules={{ required: "Gender is required" }}
 						render={({ field, formState: { errors } }) => (
@@ -263,8 +429,8 @@ const Form = () => {
 								onChange={(selectedKeys) => {
 									field.onChange(selectedKeys);
 								}}
-								isInvalid={!!errors.gender}
-								errorMessage={errors.gender?.message}
+								isInvalid={!!errors.GENDER}
+								errorMessage={errors.GENDER?.message}
 								labelPlacement={"outside"}
 								size="lg"
 								variant="bordered"
@@ -277,7 +443,11 @@ const Form = () => {
 								}}
 							>
 								{["Male", "Female"].map((gender) => (
-									<SelectItem key={gender} value={gender}>
+									<SelectItem
+										key={gender}
+										isReadOnly={location.pathname.includes("info")}
+										value={gender}
+									>
 										{gender}
 									</SelectItem>
 								))}
@@ -291,29 +461,39 @@ const Form = () => {
 					Email
 				</div>
 				<div style={{ flex: 3 }}>
-					<Input
-						{...register("email", {
+					<Controller
+						name="EMAIL"
+						control={control}
+						rules={{
 							required: "Email is required",
 							pattern: {
 								value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
 								message: "Invalid email address",
 							},
-						})}
-						aria-label="Email"
-						isInvalid={!!errors.email}
-						errorMessage={errors.email?.message}
-						key={"email"}
-						type="text"
-						size="lg"
-						variant="bordered"
-						color="primary"
-						radius="sm"
-						className="w-full"
-						classNames={{
-							label: "text-darkText font-semibold ",
-							inputWrapper: "h-full bg-white",
 						}}
-						labelPlacement={"outside"}
+						render={({ field, formState: { errors } }) => (
+							<Input
+								value={field.value}
+								onValueChange={(value) => {
+									field.onChange(value);
+								}}
+								isReadOnly={location.pathname.includes("info")}
+								aria-label="Email"
+								isInvalid={!!errors.EMAIL}
+								errorMessage={errors.EMAIL?.message}
+								type="text"
+								variant="bordered"
+								color="primary"
+								radius="sm"
+								size="lg"
+								className="w-full"
+								classNames={{
+									label: "text-darkText font-semibold ",
+									inputWrapper: "h-full bg-white",
+								}}
+								labelPlacement={"outside"}
+							/>
+						)}
 					/>
 				</div>
 			</div>
@@ -322,43 +502,55 @@ const Form = () => {
 					Phone Number
 				</div>
 				<div style={{ flex: 3 }}>
-					<Input
-						{...register("phone_number", {
-							required: "Phone Number is required",
-						})}
-						isInvalid={!!errors.phone_number}
-						errorMessage={errors.phone_number?.message}
-						labelPlacement="outside"
-						type="number"
-						size="lg"
-						radius="sm"
-						variant="bordered"
-						color="primary"
-						className="w-full"
-						classNames={{
-							label: "text-darkText font-semibold ",
-							inputWrapper: "h-full bg-white",
+					<Controller
+						name="PHONE"
+						control={control}
+						rules={{
+							required: "Phone is required",
+							pattern: {
+								value: /^9\d{9}$/,
+								message: "Invalid phone number",
+							},
 						}}
-						startContent={
-							<div className="flex items-center">
-								<label className="sr-only" htmlFor="country">
-									Country
-								</label>
-								<select
-									className="bg-transparent border-0 outline-none text-default-400 text-small"
-									id="country"
-									name="country"
-								>
-									<option>PH</option>
-									<option>US</option>
-									<option>EU</option>
-								</select>
-							</div>
-						}
+						render={({ field, formState: { errors } }) => (
+							<Input
+								value={field.value}
+								onValueChange={(value) => {
+									field.onChange(value);
+								}}
+								isReadOnly={location.pathname.includes("info")}
+								aria-label="Phone Number"
+								isInvalid={!!errors.PHONE}
+								errorMessage={errors.PHONE?.message}
+								type="text"
+								variant="bordered"
+								color="primary"
+								radius="sm"
+								size="lg"
+								className="w-full"
+								classNames={{
+									label: "text-darkText font-semibold ",
+									inputWrapper: "h-full bg-white",
+								}}
+								labelPlacement={"outside"}
+							/>
+						)}
 					/>
 				</div>
 			</div>
-			<DropFileInput />
+			{!location.pathname.includes("info") && <DropFileInput onFileChange={onFileChange} />}
+
+			<br />
+			{!location.pathname.includes("info") && (
+				<Button type="submit" color="primary" size="lg" className="self-end w-fit">
+					Submit
+				</Button>
+			)}
 		</form>
 	);
+};
+Form.propTypes = {
+	data: PropTypes.object,
+	params: PropTypes.object,
+	refetch: PropTypes.func,
 };

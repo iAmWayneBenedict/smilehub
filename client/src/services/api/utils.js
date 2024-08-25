@@ -93,7 +93,7 @@ export const getTimeToday = () => {
  */
 export const extractTime = (time) => {
 	// time parameter format string is: "9:00 AM - 10:00 AM"
-
+	if (!time) return;
 	const timeArray = time.split(" - ");
 	const startTime = timeArray[0];
 	const endTime = timeArray[1];

@@ -16,6 +16,8 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+import { decrypt } from "@/lib/utils";
+import { useMemo } from "react";
 
 const contactAddressCard = [
 	{
@@ -49,6 +51,7 @@ const Contact = () => {
 	const { setAlertDialogDetails } = useAppStore();
 	const [timeDropdownList, setTimeDropdownList] = useState([]);
 	const { authToken } = useAuthTokenPersisted();
+	const user = decrypt(authToken);
 	const navigate = useNavigate();
 	// Form hook
 	const {
@@ -56,19 +59,35 @@ const Contact = () => {
 		handleSubmit,
 		control,
 		setError,
+		reset,
 		formState: { errors },
-	} = useForm({
-		defaultValues: {
-			FULLNAME: "",
-			EMAIL: "",
+	} = useForm(
+		useMemo(() => {
+			return {
+				defaultValues: {
+					FULLNAME: user?.fullname || "",
+					EMAIL: user?.eail || "",
+					PHONE: "",
+					APPOINTMENT_DATE: today(getLocalTimeZone()), // default date (today)
+					APPOINTMENT_TIME: "",
+					PURPOSE: "",
+				},
+			};
+		}, [user])
+	);
+	useEffect(() => {
+		handleGetDate(today(getLocalTimeZone()), false);
+	}, []);
+	useEffect(() => {
+		if (!user) return;
+		reset({
+			FULLNAME: user?.fullname || "",
+			EMAIL: user?.email || "",
 			PHONE: "",
 			APPOINTMENT_DATE: today(getLocalTimeZone()), // default date (today)
 			APPOINTMENT_TIME: "",
 			PURPOSE: "",
-		},
-	});
-	useEffect(() => {
-		handleGetDate(today(getLocalTimeZone()), false);
+		});
 	}, []);
 	const handleGetDate = async (date, isForm = true) => {
 		if (isWeekEndDate(date)) return;

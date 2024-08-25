@@ -18,13 +18,13 @@ import { useState } from "react";
 import { useAppStore } from "@/store/zustand";
 import { useEffect } from "react";
 import CustomDatePicker from "@/components/ui/DatePicker";
-import { getLocalTimeZone, today } from "@internationalized/date";
-import { convertDateYYYYMMDD, isWeekEndDate } from "@/services/api/utils";
+import { getLocalTimeZone, today, CalendarDate } from "@internationalized/date";
+import { convertDateYYYYMMDD, extractTime, isWeekEndDate } from "@/services/api/utils";
 import AppointmentsAPIManager from "@/services/api/managers/appointments/AppointmentsAPIManager";
 import PatientsAPIManager from "@/services/api/managers/patients/PatientsAPIManager";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, days, months } from "@/lib/utils";
 
 const purposes = [
 	"Dental Bonding",
@@ -42,6 +42,7 @@ export default function AppointmentModal() {
 	const [patients, setPatients] = useState([]);
 	const { isOpen, onOpenChange, onOpen, onClose } = useDisclosure();
 	const { setAlertDialogDetails, newAppointmentModal, setNewAppointmentModal } = useAppStore();
+	const [selectedDate, setSelectedDate] = useState({});
 	// stores error
 	const [isErrorDetails, setIsErrorDetails] = useState({
 		isError: false,
@@ -69,17 +70,33 @@ export default function AppointmentModal() {
 		if (isOpen) {
 			reset();
 		}
+
+		return () => {
+			setAlertDialogDetails({}); // clear alert dialog
+		};
 	}, [isOpen]);
 
 	useEffect(() => {
 		handleGetDate(today(getLocalTimeZone()), false);
 		handleGetPatients();
 	}, [isOpen]);
+	useEffect(() => {
+		console.log(selectedDate);
+	}, [selectedDate]);
 	const handleGetDate = async (date, isForm = true) => {
 		if (isWeekEndDate(date)) return;
+
 		try {
 			const response = await AppointmentsAPIManager.getAppointmentDates({
 				APPOINTMENT_DATE: convertDateYYYYMMDD(date),
+			});
+			const selectedFormDate = new Date(date.year, date.month, date.day);
+
+			setSelectedDate({
+				month: months[selectedFormDate.getMonth()],
+				day: selectedFormDate.getDate(),
+				dayOfTheWeek: days[selectedFormDate.getDay()],
+				time: "",
 			});
 			setTimeDropdownList(response.available_times);
 		} catch (error) {
@@ -110,8 +127,15 @@ export default function AppointmentModal() {
 	// mutation function
 	const mutation = useMutation({
 		mutationFn: AppointmentsAPIManager.postSharedAppointment,
+		onMutate: () => {
+			setIsErrorDetails({
+				isError: false,
+				message: "",
+			});
+		},
 		onSuccess: (data) => {
 			onClose();
+			newAppointmentModal.refetch();
 			setNewAppointmentModal({});
 			setAlertDialogDetails({
 				isOpen: true,
@@ -138,6 +162,8 @@ export default function AppointmentModal() {
 		data.APPOINTMENT_DATE = convertDateYYYYMMDD(data.APPOINTMENT_DATE);
 		mutation.mutate(data);
 	};
+
+	const selectedDateTime = extractTime(selectedDate?.time)?.startTime;
 	return (
 		<>
 			<Modal
@@ -185,11 +211,21 @@ export default function AppointmentModal() {
 											<h3 className="text-[#2F80ED] uppercase font-medium mt-2 text-lg">
 												DATE AND TIME
 											</h3>
-											<h4>Tue, 26 October</h4>
-											<h4 className="font-bold">9:00</h4>
-											<Button variant="light" className="text-primary">
-												Change
-											</Button>
+											<h4>
+												{selectedDate?.dayOfTheWeek
+													? selectedDate.dayOfTheWeek + ","
+													: ""}{" "}
+												{selectedDate?.day} {selectedDate?.month}
+											</h4>
+											<h4 className="font-bold">
+												{selectedDateTime?.hour
+													? selectedDateTime?.hour + ":"
+													: ""}
+												{selectedDateTime?.minute < 10
+													? "0" + selectedDateTime?.minute
+													: selectedDateTime?.minute}{" "}
+												{selectedDateTime?.meridian}
+											</h4>
 										</div>
 										<div
 											style={{ flex: 1 }}
@@ -305,6 +341,10 @@ export default function AppointmentModal() {
 															aria-label="Appointment Time"
 															selectedKeys={[field.value]}
 															onChange={(selectedKeys) => {
+																setSelectedDate({
+																	...selectedDate,
+																	time: selectedKeys.target.value,
+																});
 																field.onChange(selectedKeys);
 															}}
 															isInvalid={!!errors.APPOINTMENT_TIME}

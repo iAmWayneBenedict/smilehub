@@ -62,13 +62,12 @@ export default function TableAppointments() {
 
 		return columns.filter((column) => Array.from(visibleColumns).includes(column.uid));
 	}, [visibleColumns]);
+	const queryClient = useQueryClient();
 
-	const { data, isLoading, isSuccess } = useQuery({
-		queryKey: ["getAllAppointments"],
+	const { data, isLoading, isSuccess, refetch } = useQuery({
+		queryKey: ["allAppointments"],
 		queryFn: AppointmentsAPIManager.getPatientAppointments,
 	});
-
-	const queryClient = useQueryClient();
 
 	const changeStatusMutation = useMutation({
 		mutationFn: AppointmentsAPIManager.postChangeStatusAppointment,
@@ -79,9 +78,7 @@ export default function TableAppointments() {
 				title: "Success!",
 				message: "Appointment status changed successfully!",
 			});
-			queryClient.invalidateQueries({
-				queryKey: ["getAllAppointments"],
-			});
+			refetch();
 		},
 		onError: (error) => {
 			setAlertDialogDetails({
@@ -103,9 +100,7 @@ export default function TableAppointments() {
 				title: "Success!",
 				message: "Appointment status deleted successfully!",
 			});
-			queryClient.invalidateQueries({
-				queryKey: ["getAllAppointments"],
-			});
+			refetch();
 		},
 		onError: (error) => {
 			setAlertDialogDetails({
@@ -166,6 +161,7 @@ export default function TableAppointments() {
 						...appointment,
 						APPOINTMENT_DATE: new Date(appointment.APPOINTMENT_DATE),
 					},
+					refetch: refetch,
 				});
 			} else if (key === "delete") {
 				// display the alert dialog
@@ -238,7 +234,6 @@ export default function TableAppointments() {
 				});
 			}
 		};
-		console.log(cellValue);
 		switch (columnKey) {
 			case "APPOINTMENT_TIME":
 				return (
@@ -329,24 +324,6 @@ export default function TableAppointments() {
 						</Button>
 					</div>
 				);
-			// case "options":
-			// 	return (
-			// 		<div className="relative flex items-end justify-end gap-2 max-w-24">
-			// 			<Dropdown>
-			// 				<DropdownTrigger>
-			// 					<Button isIconOnly size="sm" variant="light">
-			// 						<EllipsisVertical className="text-default-300" />
-			// 					</Button>
-			// 				</DropdownTrigger>
-			// 				<DropdownMenu onAction={handleAction}>
-			// 					<DropdownItem key={"reschedule"}>Reschedule</DropdownItem>
-			// 					<DropdownItem key={"delete"} className="text-danger" color="danger">
-			// 						Delete
-			// 					</DropdownItem>
-			// 				</DropdownMenu>
-			// 			</Dropdown>
-			// 		</div>
-			// 	);
 			default:
 				return cellValue;
 		}
@@ -404,30 +381,6 @@ export default function TableAppointments() {
 						onValueChange={onSearchChange}
 					/>
 					<div className="flex gap-3">
-						<Dropdown aria-label="Dropdown">
-							<DropdownTrigger className="hidden sm:flex">
-								<Button
-									endContent={<ChevronDown className="text-small" />}
-									variant="flat"
-								>
-									Columns
-								</Button>
-							</DropdownTrigger>
-							<DropdownMenu
-								disallowEmptySelection
-								aria-label="Table Columns"
-								closeOnSelect={false}
-								selectedKeys={visibleColumns}
-								selectionMode="multiple"
-								onSelectionChange={setVisibleColumns}
-							>
-								{columns.map((column) => (
-									<DropdownItem key={column.uid} className="capitalize">
-										{capitalize(column.name)}
-									</DropdownItem>
-								))}
-							</DropdownMenu>
-						</Dropdown>
 						<Button
 							aria-label="New Appointment"
 							color="primary"
@@ -436,6 +389,7 @@ export default function TableAppointments() {
 									isOpen: true,
 									title: "New Appointment",
 									data: null,
+									refetch: refetch,
 								})
 							}
 							startContent={<Plus />}

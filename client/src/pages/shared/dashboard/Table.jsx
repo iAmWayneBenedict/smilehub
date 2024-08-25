@@ -93,13 +93,13 @@ export default function TableDashboard() {
 			case "actions":
 				return (
 					<div className="relative flex items-center justify-end gap-2">
-						<Dropdown>
+						<Dropdown aria-label="options-dropdown">
 							<DropdownTrigger>
 								<Button isIconOnly size="sm" variant="light">
 									<EllipsisVertical className="text-default-300" />
 								</Button>
 							</DropdownTrigger>
-							<DropdownMenu>
+							<DropdownMenu aria-label="options-menu">
 								<DropdownItem>View</DropdownItem>
 								<DropdownItem>Edit</DropdownItem>
 								<DropdownItem>Delete</DropdownItem>
@@ -115,6 +115,7 @@ export default function TableDashboard() {
 	// render table
 	return (
 		<Table
+			aria-label="Appointments"
 			isHeaderSticky={false}
 			bottomContentPlacement="outside"
 			classNames={{

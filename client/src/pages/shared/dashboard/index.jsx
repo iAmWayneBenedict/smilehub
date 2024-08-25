@@ -44,6 +44,7 @@ const AdminDashboard = () => {
 									<span className="text-lightText">Sort by</span>
 									<div className="w-full max-w-36">
 										<Select
+											aria-label="Sort by"
 											variant="bordered"
 											selectedKeys={["Yearly"]}
 											color="primary"

@@ -15,34 +15,60 @@ import { getLocalTimeZone, today } from "@internationalized/date";
 import { Controller, useForm } from "react-hook-form";
 import { convertDateYYYYMMDD, isWeekEndDate } from "@/services/api/utils";
 import AppointmentsAPIManager from "@/services/api/managers/appointments/AppointmentsAPIManager";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import CustomDatePicker from "@/components/ui/DatePicker";
+import { useMemo } from "react";
+import { parseDate } from "@internationalized/date";
+import { sortTime } from "@/lib/utils";
 
 export default function ReschedModal() {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const { newScheduleModal, setNewScheduleModal, setAlertDialogDetails } = useAppStore();
 	const [timeDropdownList, setTimeDropdownList] = useState([]);
-
-	const queryClient = useQueryClient();
 	useEffect(() => {
 		if (newScheduleModal.isOpen) {
 			onOpen();
+
+			if (newScheduleModal.data) {
+				handleGetSelectedTimes();
+			}
 		} else {
 			onClose();
+		}
+
+		async function handleGetSelectedTimes() {
+			(await handleGetDate(
+				parseDate(convertDateYYYYMMDD(newScheduleModal.data.APPOINTMENT_DATE))
+			)) || today(getLocalTimeZone(), false);
+			setTimeDropdownList((prev) => {
+				sortTime(prev, newScheduleModal.data.APPOINTMENT_TIME);
+				return sortTime(prev, newScheduleModal.data.APPOINTMENT_TIME);
+			});
+			reset({
+				APPOINTMENT_DATE:
+					parseDate(convertDateYYYYMMDD(newScheduleModal.data.APPOINTMENT_DATE)) ||
+					today(getLocalTimeZone()),
+				APPOINTMENT_TIME: newScheduleModal.data.APPOINTMENT_TIME,
+			});
 		}
 	}, [newScheduleModal]);
 
 	// Form hook
-	const { handleSubmit, control } = useForm({
-		defaultValues: {
-			ID: newScheduleModal.ID || "",
-			APPOINTMENT_DATE: today(getLocalTimeZone()), // default date (today)
-			APPOINTMENT_TIME: "",
-		},
+	const { handleSubmit, control, reset } = useForm({
+		defaultValues: useMemo(() => {
+			if (newScheduleModal.data) {
+				return {
+					APPOINTMENT_DATE:
+						parseDate(convertDateYYYYMMDD(newScheduleModal.data.APPOINTMENT_DATE)) ||
+						today(getLocalTimeZone()),
+					APPOINTMENT_TIME: "",
+				};
+			}
+		}, [newScheduleModal.isOpen]),
 	});
-	useEffect(() => {
-		handleGetDate(today(getLocalTimeZone()), false);
-	}, []);
+	// useEffect(() => {
+	// 	handleGetDate(today(getLocalTimeZone()), false);
+	// }, []);
 
 	const handleGetDate = async (date, isForm = true) => {
 		if (isWeekEndDate(date)) return;
@@ -64,9 +90,7 @@ export default function ReschedModal() {
 	const mutation = useMutation({
 		mutationFn: AppointmentsAPIManager.postRescheduleAppointment,
 		onSuccess: () => {
-			queryClient.invalidateQueries({
-				queryKey: ["getAllAppointments"],
-			});
+			newScheduleModal.refetch();
 
 			setAlertDialogDetails({
 				isOpen: true,

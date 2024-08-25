@@ -34,6 +34,7 @@ import ItemList from "./pages/shared/inventory/layouts/ItemList";
 import ItemGroupProduct from "./pages/shared/inventory/layouts/ItemGroup/layouts";
 import Item from "./pages/shared/inventory/layouts/ItemList/layout/Item";
 import AddItem from "./pages/shared/inventory/layouts/ItemList/layout/AddItem";
+import Tasks from "./pages/shared/tasks";
 
 function App() {
 	const navigate = useNavigate();
@@ -77,11 +78,15 @@ function App() {
 									element={<LayoutWrapper child={<AddPatient />} />}
 								/>
 								<Route
-									path="info"
+									path="info/:id"
 									element={<LayoutWrapper child={<PatientInfo />} />}
 								/>
 								<Route
-									path="progress-notes"
+									path="edit/:id"
+									element={<LayoutWrapper child={<PatientInfo />} />}
+								/>
+								<Route
+									path="progress-notes/:id"
 									element={<LayoutWrapper child={<ProgressNotes />} />}
 								/>
 							</Route>
@@ -128,6 +133,7 @@ function App() {
 									element={<LayoutWrapper child={<Item />} />}
 								/>
 							</Route>
+							<Route path="tasks" element={<LayoutWrapper child={<Tasks />} />} />
 						</Route>
 					</Route>
 

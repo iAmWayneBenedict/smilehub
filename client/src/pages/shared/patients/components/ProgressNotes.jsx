@@ -1,13 +1,15 @@
 import { Breadcrumbs, BreadcrumbItem } from "@nextui-org/react";
+import { useParams } from "react-router-dom";
 
 const ProgressNotes = () => {
+	const params = useParams();
 	return (
 		<div style={{ flex: 1 }} className="bg-white">
 			<div className="w-full h-full">
 				<h3 className="p-5 text-lg font-darkText">
 					<Breadcrumbs size="lg">
 						<BreadcrumbItem href="/admin/patients">Patients</BreadcrumbItem>
-						<BreadcrumbItem href="/admin/patients/info">
+						<BreadcrumbItem href={"/admin/patients/info/" + params?.id}>
 							Patient Information
 						</BreadcrumbItem>
 						<BreadcrumbItem href="/admin/patients/progress-notes">

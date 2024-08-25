@@ -47,7 +47,6 @@ export const StaffAuthRoutes = () => {
 export const AdminAuthRoutes = () => {
 	const { authToken } = useAuthTokenPersisted();
 	const token = decrypt(authToken);
-	console.log(token);
 	if (!token || token.role !== "ADMIN") {
 		return <Navigate to="/" />;
 	} else {

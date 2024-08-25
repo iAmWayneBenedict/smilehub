@@ -5,14 +5,19 @@ import {
 	DropdownItem,
 	Button,
 	Link,
+	Select,
+	SelectItem,
 } from "@nextui-org/react";
 import { Plus, Search, Filter, CircleHelp } from "lucide-react";
 import TablePatients from "./components/Table";
 import { useState } from "react";
+import { patientStatus, purpose } from "@/lib/utils";
+import { useEffect } from "react";
 
 const Patients = () => {
 	const [filterType, setFilterType] = useState("all");
 	const [selectedKeys, setSelectedKeys] = useState(new Set(["text"]));
+	const [filterKeys, setFilterKeys] = useState(new Set(["text"]));
 	return (
 		<div style={{ flex: 1 }} className="bg-[#f9f9f9]">
 			<div className="w-full h-full p-5">
@@ -45,7 +50,7 @@ const Patients = () => {
 							>
 								<Search />
 							</Button>
-							<Dropdown>
+							<Dropdown closeOnSelect={false}>
 								<DropdownTrigger>
 									<Button isIconOnly variant="bordered" size="lg">
 										<Filter />
@@ -59,8 +64,52 @@ const Patients = () => {
 									selectedKeys={selectedKeys}
 									onSelectionChange={setSelectedKeys}
 								>
-									<DropdownItem key="diagnosis">Diagnosis</DropdownItem>
-									<DropdownItem key="status">Status</DropdownItem>
+									<DropdownItem
+										key="diagnosis"
+										textValue="diagnosis"
+										hideSelectedIcon
+									>
+										<Dropdown closeOnSelect={false}>
+											<DropdownTrigger>Diagnosis</DropdownTrigger>
+											<DropdownMenu
+												aria-label="Single selection example"
+												variant="flat"
+												selectionMode="multiple"
+												selectedKeys={filterKeys}
+												onSelectionChange={(keys) => {
+													setFilterType("diagnosis");
+													setFilterKeys(keys);
+												}}
+											>
+												{purpose.map((item) => (
+													<DropdownItem textValue={item} key={item}>
+														{item}
+													</DropdownItem>
+												))}
+											</DropdownMenu>
+										</Dropdown>
+									</DropdownItem>
+									<DropdownItem key="status" textValue="status" hideSelectedIcon>
+										<Dropdown closeOnSelect={false}>
+											<DropdownTrigger>Status</DropdownTrigger>
+											<DropdownMenu
+												aria-label="Single selection example"
+												variant="flat"
+												selectionMode="multiple"
+												selectedKeys={filterKeys}
+												onSelectionChange={(keys) => {
+													setFilterType("status");
+													setFilterKeys(keys);
+												}}
+											>
+												{patientStatus.map((item) => (
+													<DropdownItem textValue={item} key={item}>
+														{item}
+													</DropdownItem>
+												))}
+											</DropdownMenu>
+										</Dropdown>
+									</DropdownItem>
 								</DropdownMenu>
 							</Dropdown>
 							<Button isIconOnly variant="bordered" size="lg">
@@ -69,7 +118,7 @@ const Patients = () => {
 						</div>
 					</div>
 					<div className="p-4 mt-5 bg-white rounded-lg shadow-md ">
-						<TablePatients filterType={filterType} />
+						<TablePatients filterType={filterType} filterKeys={[...filterKeys]} />
 					</div>
 				</div>
 			</div>

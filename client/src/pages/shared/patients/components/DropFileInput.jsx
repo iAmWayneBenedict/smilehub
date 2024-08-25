@@ -17,9 +17,10 @@ const DropFileInput = (props) => {
 
 	// on file drop
 	const onFileDrop = (e) => {
-		const newFile = e.target.files[0];
-		if (newFile) {
-			const updatedList = [...fileList, newFile];
+		const newFiles = e.target.files;
+		console.log(e.target.files.length);
+		if (newFiles.length > 0) {
+			const updatedList = [...fileList, ...newFiles];
 			setFileList(updatedList);
 			props.onFileChange(updatedList);
 		}
@@ -51,6 +52,7 @@ const DropFileInput = (props) => {
 				<input
 					type="file"
 					value=""
+					multiple={"multiple"}
 					className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer "
 					onChange={onFileDrop}
 				/>

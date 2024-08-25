@@ -250,6 +250,7 @@ export default function TableDentists() {
 	// render the table
 	return (
 		<Table
+			aria-label="Dentists table"
 			isHeaderSticky={false}
 			bottomContentPlacement="outside"
 			classNames={{

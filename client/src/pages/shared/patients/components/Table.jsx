@@ -22,28 +22,68 @@ import { X, Search, Plus, ChevronDown, EllipsisVertical } from "lucide-react";
 import { capitalize } from "@/lib/utils";
 import { useAppStore } from "@/store/zustand";
 import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import PatientsAPIManager from "@/services/api/managers/patients/PatientsAPIManager";
+import { useMutation } from "@tanstack/react-query";
+import { useEffect } from "react";
 
 const INITIAL_VISIBLE_COLUMNS = [
-	"name",
-	"diagnosis",
-	"status",
-	"last_appointment",
-	"next_appointment",
+	"FULLNAME",
+	"DIAGNOSIS",
+	"STATUS",
+	"Last_Appointment",
+	"Next_Appointment",
 	"options",
 ];
 
-export default function TablePatients({ filterType }) {
+export default function TablePatients({
+	filterType: statusFilterProp,
+	filterKeys: filterKeysProp,
+}) {
+	const [filterKeys, setFilterKeys] = React.useState(filterKeysProp);
 	const [filterValue, setFilterValue] = React.useState("");
 	const [selectedKeys, setSelectedKeys] = React.useState(new Set([]));
 	const [visibleColumns, setVisibleColumns] = React.useState(new Set(INITIAL_VISIBLE_COLUMNS));
-	const [statusFilter, setStatusFilter] = React.useState("all");
+	const [statusFilter, setStatusFilter] = React.useState(statusFilterProp);
 	const [rowsPerPage, setRowsPerPage] = React.useState(10);
 	const navigate = useNavigate();
 	const [sortDescriptor, setSortDescriptor] = React.useState({
 		column: "name",
 		direction: "ascending",
 	});
+
+	useEffect(() => {
+		setFilterKeys(filterKeysProp);
+		setStatusFilter(statusFilterProp);
+	}, [filterKeysProp, statusFilterProp]);
+
 	const { setAlertDialogDetails, setNewAppointmentModal } = useAppStore();
+
+	const { data, isLoading, isSuccess } = useQuery({
+		queryKey: ["patients-appointments"],
+		queryFn: PatientsAPIManager.getAppointmentPatient,
+	});
+
+	const mutationArchive = useMutation({
+		mutationFn: PatientsAPIManager.postChangeStatusPatient,
+		onSuccess: () => {
+			setAlertDialogDetails({
+				isOpen: true,
+				type: "success",
+				title: "Success!",
+				message: "Patient archived successfully",
+			});
+		},
+		onError: (error) => {
+			console.error(error);
+			setAlertDialogDetails({
+				isOpen: true,
+				type: "danger",
+				title: "Error!",
+				message: "An error occurred while archiving the patient",
+			});
+		},
+	});
 
 	const [page, setPage] = React.useState(1);
 
@@ -56,16 +96,29 @@ export default function TablePatients({ filterType }) {
 	}, [visibleColumns]);
 
 	const filteredItems = React.useMemo(() => {
-		let filteredPatients = [...patients];
+		if (!isSuccess) return [];
+		let filteredPatients = [...data.patients];
 
 		if (hasSearchFilter) {
 			filteredPatients = filteredPatients.filter((patient) => {
-				return patient.name.toLowerCase().includes(filterValue?.toLowerCase());
+				return patient.FULLNAME.toLowerCase().includes(filterValue?.toLowerCase());
+			});
+		}
+		if (statusFilter === "diagnosis") {
+			if (filterKeys.length === 1) return filteredPatients;
+			filteredPatients = filteredPatients.filter((patient) => {
+				return filterKeys.includes(patient.DIAGNOSIS);
+			});
+		}
+		if (statusFilter === "status") {
+			if (filterKeys.length === 1) return filteredPatients;
+			filteredPatients = filteredPatients.filter((patient) => {
+				return filterKeys.includes(patient.STATUS);
 			});
 		}
 
 		return filteredPatients;
-	}, [patients, filterValue, statusFilter]);
+	}, [data, isSuccess, filterValue, statusFilter, filterKeys]);
 
 	const items = React.useMemo(() => {
 		const start = (page - 1) * rowsPerPage;
@@ -87,24 +140,48 @@ export default function TablePatients({ filterType }) {
 		const cellValue = appointment[columnKey];
 		const handleAction = (key) => {
 			if (key === "view") {
-				navigate("/admin/patients/info");
+				navigate("/admin/patients/info/" + appointment.ID);
+			} else if (key === "edit") {
+				navigate("/admin/patients/edit/" + appointment.ID);
+			} else if (key === "archive") {
+				setAlertDialogDetails({
+					isOpen: true,
+					type: "warning",
+					title: "Archive Patient",
+					message: "Are you sure you want to archive this patient?",
+					dialogType: "confirm",
+					confirmCallback: () => {
+						mutationArchive.mutate({ ID: appointment.ID, ROLE: "ARCHIVE" });
+					},
+				});
+			} else if (key === "patient") {
+				setAlertDialogDetails({
+					isOpen: true,
+					type: "warning",
+					title: "Unarchive Patient",
+					message: "Are you sure you want to unarchive this patient?",
+					dialogType: "confirm",
+					confirmCallback: () => {
+						mutationArchive.mutate({ ID: appointment.ID, ROLE: "PATIENT" });
+					},
+				});
 			}
 		};
 		switch (columnKey) {
-			case "name":
+			case "FULLNAME":
 				return (
 					<div className="flex flex-col">
 						<p className="capitalize text-bold text-small">{cellValue}</p>
 					</div>
 				);
-			case "diagnosis":
+			case "DIAGNOSIS":
 				return (
 					<div className="flex justify-center w-full">
 						<p className="capitalize text-bold text-small">{cellValue}</p>
 					</div>
 				);
-			case "status":
-				if (cellValue === "Successful") {
+			case "STATUS":
+				if (cellValue === "Completed") {
 					return (
 						<div className="flex justify-center w-full">
 							<Chip
@@ -114,11 +191,11 @@ export default function TablePatients({ filterType }) {
 								}}
 								color="success"
 							>
-								Successful
+								Completed
 							</Chip>
 						</div>
 					);
-				} else if (cellValue === "On Progress") {
+				} else if (cellValue === "Pending") {
 					return (
 						<div className="flex justify-center w-full">
 							<Chip
@@ -128,11 +205,11 @@ export default function TablePatients({ filterType }) {
 								}}
 								color="primary"
 							>
-								On Progress
+								Pending
 							</Chip>
 						</div>
 					);
-				} else
+				} else if (cellValue === "Cancelled") {
 					return (
 						<div className="flex justify-center w-full">
 							<Chip
@@ -146,13 +223,15 @@ export default function TablePatients({ filterType }) {
 							</Chip>
 						</div>
 					);
-			case "last_appointment":
+				}
+				break;
+			case "Last_Appointment":
 				return (
 					<div className="flex justify-center w-full">
 						<p className="capitalize text-bold text-small">{cellValue}</p>
 					</div>
 				);
-			case "next_appointment":
+			case "Next_Appointment":
 				return (
 					<div className="flex justify-center w-full">
 						<p className="capitalize text-bold text-small">{cellValue}</p>
@@ -161,18 +240,47 @@ export default function TablePatients({ filterType }) {
 			case "options":
 				return (
 					<div className="relative flex items-end justify-end gap-2">
-						<Dropdown>
-							<DropdownTrigger>
+						<Dropdown aria-label="dropdown-options">
+							<DropdownTrigger aria-label="trigger-dropdown">
 								<Button isIconOnly size="sm" variant="light">
 									<EllipsisVertical className="text-default-300" />
 								</Button>
 							</DropdownTrigger>
-							<DropdownMenu onAction={handleAction}>
-								<DropdownItem key={"view"}>View</DropdownItem>
-								<DropdownItem key={"edit"}>Edit</DropdownItem>
-								<DropdownItem key={"delete"} className="text-danger" color="danger">
-									Delete
+							<DropdownMenu onAction={handleAction} aria-label="menu-dropdown">
+								<DropdownItem key={"view"} aria-label="view">
+									View
 								</DropdownItem>
+								<DropdownItem key={"edit"} aria-label="edit">
+									Edit
+								</DropdownItem>
+								<DropdownItem
+									key={"archive"}
+									className="text-warning"
+									aria-label="archive"
+									color="warning"
+								>
+									Archive
+								</DropdownItem>
+								{appointment["ROLE"] == "ARCHIVE" && (
+									<DropdownItem
+										key={"archive"}
+										className="text-warning"
+										aria-label="archive"
+										color="warning"
+									>
+										Archive
+									</DropdownItem>
+								)}
+								{appointment["ROLE"] == "PATIENT" && (
+									<DropdownItem
+										key={"patient"}
+										className="text-warning"
+										aria-label="patient"
+										color="warning"
+									>
+										Unarchive
+									</DropdownItem>
+								)}
 							</DropdownMenu>
 						</Dropdown>
 					</div>
@@ -272,6 +380,7 @@ export default function TablePatients({ filterType }) {
 
 	return (
 		<Table
+			aria-label="Patients Table"
 			isHeaderSticky={false}
 			bottomContentPlacement="outside"
 			classNames={{
@@ -283,7 +392,7 @@ export default function TablePatients({ filterType }) {
 			topContentPlacement="outside"
 			onSelectionChange={setSelectedKeys}
 			onSortChange={setSortDescriptor}
-			topContent={filterType === "search" ? topContent : null}
+			topContent={statusFilterProp === "search" ? topContent : null}
 			bottomContent={bottomContent}
 		>
 			<TableHeader columns={headerColumns}>
@@ -299,7 +408,7 @@ export default function TablePatients({ filterType }) {
 			</TableHeader>
 			<TableBody emptyContent={"No patients found"} items={sortedItems}>
 				{(item) => (
-					<TableRow key={item.id}>
+					<TableRow key={item.ID}>
 						{(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
 					</TableRow>
 				)}
@@ -309,4 +418,5 @@ export default function TablePatients({ filterType }) {
 }
 TablePatients.propTypes = {
 	filterType: PropTypes.string,
+	filterKeys: PropTypes.array,
 };

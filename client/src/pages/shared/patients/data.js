@@ -1,10 +1,10 @@
 import React from "react";
 const columns = [
-	{ name: "NAME", uid: "name", sortable: true },
-	{ name: "DIAGNOSIS", uid: "diagnosis", sortable: true },
-	{ name: "STATUS", uid: "status", sortable: true },
-	{ name: "LAST APPOINTMENT", uid: "last_appointment", sortable: true },
-	{ name: "NEXT APPOINTMENT", uid: "next_appointment", sortable: true },
+	{ name: "NAME", uid: "FULLNAME", sortable: true },
+	{ name: "DIAGNOSIS", uid: "DIAGNOSIS", sortable: true },
+	{ name: "STATUS", uid: "STATUS", sortable: true },
+	{ name: "LAST APPOINTMENT", uid: "Last_Appointment", sortable: true },
+	{ name: "NEXT APPOINTMENT", uid: "Next_Appointment", sortable: true },
 	{ name: "OPTIONS", uid: "options" },
 ];
 
