@@ -86,6 +86,40 @@ export const sortTime = (timeArr, time) => {
 	return temp;
 };
 
+export const getOrdinalSuffix = (day) => {
+	if (day > 3 && day < 21) return "th";
+	switch (day % 10) {
+		case 1:
+			return "st";
+		case 2:
+			return "nd";
+		case 3:
+			return "rd";
+		default:
+			return "th";
+	}
+};
+
+export const getThisWeekMondayAndFriday = () => {
+	const today = new Date();
+	const day = today.getDay();
+	const diff = today.getDate() - day + (day == 0 ? -6 : 1); // adjust when day is sunday
+	const monday = new Date(today.setDate(diff));
+	const friday = new Date(today.setDate(diff + 4));
+	return {
+		monday: {
+			year: monday.getFullYear(),
+			month: monday.getMonth(),
+			day: monday.getDate(),
+		},
+		friday: {
+			year: friday.getFullYear(),
+			month: friday.getMonth(),
+			day: friday.getDate(),
+		},
+	};
+};
+
 export const months = [
 	"January",
 	"February",

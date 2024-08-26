@@ -35,6 +35,7 @@ import ItemGroupProduct from "./pages/shared/inventory/layouts/ItemGroup/layouts
 import Item from "./pages/shared/inventory/layouts/ItemList/layout/Item";
 import AddItem from "./pages/shared/inventory/layouts/ItemList/layout/AddItem";
 import Tasks from "./pages/shared/tasks";
+import Calendar from "./pages/shared/calendar";
 
 function App() {
 	const navigate = useNavigate();
@@ -70,7 +71,10 @@ function App() {
 								path="dashboard"
 								element={<LayoutWrapper child={<AdminDashboard />} />}
 							/>
-
+							<Route
+								path="calendar"
+								element={<LayoutWrapper child={<Calendar />} />}
+							/>
 							<Route path="patients">
 								<Route index element={<LayoutWrapper child={<Patients />} />} />
 								<Route
