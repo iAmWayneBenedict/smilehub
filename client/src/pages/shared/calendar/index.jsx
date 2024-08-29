@@ -105,8 +105,8 @@ const Calendar = () => {
 	}, [isSuccess, filterKeys])
 
 	const handlePopulateCalendarSchema = (arrData) => {
-		const random_number = Math.floor(Math.random() * 5);
 		return arrData?.map(item => {
+				const random_number = Math.floor(Math.random() * 5);
 				const [startTime, endTime] = item.APPOINTMENT_TIME.split(" - ");
 				return {
 					Id: item.ID,
