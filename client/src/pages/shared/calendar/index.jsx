@@ -114,8 +114,8 @@ const Calendar = () => {
 					Time: item.APPOINTMENT_TIME,
 					Purpose: item.PURPOSE,
 					DentistName: "Dr. John Doe",
-					StartTime: getISODateString(getISODateString(`${item.APPOINTMENT_DATE} ${startTime}`)),
-					EndTime: getISODateString(getISODateString(`${item.APPOINTMENT_DATE} ${endTime}`)),
+					StartTime: getISODateString(`${item.APPOINTMENT_DATE} ${startTime}`),
+					EndTime: getISODateString(`${item.APPOINTMENT_DATE} ${endTime}`),
 					// random color
 					...COLORS[random_number]
 
