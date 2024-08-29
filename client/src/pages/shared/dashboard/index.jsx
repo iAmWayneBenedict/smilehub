@@ -81,10 +81,10 @@ const AdminDashboard = () => {
 								}}
 							>
 								<Tab key="new-appointments" title="NEW APPOINTMENTS">
-									<TableDashboard />
+									<TableDashboard type={"new"} />
 								</Tab>
 								<Tab key="completed-appointments" title="COMPLETED APPOINTMENTS">
-									<TableDashboard />
+									<TableDashboard type={"completed"} />
 								</Tab>
 							</Tabs>
 						</div>

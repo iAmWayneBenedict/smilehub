@@ -119,6 +119,10 @@ export const getThisWeekMondayAndFriday = () => {
 		},
 	};
 };
+export const getISODateString = (dateString) => {
+	const dateObject = new Date(dateString);
+	return dateObject.toISOString()
+}
 
 export const months = [
 	"January",

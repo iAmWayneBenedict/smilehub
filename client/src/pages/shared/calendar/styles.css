@@ -8,7 +8,7 @@
 	border-radius: 8px;
 	background: none !important;
 	margin-left: 10px;
-	pointer-events: none !important;
+/*	pointer-events: none !important;*/
 }
 
 .event-template.e-schedule .e-vertical-view .e-content-wrap .e-appointment .e-appointment-details {

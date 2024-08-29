@@ -1,10 +1,12 @@
 import React from "react";
 const columns = [
-	{ name: "TIME", uid: "time", sortable: true },
-	{ name: "DATE", uid: "date", sortable: true },
-	{ name: "PATIENT NAME", uid: "patient_name", sortable: true },
+	{ name: "TIME", uid: "APPOINTMENT_TIME", sortable: true },
+	{ name: "DATE", uid: "APPOINTMENT_DATE", sortable: true },
+	{ name: "PATIENT NAME", uid: "FULLNAME", sortable: true },
+	{ name: "PATIENT AGE", uid: "patient_age", sortable: true },
 	{ name: "DENTIST", uid: "dentist", sortable: true },
-	{ name: "ACTIONS", uid: "actions" },
+	{ name: "STATUS", uid: "STATUS" },
+	{ name: "OPTIONS", uid: "options" },
 ];
 
 const statusOptions = [

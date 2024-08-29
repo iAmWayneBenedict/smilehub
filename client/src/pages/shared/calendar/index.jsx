@@ -12,96 +12,47 @@ import {
 } from "@syncfusion/ej2-react-schedule";
 import PropTypes from "prop-types";
 import { Browser, extend, Internationalization, registerLicense } from "@syncfusion/ej2-base";
-import { useRef } from "react";
+import {useCallback, useEffect, useRef, useState} from "react";
 registerLicense(import.meta.env.VITE_CALENDAR_LICENCE_KEY);
 import * as dataSource from "./datasource.json";
 import { UserRound, FileText, Clock4 } from "lucide-react";
 import "./styles.css";
-import { Button } from "@nextui-org/react";
+import {Button, CircularProgress, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger} from "@nextui-org/react";
 import { Printer, Filter, CircleHelp } from "lucide-react";
-import { getOrdinalSuffix, getThisWeekMondayAndFriday, months } from "@/lib/utils";
+import {
+    getISODateString,
+    getOrdinalSuffix,
+    getThisWeekMondayAndFriday,
+    months,
+    patientStatus,
+    purpose
+} from "@/lib/utils";
+import {useQuery} from "@tanstack/react-query";
+import AppointmentsAPIManager from "@/services/api/managers/appointments/AppointmentsAPIManager.js";
 
-const dataInfo = [
+const COLORS = [
 	{
-		Id: 1,
-		Subject: "Pending",
-		Tags: "Eco day, Forest conserving, Earth & its resources",
-		Description:
-			"A day that creates awareness to promote the healthy planet and reduce the air pollution crisis on nature earth.",
-		StartTime: "2024-08-26T00:30:00.000Z",
-		EndTime: "2024-08-26T01:30:00.000Z",
-		ImageName: "environment-day",
-		DentistName: "Dr. John Doe",
-		Purpose: "Checkup",
-		Time: "8:30 AM - 9:30 AM",
 		PrimaryColor: "#fbdddd",
 		SecondaryColor: "#eb5757",
 		HighlightColor: "#ffc5c5",
-	},
-	{
-		Id: 2,
-		Subject: "Pending",
-		Tags: "Reduce mental stress, Follow good food habits",
-		Description:
-			"A day that raises awareness on different health issues. It marks the anniversary of the foundation of WHO.",
-		StartTime: "2024-08-27T03:30:00.000Z",
-		EndTime: "2024-08-27T04:30:00.000Z",
-		DentistName: "Dr. John Doe",
-		Purpose: "Teeth Whitening",
-		Time: "11:30 AM - 12:30 AM",
-		ImageName: "health-day",
+	},{
 		PrimaryColor: "#d4efdf",
 		SecondaryColor: "#27ae60",
 		HighlightColor: "#d8ffe8",
-	},
-	{
-		Id: 3,
-		Subject: "Pending",
-		Tags: "Life threatening cancer effects, Palliative care",
-		Description:
-			"A day that raises awareness on cancer and its preventive measures. Early detection saves life.",
-		StartTime: "2024-08-28T01:00:00.000Z",
-		EndTime: "2024-08-28T02:00:00.000Z",
-		DentistName: "Dr. John Doe",
-		Purpose: "Wisdom Tooth Removal",
-		Time: "9:00 AM - 10:00 AM",
-		ImageName: "cancer-day",
+	}, {
 		PrimaryColor: "#d5e6fb",
 		SecondaryColor: "#2f80ed",
 		HighlightColor: "#c1dcff",
-	},
-	{
-		Id: 4,
-		Subject: "Pending",
-		Tags: "Stress-free, Smile, Resolve frustration and bring happiness",
-		Description: "A general idea is to promote happiness and smile around the world.",
-		StartTime: "2024-08-29T01:30:00.000Z",
-		EndTime: "2024-08-29T02:30:00.000Z",
-		DentistName: "Dr. John Doe",
-		Purpose: "Pasta",
-		Time: "9:30 AM - 10:30 AM",
-		ImageName: "happiness-day",
+	}, {
 		PrimaryColor: "#fbdddd",
 		SecondaryColor: "#eb5757",
 		HighlightColor: "#ffc5c5",
-	},
-	{
-		Id: 5,
-		Subject: "Pending",
-		Tags: "Diverse cultural heritage, strengthen peace",
-		Description:
-			"A day that raises awareness on the role of tourism and its effect on social and economic values.",
-		StartTime: "2024-08-30T04:00:00.000Z",
-		EndTime: "2024-08-30T05:00:00.000Z",
-		DentistName: "Dr. John Doe",
-		Purpose: "Cleaning",
-		Time: "12:00 PM - 1:00 PM",
-		ImageName: "tourism-day",
+	}, {
 		PrimaryColor: "#f9f1d8",
 		SecondaryColor: "#e2b93b",
 		HighlightColor: "#fff3cd",
-	},
-];
+	}
+]
 const Calendar = () => {
 	const scheduleObj = useRef(null);
 	const currentDate = new Date();
@@ -109,8 +60,68 @@ const Calendar = () => {
 	const currentMonth = currentDate.getMonth();
 	const currentDay = currentDate.getDate();
 	const { monday, friday } = getThisWeekMondayAndFriday();
-	const data = extend([], dataInfo, null, true);
 	let instance = new Internationalization();
+	const [isCompletedData, setIsCompletedData] = useState(false);
+	const [weeklyAppointmentsData, setWeeklyAppointmentsData] = useState(null)
+	const [filterType, setFilterType] = useState("all");
+	const [selectedKeys, setSelectedKeys] = useState(new Set(["text"]));
+	const [filterKeys, setFilterKeys] = useState(new Set(["text"]));
+
+	const { data:appointmentsDataRequest, isLoading, isSuccess, refetch } = useQuery({
+		queryKey: ["calendarAppointments"],
+		queryFn: AppointmentsAPIManager.getPatientAppointments,
+	});
+
+	useEffect(() => {
+
+		let newAppointmentData = []
+		if(isSuccess) {
+			newAppointmentData = handlePopulateCalendarSchema(appointmentsDataRequest)
+			setWeeklyAppointmentsData(newAppointmentData);
+			setIsCompletedData(true)
+		}
+	}, [appointmentsDataRequest, isSuccess])
+
+	useEffect(() => {
+		if(!isSuccess) return
+
+		// reset the data to the original
+		if(filterKeys.size === 1) {
+			setWeeklyAppointmentsData(handlePopulateCalendarSchema(appointmentsDataRequest))
+			setIsCompletedData(true)
+
+			return
+		}
+		let filteredAppointmentData = null
+		const filterKeysArr = [...filterKeys]
+
+//		// filter data based on the selected filter keys
+		if(filterType === "purpose")
+		filteredAppointmentData = appointmentsDataRequest.filter(item => filterKeysArr.includes(item.PURPOSE))
+		else filteredAppointmentData = appointmentsDataRequest.filter(item => filterKeysArr.includes(item.STATUS))
+		setWeeklyAppointmentsData(handlePopulateCalendarSchema(filteredAppointmentData))
+		setIsCompletedData(true)
+
+	}, [isSuccess, filterKeys])
+
+	const handlePopulateCalendarSchema = (arrData) => {
+		const random_number = Math.floor(Math.random() * 5);
+		return arrData?.map(item => {
+				const [startTime, endTime] = item.APPOINTMENT_TIME.split(" - ");
+				return {
+					Id: item.ID,
+					Subject: item.STATUS,
+					Time: item.APPOINTMENT_TIME,
+					Purpose: item.PURPOSE,
+					DentistName: "Dr. John Doe",
+					StartTime: getISODateString(getISODateString(`${item.APPOINTMENT_DATE} ${startTime}`)),
+					EndTime: getISODateString(getISODateString(`${item.APPOINTMENT_DATE} ${endTime}`)),
+					// random color
+					...COLORS[random_number]
+
+				}
+			})
+	}
 
 	// This function is used to create the event template which is used to display the event content in the Schedule
 	const eventTemplate = (props) => {
@@ -211,9 +222,40 @@ const Calendar = () => {
 	const onPrintClick = () => {
 		scheduleObj.current.print();
 	};
+	console.log(weeklyAppointmentsData)
+	const SchedulerElement = useCallback(() => {
+		console.log(weeklyAppointmentsData)
+		return (
+			<ScheduleComponent
+				eventSettings={{
+					dataSource: weeklyAppointmentsData,
+				}}
+				showHeaderBar={false}
+				selectedDate={new Date(currentYear, currentMonth, currentDay + 1)}
+				workDays={[1, 2, 3, 4, 5]}
+				workHours={{ start: "08:00", end: "18:00" }}
+				showWeekend={false}
+				cssClass="event-template"
+				startHour="08:00"
+				endHour="18:00"
+				readonly={true}
+				ref={scheduleObj}
+				dateHeaderTemplate={dateHeaderTemplate}
+				eventRendered={onEventRendered}
+			>
+				<ViewsDirective>
+					<ViewDirective
+						option={Browser.isDevice ? "Day" : "Week"}
+						eventTemplate={eventTemplate}
+					/>
+				</ViewsDirective>
+				<Inject services={[Day, Week, TimelineViews, Resize, DragAndDrop, Print]} />
+			</ScheduleComponent>
+		)
+	}, [weeklyAppointmentsData])
 	return (
 		<div style={{ flex: 1 }} className="bg-white">
-			<div className="w-full h-full">
+			<div className="w-full h-full flex flex-col">
 				<div className="p-5">
 					<h3 className="text-lg font-darkText">Schedule</h3>
 					<div className="flex flex-wrap items-center justify-between ~px-6/14">
@@ -225,9 +267,70 @@ const Calendar = () => {
 							</h6>
 						</div>
 						<div className="flex gap-3">
-							<Button isIconOnly variant="bordered" radius="sm" size="lg">
-								<Filter />
-							</Button>
+							<Dropdown closeOnSelect={false}>
+								<DropdownTrigger>
+									<Button isIconOnly variant="bordered" size="lg">
+										<Filter />
+									</Button>
+								</DropdownTrigger>
+								<DropdownMenu
+									aria-label="Single selection example"
+									variant="flat"
+									disallowEmptySelection
+									selectionMode="single"
+									selectedKeys={selectedKeys}
+									onSelectionChange={setSelectedKeys}
+								>
+									<DropdownItem
+										key="diagnosis"
+										textValue="diagnosis"
+										hideSelectedIcon
+									>
+										<Dropdown closeOnSelect={false}>
+											<DropdownTrigger>Purpose</DropdownTrigger>
+											<DropdownMenu
+												aria-label="Single selection example"
+												variant="flat"
+												selectionMode="multiple"
+												selectedKeys={filterKeys}
+												onSelectionChange={(keys) => {
+													setFilterType("purpose");
+													setFilterKeys(keys);
+													setIsCompletedData(false);
+												}}
+											>
+												{purpose.map((item) => (
+													<DropdownItem textValue={item} key={item}>
+														{item}
+													</DropdownItem>
+												))}
+											</DropdownMenu>
+										</Dropdown>
+									</DropdownItem>
+									<DropdownItem key="status" textValue="status" hideSelectedIcon>
+										<Dropdown closeOnSelect={false}>
+											<DropdownTrigger>Status</DropdownTrigger>
+											<DropdownMenu
+												aria-label="Single selection example"
+												variant="flat"
+												selectionMode="multiple"
+												selectedKeys={filterKeys}
+												onSelectionChange={(keys) => {
+													setFilterType("status");
+													setFilterKeys(keys);
+													setIsCompletedData(false);
+												}}
+											>
+												{patientStatus.map((item) => (
+													<DropdownItem textValue={item} key={item}>
+														{item}
+													</DropdownItem>
+												))}
+											</DropdownMenu>
+										</Dropdown>
+									</DropdownItem>
+								</DropdownMenu>
+							</Dropdown>
 							<Button
 								isIconOnly
 								variant="bordered"
@@ -243,31 +346,18 @@ const Calendar = () => {
 						</div>
 					</div>
 				</div>
-				<ScheduleComponent
-					eventSettings={{
-						dataSource: data,
-					}}
-					showHeaderBar={false}
-					selectedDate={new Date(currentYear, currentMonth, currentDay + 1)}
-					workDays={[1, 2, 3, 4, 5]}
-					workHours={{ start: "08:00", end: "18:00" }}
-					showWeekend={false}
-					cssClass="event-template"
-					startHour="08:00"
-					endHour="18:00"
-					readonly={true}
-					ref={scheduleObj}
-					dateHeaderTemplate={dateHeaderTemplate}
-					eventRendered={onEventRendered}
-				>
-					<ViewsDirective>
-						<ViewDirective
-							option={Browser.isDevice ? "Day" : "Week"}
-							eventTemplate={eventTemplate}
-						/>
-					</ViewsDirective>
-					<Inject services={[Day, Week, TimelineViews, Resize, DragAndDrop, Print]} />
-				</ScheduleComponent>
+				{
+					!isCompletedData ? (
+						<div style={{flex:1}} className="flex justify-center items-center">
+							<div className="flex flex-col items-center gap-5">
+								<h1>Loading Calendar ...</h1>
+								<CircularProgress color="primary" aria-label="Loading..."/>
+							</div>
+						</div>
+					) : (
+						<SchedulerElement />
+					)
+				}
 			</div>
 		</div>
 	);

@@ -23,10 +23,10 @@ const Appointments = () => {
 						}}
 					>
 						<Tab key="new-appointments" title="NEW APPOINTMENTS">
-							<TableAppointments />
+							<TableAppointments type={"new"} />
 						</Tab>
 						<Tab key="completed-appointments" title="COMPLETED APPOINTMENTS">
-							<TableAppointments />
+							<TableAppointments type={"completed"} />
 						</Tab>
 					</Tabs>
 				</div>

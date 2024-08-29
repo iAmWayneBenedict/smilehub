@@ -30,6 +30,7 @@ import { capitalize } from "@/lib/utils";
 import { useAppStore } from "@/store/zustand";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import AppointmentsAPIManager from "@/services/api/managers/appointments/AppointmentsAPIManager";
+import PropTypes from "prop-types"
 
 //! change this based on the columns in the db
 const INITIAL_VISIBLE_COLUMNS = [
@@ -40,7 +41,7 @@ const INITIAL_VISIBLE_COLUMNS = [
 	"STATUS",
 ];
 
-export default function TableAppointments() {
+export default function TableAppointments({type}) {
 	const [filterValue, setFilterValue] = React.useState("");
 	const [selectedKeys, setSelectedKeys] = React.useState(new Set([]));
 	const [visibleColumns, setVisibleColumns] = React.useState(new Set(INITIAL_VISIBLE_COLUMNS));
@@ -119,7 +120,12 @@ export default function TableAppointments() {
 	// filters the appointments based on the search value
 	const filteredItems = React.useMemo(() => {
 		if (isLoading) return [];
-		let filteredAppointments = [...data];
+		let filteredAppointments = [];
+		if(type === "completed") {
+			filteredAppointments = data?.filter(item => item.STATUS === "Completed")
+		} else {
+			filteredAppointments = data?.filter(item => item.STATUS !== "Completed")
+		}
 
 		if (hasSearchFilter) {
 			filteredAppointments = filteredAppointments.filter((appointment) => {
@@ -508,4 +514,7 @@ export default function TableAppointments() {
 			</TableBody>
 		</Table>
 	);
+}
+TableAppointments.propTypes = {
+	type: PropTypes.string
 }

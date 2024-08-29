@@ -14,20 +14,36 @@ import {
 	DropdownItem,
 } from "@nextui-org/react";
 import { columns, appointments } from "./data";
-import { EllipsisVertical } from "lucide-react";
+import { X,
+	Clock,
+	CheckCheck,
+	CalendarDays,
+	Trash2, } from "lucide-react";
+import PropTypes from "prop-types"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import AppontmentsAPIManager from "@/services/api/managers/appointments/AppointmentsAPIManager.js";
+import {useAppStore} from "@/store/zustand.js";
+import AppointmentsAPIManager from "@/services/api/managers/appointments/AppointmentsAPIManager.js";
 
-const INITIAL_VISIBLE_COLUMNS = ["time", "date", "patient_name", "dentist", "actions"];
+const INITIAL_VISIBLE_COLUMNS = [
+	"APPOINTMENT_TIME",
+	"APPOINTMENT_DATE",
+	"FULLNAME",
+	"dentist",
+	"STATUS",
+];
 
-export default function TableDashboard() {
+export default function TableDashboard({type}) {
 	const [filterValue, setFilterValue] = React.useState("");
 	const [selectedKeys, setSelectedKeys] = React.useState(new Set([]));
 	const [visibleColumns, setVisibleColumns] = React.useState(new Set(INITIAL_VISIBLE_COLUMNS));
 	const [statusFilter, setStatusFilter] = React.useState("all");
 	const [rowsPerPage, setRowsPerPage] = React.useState(5);
 	const [sortDescriptor, setSortDescriptor] = React.useState({
-		column: "time",
+		column: "APPOINTMENT_TIME",
 		direction: "ascending",
 	});
+	const {setNewScheduleModal,setAlertDialogDetails} = useAppStore()
 
 	// handle header columns
 	const headerColumns = React.useMemo(() => {
@@ -36,23 +52,75 @@ export default function TableDashboard() {
 		return columns.filter((column) => Array.from(visibleColumns).includes(column.uid));
 	}, [visibleColumns]);
 
+	const {data, isSuccess, isLoading, refetch} = useQuery({
+		queryKey: ['dashboardAppointments'],
+		queryFn: AppontmentsAPIManager.getPatientAppointments
+	})
+
+	const changeStatusMutation = useMutation({
+		mutationFn: AppointmentsAPIManager.postChangeStatusAppointment,
+		onSuccess: () => {
+			setAlertDialogDetails({
+				isOpen: true,
+				type: "success",
+				title: "Success!",
+				message: "Appointment status changed successfully!",
+			});
+			refetch();
+		},
+		onError: (error) => {
+			setAlertDialogDetails({
+				isOpen: true,
+				type: "danger",
+				title: "Error!",
+				message: error
+					? error.message
+					: "An error occurred while changing the status of the appointment",
+			});
+		},
+	});
+	const deleteAppointmentMutation = useMutation({
+		mutationFn: AppointmentsAPIManager.postDeleteAppointment,
+		onSuccess: () => {
+			setAlertDialogDetails({
+				isOpen: true,
+				type: "success",
+				title: "Success!",
+				message: "Appointment status deleted successfully!",
+			});
+			refetch();
+		},
+		onError: (error) => {
+			setAlertDialogDetails({
+				isOpen: true,
+				type: "danger",
+				title: "Error!",
+				message: error ? error.message : "An error occurred while deleting the appointment",
+			});
+		},
+	});
+
 	// filter appointments
 	const filteredItems = React.useMemo(() => {
-		let filteredUsers = [...appointments];
-
-		return filteredUsers;
-	}, [appointments, filterValue, statusFilter]);
+		if(isLoading) return []
+		let filteredAppointments = [];
+		if(type === "completed") {
+			filteredAppointments = data?.filter(item => item.STATUS === "Completed")
+		}else {
+			filteredAppointments = data?.filter(item => item.STATUS !== "Completed")
+		}
+		//	limit to 5 items only
+		return filteredAppointments.slice(0,5);
+	}, [type, data, isLoading, isSuccess]);
 
 	// paginate appointments
 	const items = React.useMemo(() => {
-		const start = 1 * rowsPerPage;
-		const end = start + rowsPerPage;
-
-		return filteredItems.slice(start, end);
-	}, [filteredItems, rowsPerPage]);
+		return filteredItems.slice(0, 5);
+	}, [filteredItems]);
 
 	// sort appointments
 	const sortedItems = React.useMemo(() => {
+		console.log(items)
 		return [...items].sort((a, b) => {
 			const first = a[sortDescriptor.column];
 			const second = b[sortDescriptor.column];
@@ -65,20 +133,102 @@ export default function TableDashboard() {
 	// render cell
 	const renderCell = React.useCallback((appointment, columnKey) => {
 		const cellValue = appointment[columnKey];
+		const handleAction = (key) => {
+			if (key === "reschedule") {
+				setNewScheduleModal({
+					isOpen: true,
+					title: "Change Status",
+					data: {
+						...appointment,
+						APPOINTMENT_DATE: new Date(appointment.APPOINTMENT_DATE),
+					},
+					refetch: refetch,
+				});
+			} else if (key === "delete") {
+				// display the alert dialog
+				setAlertDialogDetails({
+					isOpen: true,
+					title: "Delete Appointment",
+					message: "Are you sure you want to delete this appointment?",
+					type: "danger",
+					dialogType: "confirm",
+				});
+			} else if (key === "cancel") {
+				// display the alert dialog
+				setAlertDialogDetails({
+					isOpen: true,
+					title: "Cancel Appointment",
+					message: "Are you sure you want to cancel this appointment?",
+					type: "warning",
+					dialogType: "confirm",
+					confirmCallback: () => {
+						changeStatusMutation.mutate({
+							ID: appointment.ID,
+							STATUS: "Cancelled",
+						});
+					},
+				});
+			} else if (key === "on_going") {
+				// display the alert dialog
+				setAlertDialogDetails({
+					isOpen: true,
+					title: "Change to 'On Going' Appointment",
+					message: "Are you sure you want to change the status of this appointment?",
+					type: "info",
+					dialogType: "confirm",
+					confirmCallback: () => {
+						changeStatusMutation.mutate({
+							ID: appointment.ID,
+							STATUS: "On-going",
+						});
+					},
+				});
+			} else if (key === "done") {
+				// display the alert dialog
+				setAlertDialogDetails({
+					isOpen: true,
+					title: "Change to 'Done' Appointment",
+					message: "Are you sure you want to change the status of this appointment?",
+					type: "info",
+					dialogType: "confirm",
+					confirmCallback: () => {
+						changeStatusMutation.mutate({
+							ID: appointment.ID,
+							STATUS: "Completed",
+						});
+					},
+				});
+			} else if (key === "pending") {
+				// display the alert dialog
+				setAlertDialogDetails({
+					isOpen: true,
+					title: "Change to 'Pending' Appointment",
+					message: "Are you sure you want to change the status of this appointment?",
+					type: "info",
+					dialogType: "confirm",
+					confirmCallback: () => {
+						changeStatusMutation.mutate({
+							ID: appointment.ID,
+							STATUS: "Pending",
+						});
+					},
+				});
+			}
+		};
 		switch (columnKey) {
-			case "time":
+			case "APPOINTMENT_TIME":
 				return (
 					<div className="flex flex-col min-w-16">
 						<p className="capitalize text-bold text-small">{cellValue}</p>
 					</div>
 				);
-			case "date":
+			case "APPOINTMENT_DATE":
 				return (
 					<div className="flex flex-col min-w-16">
 						<p className="capitalize text-bold text-small">{cellValue}</p>
 					</div>
 				);
-			case "patient_name":
+			case "FULLNAME":
 				return (
 					<div className="flex flex-col min-w-16">
 						<p className="capitalize text-bold text-small">{cellValue}</p>
@@ -87,24 +237,72 @@ export default function TableDashboard() {
 			case "dentist":
 				return (
 					<div className="flex flex-col min-w-16">
-						<p className="capitalize text-bold text-small">{cellValue}</p>
+						<p className="capitalize text-bold text-small">Dr. John Doe</p>
 					</div>
 				);
-			case "actions":
+			case "STATUS":
 				return (
-					<div className="relative flex items-center justify-end gap-2">
-						<Dropdown aria-label="options-dropdown">
+					<div className="relative flex items-center justify-start gap-2">
+						<Dropdown>
 							<DropdownTrigger>
-								<Button isIconOnly size="sm" variant="light">
-									<EllipsisVertical className="text-default-300" />
+								<Button
+									variant="light"
+									aria-label="resched"
+									className="text-primary"
+								>
+									{cellValue}
 								</Button>
 							</DropdownTrigger>
-							<DropdownMenu aria-label="options-menu">
-								<DropdownItem>View</DropdownItem>
-								<DropdownItem>Edit</DropdownItem>
-								<DropdownItem>Delete</DropdownItem>
+							<DropdownMenu variant="faded" onAction={handleAction}>
+								<DropdownItem key={"pending"} startContent={<Clock size={20} />}>
+									Pending
+								</DropdownItem>
+								<DropdownItem key={"on_going"} startContent={<Clock size={20} />}>
+									On-going
+								</DropdownItem>
+								<DropdownItem key={"done"} startContent={<CheckCheck size={20} />}>
+									Done
+								</DropdownItem>
+								<DropdownItem
+									key={"reschedule"}
+									startContent={<CalendarDays size={20} />}
+								>
+									Reschedule
+								</DropdownItem>
+								<DropdownItem
+									key={"cancel"}
+									startContent={<Trash2 size={20} />}
+									className="text-danger"
+									color="danger"
+								>
+									Cancel
+								</DropdownItem>
 							</DropdownMenu>
 						</Dropdown>
+
+						<Button
+							color="danger"
+							size="sm"
+							isIconOnly
+							aria-label="delete"
+							onClick={() => {
+								// display the alert dialog
+								setAlertDialogDetails({
+									isOpen: true,
+									title: "Delete Appointment",
+									message: "Are you sure you want to delete this appointment?",
+									type: "danger",
+									dialogType: "confirm",
+									confirmCallback: () => {
+										deleteAppointmentMutation.mutate({
+											ID: appointment.ID,
+										});
+									},
+								});
+							}}
+						>
+							<X />
+						</Button>
 					</div>
 				);
 			default:
@@ -141,11 +339,14 @@ export default function TableDashboard() {
 			</TableHeader>
 			<TableBody emptyContent={"No appointments found"} items={sortedItems}>
 				{(item) => (
-					<TableRow key={item.id}>
+					<TableRow key={item.ID}>
 						{(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
 					</TableRow>
 				)}
 			</TableBody>
 		</Table>
 	);
+}
+TableDashboard.propTypes = {
+	type: PropTypes.string
 }
