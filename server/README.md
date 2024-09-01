@@ -1136,6 +1136,32 @@ Error (500 Internal Server Error):
 }
 ```
 
+### 22. Fetch Total Patients Count
+
+- **Endpoints:**
+  - `GET /GET/SHARED/STATISTICS/patients.php`  
+    - **Description:** Retrieve total count of patient and total count per gender.
+
+#### Response
+
+```json
+Success (200 OK):
+{
+    "total_patients": "2",
+    "gender_counts": {
+        "Female": "1",
+        "Male": "1"
+    }
+}
+```
+
+```json
+Error (500 Internal Server Error):
+{
+    "message": "Failed to retrieve gender counts."
+}
+```
+
 ## Development Setup
 
 To set up the development environment for the SmileHub API, follow these steps:
