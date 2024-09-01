@@ -30,7 +30,7 @@ function login($conn, $email, $password) {
     }
 
     // Prepare the query to fetch user by email
-    $query = "SELECT * FROM employee_table WHERE EMAIL = ?";
+    $query = "SELECT * FROM employee_table WHERE EMAIL = ? AND STATUS = 'ACTIVE'";
     $stmt = $conn->prepare($query);
     $stmt->bind_param('s', $email);
     $stmt->execute();

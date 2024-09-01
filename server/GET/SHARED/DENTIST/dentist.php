@@ -8,62 +8,62 @@ require_once "../../../cors.php";
  * @param object $data The request data to validate
  * @return array An array of errors if any validation fails
  */
-function validatePatientIdData($data) {
+function validateDentistIdData($data) {
     $errors = [];
 
-    // Validate patient ID
+    // Validate dentist ID
     if (empty($data->ID)) {
-        $errors['ID'] = "Patient ID is required.";
+        $errors['ID'] = "Dentist ID is required.";
     }
 
     return $errors;
 }
 
 /**
- * Function to fetch patient details by ID
+ * Function to fetch dentist details by ID
  *
  * @param mysqli $conn The database connection object
- * @param object $data The request data containing the patient ID
- * @return array|null The patient's details or null if not found
+ * @param object $data The request data containing the dentist ID
+ * @return array|null The dentist's details or null if not found
  */
-function fetchPatientById($conn, $data) {
-    // Fetch patient details for the given ID
-    $query = "SELECT ID, FIRSTNAME, LASTNAME, BIRTHDATE, GENDER, PHONE, EMAIL, ROLE FROM patient_table WHERE ID = ?";
+function fetchDentistById($conn, $data) {
+    // Fetch dentist details for the given ID
+    $query = "SELECT ID, FULLNAME, EMAIL, BIRTHDAY, GENDER, ROLE FROM employee_table WHERE ID = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param('i', $data->ID);
     $stmt->execute();
     $result = $stmt->get_result();
 
-    $patient = null;
+    $dentist = null;
     if ($result->num_rows > 0) {
-        $patient = $result->fetch_assoc();
+        $dentist = $result->fetch_assoc();
     }
 
     $stmt->close();
-    return $patient;
+    return $dentist;
 }
 
 // Get the request data
 $data = json_decode(file_get_contents("php://input"));
 
 // Validate the request data
-$validationErrors = validatePatientIdData($data);
+$validationErrors = validateDentistIdData($data);
 if (!empty($validationErrors)) {
     http_response_code(400);
     echo json_encode(array("errors" => $validationErrors));
     exit;
 }
 
-// Fetch patient details by ID
-$patient = fetchPatientById($conn, $data);
+// Fetch dentist details by ID
+$dentist = fetchDentistById($conn, $data);
 
-// Return the patient details as a JSON response
-if (!empty($patient)) {
+// Return the dentist details as a JSON response
+if (!empty($dentist)) {
     http_response_code(200);
-    echo json_encode($patient);
+    echo json_encode($dentist);
 } else {
     http_response_code(404);
-    echo json_encode(array("message" => "Patient not found."));
+    echo json_encode(array("message" => "Dentist not found."));
 }
 
 $conn->close();

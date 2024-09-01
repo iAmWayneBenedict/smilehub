@@ -1,8 +1,7 @@
 <?php
-require_once "../../connection.php";
-require_once "../../cors.php";
-require_once "../../VALIDATORS/email.php";
-require_once "../../VALIDATORS/password.php";
+require_once "../../../connection.php";
+require_once "../../../cors.php";
+require_once "../../../VALIDATORS/email.php";
 
 /**
  * Function to validate the request data
@@ -12,6 +11,11 @@ require_once "../../VALIDATORS/password.php";
  */
 function validateRequestData($data) {
     $errors = [];
+
+    // Validate dentist id
+    if (empty($data->ID)) {
+        $errors['ID'] = "Dentist ID is required.";
+    }
 
     // Validate full name
     if (empty($data->FULLNAME)) {
@@ -24,27 +28,21 @@ function validateRequestData($data) {
         $errors = array_merge($errors, $emailErrors);
     }
 
-    // Validate password
-    $passwordErrors = validatePassword($data->PASSWORD);
-    if (!empty($passwordErrors)) {
-        $errors = array_merge($errors, $passwordErrors);
-    }
-
     return $errors;
 }
 
 /**
- * Function to insert a new user into the database
+ * Function to update dentist information in the database
  *
  * @param mysqli $conn The database connection object
- * @param object $data The request data containing user details
- * @return bool True if the user is inserted successfully, false otherwise
+ * @param object $data The request data containing dentist details
+ * @return bool True if the dentist info is updated successfully, false otherwise
  */
-function register($conn, $data) {
-    // Check if the email already exists in the database
-    $queryEmail = "SELECT * FROM employee_table WHERE EMAIL=?";
+function updateDentistInfo($conn, $data) {
+    // Check if the email already exists in the database, excluding the current record's email
+    $queryEmail = "SELECT * FROM employee_table WHERE EMAIL=? AND ID!=?";
     $stmtEmail = $conn->prepare($queryEmail);
-    $stmtEmail->bind_param('s', $data->EMAIL);
+    $stmtEmail->bind_param('si', $data->EMAIL, $data->ID);
     $stmtEmail->execute();
     $resultEmail = $stmtEmail->get_result();
 
@@ -54,7 +52,7 @@ function register($conn, $data) {
         exit;
     }
 
-    // Check if the email already exists in the database
+    // Check if the email already exists in the patient database
     $queryEmailPatient = "SELECT * FROM patient_table WHERE EMAIL=?";
     $stmtEmailPatient = $conn->prepare($queryEmailPatient);
     $stmtEmailPatient->bind_param('s', $data->EMAIL);
@@ -67,27 +65,20 @@ function register($conn, $data) {
         exit;
     }
 
-    $ROLE = "ADMIN";
-    $STATUS = "ACTIVE";
-    // Hash the password
-    $HASHED_PASSWORD = password_hash($data->PASSWORD, PASSWORD_DEFAULT);
-
-    $query = "INSERT INTO employee_table (
-        FULLNAME,
-        EMAIL,
-        PASSWORD,
-        ROLE,
-        STATUS)
-        VALUES
-        (?, ?, ?, ?, ?)";
+    $query = "UPDATE employee_table SET 
+        FULLNAME=?,
+        EMAIL=?,
+        BIRTHDAY=?,
+        GENDER=?
+        WHERE ID=?";
 
     $stmt = $conn->prepare($query);
-    $stmt->bind_param('sssss',
+    $stmt->bind_param('ssssi',
         $data->FULLNAME,
         $data->EMAIL,
-        $HASHED_PASSWORD,
-        $ROLE,
-        $STATUS
+        $data->BIRTHDAY,
+        $data->GENDER,
+        $data->ID
     );
     $result = $stmt->execute();
     $stmt->close();
@@ -105,13 +96,13 @@ if (!empty($validationErrors)) {
     exit;
 }
 
-// Attempt to register the user
-if (register($conn, $data)) {
+// Attempt to update the dentist information
+if (updateDentistInfo($conn, $data)) {
     http_response_code(200);
-    echo json_encode(array("message" => "User registered successfully."));
+    echo json_encode(array("message" => "Dentist information updated successfully."));
 } else {
     http_response_code(500);
-    echo json_encode(array("message" => "Failed to register user."));
+    echo json_encode(array("message" => "Failed to update dentist information."));
 }
 
 $conn->close();

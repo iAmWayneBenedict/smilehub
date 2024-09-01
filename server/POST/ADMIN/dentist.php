@@ -75,16 +75,20 @@ function register($conn, $data) {
     $query = "INSERT INTO employee_table (
         FULLNAME,
         EMAIL,
+        BIRTHDAY,
+        GENDER,
         PASSWORD,
         ROLE,
         STATUS)
         VALUES
-        (?, ?, ?, ?, ?)";
+        (?, ?, ?, ?, ?, ?, ?)";
 
     $stmt = $conn->prepare($query);
-    $stmt->bind_param('sssss',
+    $stmt->bind_param('sssssss',
         $data->FULLNAME,
         $data->EMAIL,
+        $data->BIRTHDAY,
+        $data->GENDER,
         $HASHED_PASSWORD,
         $ROLE,
         $STATUS

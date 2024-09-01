@@ -547,7 +547,7 @@ Error (500 Internal Server Error):
 
 - **Endpoints:**
   - `GET /GET/SHARED/PATIENT/patients.php`  
-    - **Description:** Retrieve a list of all patients, including their full names and IDs.
+    - **Description:** Retrieve a list of all patients, including their full names, roles and IDs.
 
 #### Response
 
@@ -556,11 +556,13 @@ Success (200 OK):
 [
     {
         "ID": "10",
-        "FULLNAME": "Juan Dela Cruz"
+        "FULLNAME": "Juan Dela Cruz",
+        "ROLE": "PATIENT"
     },
     {
         "ID": "11",
-        "FULLNAME": "Jane Doe"
+        "FULLNAME": "Jane Doe",
+        "ROLE": "ARCHIVE"
     }
 ]
 ```
@@ -629,8 +631,6 @@ Error (500 Internal Server Error):
     "message": "Failed to register user."
 }
 ```
-
-
 
 ### 12. Fetch Patient Details by ID
 
@@ -830,6 +830,309 @@ Success (200 OK):
 Error (404 Not Found):
 {
     "message": "No data found."
+}
+```
+
+### 16. Add New Dentist
+
+- **Endpoints:**
+  - `POST /POST/ADMIN/dentist.php`  
+    - **Description:** Add a new dentist in the system (This is for admin account only).
+
+#### Request Body
+
+The request should be sent as JSON with the following structure:
+
+```json
+{
+    "FULLNAME": "John Doe",
+    "EMAIL": "johndoe@example.com",
+    "BIRTHDAY": "1990-01-01",
+    "GENDER": "Male",
+    "PASSWORD": "SecurePass123!"
+}
+```
+
+#### Response
+
+```json
+Success (200 OK):
+{
+    "message": "User registered successfully."
+}
+```
+
+```json
+Error (400 Bad Request):
+{
+    "errors": {
+        "fullname": "Full name is required.",
+        "EMAIL": "Invalid email address",
+        "PASSWORD": "Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one special character."
+    }
+}
+Note: The exact error messages depend on which validations fail.
+```
+
+```json
+Error (400 Bad Request):
+{
+    "message": "Email already exists."
+}
+```
+
+```json
+Error (500 Internal Server Error):
+{
+    "message": "Failed to register user."
+}
+```
+
+### 17. Fetch Dentist Details by ID
+
+- **Endpoints:**
+  - `GET /GET/SHARED/DENTIST/dentist.php`  
+    - **Description:** Retrieve details of a specific dentist by their ID.
+
+#### Request Body
+
+The request should be sent as JSON with the following structure:
+
+```json
+{
+    "ID": 16
+}
+```
+
+#### Response
+
+```json
+Success (200 OK):
+{
+    "ID": 16,
+    "FULLNAME": "John Doe",
+    "EMAIL": "johndoe@example.com",
+    "BIRTHDAY": "Male",
+    "GENDER": "1990-01-01",
+    "ROLE": "ADMIN"
+}
+```
+
+```json
+Error (400 Bad Request):
+{
+    "errors": {
+        "ID": "Dentist ID is required."
+    }
+}
+```
+
+```json
+Error (404 Not Found):
+{
+    "message": "Dentist not found."
+}
+```
+
+### 18. Fetch All Dentist and Staff
+
+- **Endpoints:**
+  - `GET /GET/SHARED/EMPLOYEE/employees.php`  
+    - **Description:** Retrieve a list of all employees, including their full names, IDs, email, birthday, gender, role and date account added.
+
+#### Response
+
+```json
+Success (200 OK):
+[
+    {
+        "ID": "13",
+        "FULLNAME": "admin account",
+        "EMAIL": "admin@gmail.com",
+        "BIRTHDAY": "",
+        "GENDER": "",
+        "ROLE": "ADMIN",
+        "DATETIME": "2024-08-04 17:52:05"
+    },
+    {
+        "ID": "18",
+        "FULLNAME": "Staff Sample",
+        "EMAIL": "staff@gmail.com",
+        "BIRTHDAY": "",
+        "GENDER": "",
+        "ROLE": "STAFF",
+        "DATETIME": "2024-09-01 12:05:01"
+    }
+]
+```
+
+```json
+Error (404 Not Found):
+{
+    "message": "No dentists found."
+}
+```
+
+
+### 19. Update Dentist Information
+
+- **Endpoints:**
+  - `POST /EDIT/SHARED/DENTIST/dentist.php`  
+    - **Description:** Update a dentist information, including their full name, email, birthday and gender.
+
+#### Request Body
+
+The request should be sent as JSON with the following structure:
+
+```json
+{
+    "ID": 16,
+    "FULLNAME": "John Doe",
+    "EMAIL": "johndoe@example.com",
+    "BIRTHDAY": "1985-05-15",
+    "GENDER": "Male"
+}
+```
+
+#### Response
+
+```json
+Success (200 OK):
+{
+    "message": "Dentist information updated successfully."
+}
+```
+
+```json
+Error (400 Bad Request):
+{
+    "errors": {
+        "ID": "Dentist ID is required.",
+        "fullname": "Full name is required.",
+        "EMAIL": "Email is required"
+    }
+}
+Note: The exact error messages depend on which validations fail.
+```
+
+```json
+Error (400 Bad Request):
+{
+    "message": "Email already exists."
+}
+```
+
+```json
+Error (500 Internal Server Error):
+{
+    "message": "Failed to update dentist information."
+}
+```
+
+### 20. Update Dentist and Staff Password
+
+- **Endpoints:**
+  - `POST /EDIT/SHARED/PASSWORD/password.php`  
+    - **Description:** Change password for Dentist and Staff Account.
+
+#### Request Body
+
+The request should be sent as JSON with the following structure:
+
+```json
+{
+    "ID": 16,
+    "PREVIOUS_PASSWORD": "OldPassword123!",
+    "NEW_PASSWORD": "NewSecurePassword456!"
+}
+```
+
+#### Response
+
+```json
+Success (200 OK):
+{
+    "message": "Password updated successfully."
+}
+```
+
+```json
+Error (400 Bad Request):
+{
+    "errors": {
+        "ID": "Employee ID is required.",
+        "PREVIOUS_PASSWORD": "Previous password is required.",
+        "PASSWORD": "Password is required"
+    }
+}
+Note: The exact error messages depend on which validations fail.
+```
+
+```json
+Error (400 Bad Request):
+{
+    "errors": {
+        "NEW_PASSWORD": "Password must be at least 8 characters long."
+    }
+}
+```
+
+```json
+Error (400 Bad Request):
+{
+    "message": "Previous password is incorrect."
+}
+```
+
+```json
+Error (500 Internal Server Error):
+{
+    "message": "Failed to update password."
+}
+```
+
+### 21. Update Dentist and Staff Account Status
+
+- **Endpoints:**
+  - `POST /EDIT/SHARED/EMPLOYEE/changeStatus.php`  
+    - **Description:** Update the account status of dentist and staff based on their ID.
+
+#### Request Body
+
+The request should be sent as JSON with the following structure:
+
+```json
+Note: Allowed values for STATUS are "ACTIVE", "ARCHIVE", Uppercase is necessary.
+{
+    "ID": 18,
+    "STATUS": "ARCHIVE"
+}
+```
+
+#### Response
+
+```json
+Success (200 OK):
+{
+    "message": "Employee account status updated successfully."
+}
+```
+
+```json
+Error (400 Bad Request):
+{
+    "errors": {
+        "ID": "Employee ID is required.",
+        "STATUS": "STATUS is required."
+    }
+}
+Note: The exact error messages depend on which validations fail.
+```
+
+```json
+Error (500 Internal Server Error):
+{
+    "message": "Failed to update employee account status. Please check the employee ID."
 }
 ```
 
