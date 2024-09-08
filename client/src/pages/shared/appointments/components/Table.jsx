@@ -30,7 +30,7 @@ import { capitalize } from "@/lib/utils";
 import { useAppStore } from "@/store/zustand";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import AppointmentsAPIManager from "@/services/api/managers/appointments/AppointmentsAPIManager";
-import PropTypes from "prop-types"
+import PropTypes from "prop-types";
 
 //! change this based on the columns in the db
 const INITIAL_VISIBLE_COLUMNS = [
@@ -41,7 +41,7 @@ const INITIAL_VISIBLE_COLUMNS = [
 	"STATUS",
 ];
 
-export default function TableAppointments({type}) {
+export default function TableAppointments({ type }) {
 	const [filterValue, setFilterValue] = React.useState("");
 	const [selectedKeys, setSelectedKeys] = React.useState(new Set([]));
 	const [visibleColumns, setVisibleColumns] = React.useState(new Set(INITIAL_VISIBLE_COLUMNS));
@@ -121,10 +121,10 @@ export default function TableAppointments({type}) {
 	const filteredItems = React.useMemo(() => {
 		if (isLoading) return [];
 		let filteredAppointments = [];
-		if(type === "completed") {
-			filteredAppointments = data?.filter(item => item.STATUS === "Completed")
+		if (type === "completed") {
+			filteredAppointments = data?.filter((item) => item.STATUS === "Completed");
 		} else {
-			filteredAppointments = data?.filter(item => item.STATUS !== "Completed")
+			filteredAppointments = data?.filter((item) => item.STATUS !== "Completed");
 		}
 
 		if (hasSearchFilter) {
@@ -484,7 +484,6 @@ export default function TableAppointments({type}) {
 				wrapper: "w-full shadow-none",
 			}}
 			selectedKeys={selectedKeys}
-			selectionMode="multiple"
 			sortDescriptor={sortDescriptor}
 			topContentPlacement="outside"
 			onSelectionChange={setSelectedKeys}
@@ -516,5 +515,5 @@ export default function TableAppointments({type}) {
 	);
 }
 TableAppointments.propTypes = {
-	type: PropTypes.string
-}
+	type: PropTypes.string,
+};

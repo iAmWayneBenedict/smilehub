@@ -277,7 +277,6 @@ export default function TableAppointments() {
 				wrapper: "w-full shadow-none",
 			}}
 			selectedKeys={selectedKeys}
-			selectionMode="multiple"
 			sortDescriptor={sortDescriptor}
 			topContentPlacement="outside"
 			onSelectionChange={setSelectedKeys}

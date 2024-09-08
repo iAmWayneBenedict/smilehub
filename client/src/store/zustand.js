@@ -53,6 +53,7 @@ export const useAppStore = create((set) => {
 			* @property {object} data - The data of the assessment patient modal.
 			* @property {boolean} isOpen - Whether the assessment patient modal is open.
 			* @property {string} actionLink - The link to redirect to when the action button is clicked.
+			* @property {function} refetch - The function to refetch the data.
 		 */
 		assessmentPatientModal: {},
 		setAssessmentPatientModal: (details) => set({ assessmentPatientModal: details }),
@@ -65,6 +66,7 @@ export const useAppStore = create((set) => {
 			* @property {object} data - The data of the teeth diagram.
 			* @property {boolean} isOpen - Whether the teeth diagram is open.
 			* @property {string} actionLink - The link to redirect to when the action button is clicked.
+			* @property {function} refetch - The function to refetch the data.
 		 */
 		teethDiagramModalDetails: {},
 		setTeethDiagramModalDetails: (details) => set({ teethDiagramModalDetails: details }),
@@ -77,9 +79,36 @@ export const useAppStore = create((set) => {
 			* @property {object} data - The data of the teeth diagram.
 			* @property {boolean} isOpen - Whether the teeth diagram is open.
 			* @property {string} actionLink - The link to redirect to when the action button is clicked.
+			* @property {function} refetch - The function to refetch the data.
 		 */
 		addGroupItemModal: {},
 		setAddGroupItemModal: (value) => set({ addGroupItemModal: value }),
+
+		/**
+			* The details of the Progressnote modal.
+
+			* @typedef {Object} AddProgressNoteModal
+			* @property {string} title - The title of the modal.
+			* @property {object} data - The data of the modal.
+			* @property {boolean} isOpen - Whether the modal is open.
+			* @property {string} actionLink - The link to redirect to when the action button is clicked.
+			* @property {function} refetch - The function to refetch the data.
+		 */
+		addProgressNoteModal: {},
+		setAddProgressNoteModal: (value) => set({ addProgressNoteModal: value }),
+
+		/**
+			* The details of the Progressnote modal.
+
+			* @typedef {Object} AddProgressNoteModal
+			* @property {string} title - The title of the modal.
+			* @property {object} data - The data of the modal.
+			* @property {boolean} isOpen - Whether the modal is open.
+			* @property {string} actionLink - The link to redirect to when the action button is clicked.
+			* @property {function} refetch - The function to refetch the data.
+		 */
+		taskModal: {},
+		setTaskModal: (value) => set({ taskModal: value }),
 	};
 });
 

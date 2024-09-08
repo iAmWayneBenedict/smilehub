@@ -263,6 +263,8 @@ const Register = () => {
 											value={field.value}
 											showTimeSelect={false}
 											label={""}
+
+											aria-label="select-date"
 											isInvalid={!!errors.BIRTHDATE}
 											errorMessage={errors.BIRTHDATE?.message}
 											setValue={(value) => {
@@ -296,6 +298,8 @@ const Register = () => {
 											color="primary"
 											radius="none"
 											className="w-full bg-white"
+
+											aria-label="select-gender"
 											classNames={{
 												label: "text-lightText font-semibold ",
 												inputWrapper: "h-full",

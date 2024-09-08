@@ -67,7 +67,7 @@ const Calendar = () => {
 	const [selectedKeys, setSelectedKeys] = useState(new Set(["text"]));
 	const [filterKeys, setFilterKeys] = useState(new Set(["text"]));
 
-	const { data:appointmentsDataRequest, isLoading, isSuccess, refetch } = useQuery({
+	const { data:appointmentsDataRequest, isLoading, isSuccess, refetch, isError } = useQuery({
 		queryKey: ["calendarAppointments"],
 		queryFn: AppointmentsAPIManager.getPatientAppointments,
 	});
@@ -81,6 +81,12 @@ const Calendar = () => {
 			setIsCompletedData(true)
 		}
 	}, [appointmentsDataRequest, isSuccess])
+
+	useEffect(() => {
+		if(isError) {
+			setIsCompletedData(true)
+		}
+	}, [isError])
 
 	useEffect(() => {
 		if(!isSuccess) return

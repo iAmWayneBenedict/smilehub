@@ -41,6 +41,17 @@ const END_POINTS = {
 	POST_CHANGE_STATUS_PATIENT: () => "/EDIT/SHARED/PATIENT/changeStatus.php",
 	GET_DETAIL_PATIENT: () => "/GET/SHARED/PATIENT/patient.php",
 	GET_APPOINTMENT_PATIENT: () => "/GET/SHARED/PATIENT/patientsWithAppointment.php",
+
+	// employees
+	POST_ADD_EMPLOYEE: () => "/POST/ADMIN/dentist.php",
+	GET_ALL_EMPLOYEE: () => "/GET/SHARED/EMPLOYEE/employees.php",
+	POST_CHANGE_EMPLOYEE_STATUS: () => "/EDIT/SHARED/EMPLOYEE/changeStatus.php",
+	GET_EMPLOYEE_DETAILS: () => "/GET/SHARED/DENTIST/dentist.php",
+	POST_UPDATE_EMPLOYEE: () => "/EDIT/SHARED/DENTIST/dentist.php",
+	POST_UPDATE_PASSWORD: () => "/EDIT/SHARED/PASSWORD/password.php",
+
+	// statistics
+	GET_TOTAL_PATIENTS_STATISTICS: () => "/GET/SHARED/STATISTICS/patients.php"
 };
 
 export default END_POINTS;

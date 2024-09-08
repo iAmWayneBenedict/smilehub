@@ -36,7 +36,8 @@ const NavigationBar = () => {
 		if (
 			location.pathname === "/" ||
 			location.pathname === "/login" ||
-			location.pathname === "/register"
+			location.pathname === "/register" ||
+			location.pathname === "/terms-and-privacy-policy"
 		) {
 			nav.current.classList.add("colored");
 		} else {
@@ -50,7 +51,8 @@ const NavigationBar = () => {
 			if (
 				location.pathname === "/" ||
 				location.pathname === "/login" ||
-				location.pathname === "/register"
+				location.pathname === "/register" ||
+				location.pathname === "/terms-and-privacy-policy"
 			)
 				return;
 			if (nav.current === null) return;
@@ -92,14 +94,16 @@ const NavigationBar = () => {
 					aria-label={isMenuOpen ? "Close menu" : "Open menu"}
 					className="md:hidden"
 				/>
-				<NavbarBrand>
-					<div className="flex items-center gap-3 h-[3rem] md:h-fit">
-						<img src={logoIcon} alt="logo-icon" className="h-full" />
-						<div className="h-[1.35rem] md:h-fit">
-							<img src={logoText} className="h-full" alt="logo-text" />
-						</div>
-					</div>
-				</NavbarBrand>
+				<Link href={"/"}>
+					<NavbarBrand>
+							<div className="flex items-center gap-3 h-[3rem] md:h-fit">
+								<img src={logoIcon} alt="logo-icon" className="h-full" />
+								<div className="h-[1.35rem] md:h-fit">
+									<img src={logoText} className="h-full" alt="logo-text" />
+								</div>
+							</div>
+					</NavbarBrand>
+				</Link>
 			</NavbarContent>
 
 			{/**
@@ -136,9 +140,8 @@ const NavigationBar = () => {
 									as="button"
 									className="transition-transform"
 									color="secondary"
-									name="Jason Hughes"
 									size="md"
-									src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
+									showFallback
 								/>
 							</DropdownTrigger>
 

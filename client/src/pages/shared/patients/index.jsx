@@ -7,6 +7,8 @@ import {
 	Link,
 	Select,
 	SelectItem,
+	Tabs,
+	Tab
 } from "@nextui-org/react";
 import { Plus, Search, Filter, CircleHelp } from "lucide-react";
 import TablePatients from "./components/Table";
@@ -18,6 +20,11 @@ const Patients = () => {
 	const [filterType, setFilterType] = useState("all");
 	const [selectedKeys, setSelectedKeys] = useState(new Set(["text"]));
 	const [filterKeys, setFilterKeys] = useState(new Set(["text"]));
+
+	// controlled tabs
+	const [selected, setSelected] = useState("patients");
+
+
 	return (
 		<div style={{ flex: 1 }} className="bg-[#f9f9f9]">
 			<div className="w-full h-full p-5">
@@ -118,7 +125,25 @@ const Patients = () => {
 						</div>
 					</div>
 					<div className="p-4 mt-5 bg-white rounded-lg shadow-md ">
-						<TablePatients filterType={filterType} filterKeys={[...filterKeys]} />
+						<Tabs
+							selectedKey={selected}
+							onSelectionChange={setSelected}
+							variant={"underlined"}
+							aria-label="Tabs variants"
+							color="primary"
+							classNames={{
+								tabContent:
+									"group-data-[selected=true]:text-darkText group-data-[selected=true]:font-bold",
+							}}
+						>
+							<Tab key="patients" title="PATIENTS">
+								<TablePatients type={"regular"} filterType={filterType} filterKeys={[...filterKeys]} />
+							</Tab>
+							<Tab key="archived-patients" title="ARCHIVED PATIENTS">
+								<TablePatients type={"archived"} filterType={filterType} filterKeys={[...filterKeys]} />
+							</Tab>
+						</Tabs>
+
 					</div>
 				</div>
 			</div>

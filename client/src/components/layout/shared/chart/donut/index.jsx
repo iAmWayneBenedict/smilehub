@@ -1,8 +1,9 @@
 import { useEffect } from "react";
 import ApexCharts from "apexcharts";
+import PropTypes from "prop-types"
 
-const DonutChart = () => {
-	const data = [44, 55];
+const DonutChart = ({femaleCount, maleCount}) => {
+	const data = [maleCount, femaleCount];
 	const labels = ["Male", "Female"]; //* labels for the chart
 	const colors = ["#eb5757", "#2f80ed"]; //* colors for the chart
 	var options = {
@@ -30,13 +31,13 @@ const DonutChart = () => {
 	};
 
 	useEffect(() => {
-		var chart = new ApexCharts(document.querySelector("#donut-chart"), options);
+		const chart = new ApexCharts(document.querySelector("#donut-chart"), options);
 		chart.render();
 
 		return () => {
 			chart.destroy();
 		};
-	}, []);
+	}, [femaleCount, maleCount]);
 	return (
 		<div className="relative">
 			<div id="donut-chart" />
@@ -57,5 +58,8 @@ const DonutChart = () => {
 		</div>
 	);
 };
-
+DonutChart.propTypes = {
+	femaleCount: PropTypes.any,
+	maleCount: PropTypes.any
+}
 export default DonutChart;

@@ -27,7 +27,6 @@ const AddItem = () => {
 			ITEM_GROUP: "",
 			QUANTITY_IN_NUMBER: null,
 			LOCATION: "",
-			USAGE_HISTORY: "",
 		},
 	});
 	const onSubmit = (event) => console.log(event);
@@ -109,8 +108,8 @@ const AddItem = () => {
 											isInvalid={!!errors.ITEM_GROUP}
 											errorMessage={errors.ITEM_GROUP?.message}
 											labelPlacement={"outside"}
-											placeholder="Select Time"
-											label="Time of Visit"
+											placeholder="Select Group"
+											label="Item Group"
 											size="lg"
 											variant="bordered"
 											color="primary"
@@ -162,27 +161,6 @@ const AddItem = () => {
 								errorMessage={errors.LOCATION?.message}
 								variant={"bordered"}
 								label="Location"
-								radius="sm"
-								size="lg"
-								color="primary"
-								labelPlacement="outside"
-								classNames={{
-									label: "text-darkText font-semibold text-base",
-									inputWrapper:
-										"rounded-lg h-full bg-[#e3ebf3] border-1 border-[#1D242E]",
-									mainWrapper: "h-[4rem]",
-								}}
-								placeholder=" "
-								className="col-span-12 mb-6 md:col-span-6 md:mb-0"
-							/>
-							<Textarea
-								{...register("USAGE_HISTORY", {
-									required: "Usage History is required",
-								})}
-								isInvalid={!!errors.USAGE_HISTORY}
-								errorMessage={errors.USAGE_HISTORY?.message}
-								variant={"bordered"}
-								label="Usage History"
 								radius="sm"
 								size="lg"
 								color="primary"

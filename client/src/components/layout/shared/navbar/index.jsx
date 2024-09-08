@@ -16,7 +16,9 @@ const SharedNavBar = () => {
 		<div className="flex items-center border-gray-300 border-b-1">
 			<div id="logoNav" className="flex justify-center px-5 border-gray-300 py-7 border-r-1">
 				<div className="">
-					<Image src={logoText} removeWrapper className="rounded-none" />
+					<Link href={"/"}>
+						<Image src={logoText} removeWrapper className="rounded-none" />
+					</Link>
 				</div>
 			</div>
 			<div style={{ flex: 1 }} className="flex justify-between px-5">

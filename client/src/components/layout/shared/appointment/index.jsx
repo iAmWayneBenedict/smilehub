@@ -56,7 +56,13 @@ export default function AppointmentModal() {
 		}
 	}, [newAppointmentModal]);
 	// form hook
-	const { handleSubmit, reset, control } = useForm({
+	const {
+		handleSubmit,
+		setError,
+		reset,
+		control,
+		clearErrors
+	} = useForm({
 		defaultValues: {
 			PATIENT_ID: "",
 
@@ -69,12 +75,25 @@ export default function AppointmentModal() {
 	useEffect(() => {
 		if (isOpen) {
 			reset();
+			handleInvalidDate()
 		}
 
 		return () => {
 			setAlertDialogDetails({}); // clear alert dialog
 		};
 	}, [isOpen]);
+
+	const handleInvalidDate = (date) => {
+		if(isWeekEndDate(date || today(getLocalTimeZone()))) {
+			console.log(isWeekEndDate(today(getLocalTimeZone())))
+			setError("APPOINTMENT_DATE", {
+				type: "manual",
+				message: "The date must not fall on a weekend.",
+			})
+		} else {
+			clearErrors("APPOINTMENT_DATE")
+		}
+	}
 
 	useEffect(() => {
 		handleGetDate(today(getLocalTimeZone()), false);
@@ -320,7 +339,10 @@ export default function AppointmentModal() {
 															setValue={(value) => {
 																field.onChange(value);
 															}}
-															onChange={handleGetDate}
+															onChange={date => {
+																handleGetDate(date)
+																handleInvalidDate(date)
+															}}
 															minValue={today(getLocalTimeZone())}
 															isDateUnavailable={isWeekEndDate}
 														/>

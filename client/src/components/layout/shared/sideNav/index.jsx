@@ -20,7 +20,6 @@ const SideNav = () => {
 	const { authToken } = useAuthTokenPersisted();
 	const user = decrypt(authToken);
 	const userRole = user?.role?.toLowerCase();
-	console.log(userRole);
 	// update this based on the menu links
 	const menuLinks = [
 		{
@@ -39,7 +38,7 @@ const SideNav = () => {
 			href: "/" + userRole + "/patients",
 		},
 		{
-			name: "Dentists",
+			name: "Employees",
 			icon: (
 				<svg
 					width="26"
@@ -59,7 +58,7 @@ const SideNav = () => {
 					/>
 				</svg>
 			),
-			href: "/" + userRole + "/dentists",
+			href: "/" + userRole + "/employees",
 		},
 		{
 			name: "Tasks",
@@ -100,7 +99,7 @@ const SideNav = () => {
 				<div className="flex flex-col gap-3 mt-4">
 					{menuLinks.map((item, index) => {
 						if (
-							(item.name === "Dentists" || item.name === "Patients") &&
+							(item.name === "Employees" || item.name === "Patients") &&
 							!location.pathname.includes("/admin")
 						)
 							return null;

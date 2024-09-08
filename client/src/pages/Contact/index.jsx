@@ -16,8 +16,9 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import { decrypt } from "@/lib/utils";
+import {decrypt, formatDate} from "@/lib/utils";
 import { useMemo } from "react";
+import {sendEmail} from "@/services/email/index.js";
 
 const contactAddressCard = [
 	{
@@ -53,6 +54,7 @@ const Contact = () => {
 	const { authToken } = useAuthTokenPersisted();
 	const user = decrypt(authToken);
 	const navigate = useNavigate();
+//	const [tempData, setTempData] =
 	// Form hook
 	const {
 		register,
@@ -60,13 +62,14 @@ const Contact = () => {
 		control,
 		setError,
 		reset,
-		formState: { errors },
+		getValues,
+		formState: { errors, },
 	} = useForm(
 		useMemo(() => {
 			return {
 				defaultValues: {
 					FULLNAME: user?.fullname || "",
-					EMAIL: user?.eail || "",
+					EMAIL: user?.email || "",
 					PHONE: "",
 					APPOINTMENT_DATE: today(getLocalTimeZone()), // default date (today)
 					APPOINTMENT_TIME: "",
@@ -109,7 +112,7 @@ const Contact = () => {
 	};
 	const mutation = useMutation({
 		mutationFn: AppointmentsAPIManager.postPatientAppointment,
-		onSuccess: () => {
+		onSuccess: (data) => {
 			setAlertDialogDetails({
 				isOpen: true,
 				type: "success",
@@ -117,6 +120,14 @@ const Contact = () => {
 				message: "Appointment booked successfully!",
 				actionLink: "/", // redirect to home page
 			});
+			console.log(data)
+			sendEmail({
+				type: "notification",
+				name: getValues("FULLNAME"),
+				email: getValues("EMAIL"),
+				date: formatDate(new Date(convertDateYYYYMMDD(getValues("APPOINTMENT_DATE")))),
+				time: getValues("APPOINTMENT_TIME")?.split("-")[0]
+			})
 		},
 		onError: (error) => {
 			setAlertDialogDetails({
@@ -169,6 +180,7 @@ const Contact = () => {
 												src={card.icon}
 												className="w-6"
 												alt="Office Timings"
+												aria-label="bg"
 											/>
 										</div>
 										<div className="flex flex-col">
@@ -302,6 +314,7 @@ const Contact = () => {
 												setValue={(value) => {
 													field.onChange(value);
 												}}
+												aria-label="select-date"
 												onChange={handleGetDate}
 												minValue={today(getLocalTimeZone())}
 												isDateUnavailable={isWeekEndDate}
@@ -328,6 +341,7 @@ const Contact = () => {
 												size="lg"
 												variant="bordered"
 												color="primary"
+												aria-label="select-time"
 												className="w-full bg-white"
 												classNames={{
 													label: "text-darkText font-semibold ",
@@ -359,6 +373,7 @@ const Contact = () => {
 												labelPlacement={"outside"}
 												placeholder="Select Purpose"
 												label="Purpose of Visit"
+												aria-label="purpose"
 												size="lg"
 												variant="bordered"
 												color="primary"

@@ -1,8 +1,11 @@
-import { Breadcrumbs, BreadcrumbItem } from "@nextui-org/react";
+import { Breadcrumbs, BreadcrumbItem, Button } from "@nextui-org/react";
 import { useParams } from "react-router-dom";
+import {useAppStore} from "@/store/zustand.js";
+import ProgressNoteModal from "@/components/layout/Modals/ProgressNoteModal.jsx";
 
 const ProgressNotes = () => {
 	const params = useParams();
+	const {setAddProgressNoteModal} = useAppStore()
 	return (
 		<div style={{ flex: 1 }} className="bg-white">
 			<div className="w-full h-full">
@@ -19,6 +22,14 @@ const ProgressNotes = () => {
 				</h3>
 				<div className="flex flex-col gap-3">
 					<div className="w-full p-6 ~px-12/36 bg-white">
+						<div className="mb-6 w-full flex justify-end">
+							<Button color={"primary"} onClick={() => {
+										setAddProgressNoteModal({
+											title: "Add Progress Notes",
+											isOpen: true,
+										})
+									}}>Add Progress</Button>
+						</div>
 						<table className="w-full border-separate table-fixed border-spacing-0">
 							<thead>
 								<tr>
@@ -56,6 +67,7 @@ const ProgressNotes = () => {
 					</div>
 				</div>
 			</div>
+			<ProgressNoteModal />
 		</div>
 	);
 };

@@ -12,8 +12,6 @@ import {
 import { useForm, Controller } from "react-hook-form";
 import { getLocalTimeZone, parseDate, today } from "@internationalized/date";
 import CustomDatePicker from "@/components/ui/DatePicker";
-import { useLocale } from "@react-aria/i18n";
-import { isWeekend } from "@internationalized/date";
 import noteImg from "../../../../assets/icons/notes.png";
 import teethImg from "../../../../assets/icons/teeth.png";
 import DropFileInput from "./DropFileInput";
@@ -203,7 +201,7 @@ const Form = ({ data, params, refetch }) => {
 		defaultValues: useMemo(() => {
 			if (!data)
 				return {
-					record_number: "",
+					ID: "",
 					FIRSTNAME: "",
 					LASTNAME: "",
 					EMAIL: "",
@@ -213,7 +211,7 @@ const Form = ({ data, params, refetch }) => {
 					FILES: [],
 				};
 			return {
-				record_number: "",
+				ID: data?.ID,
 				FIRSTNAME: data?.FIRSTNAME,
 				LASTNAME: data?.LASTNAME,
 				EMAIL: data?.EMAIL,
@@ -259,7 +257,7 @@ const Form = ({ data, params, refetch }) => {
 	useEffect(() => {
 		if (!data) return;
 		reset({
-			record_number: "",
+			ID: data?.ID,
 			FIRSTNAME: data?.FIRSTNAME,
 			LASTNAME: data?.LASTNAME,
 			EMAIL: data?.EMAIL,
@@ -290,17 +288,17 @@ const Form = ({ data, params, refetch }) => {
 				</div>
 				<div style={{ flex: 3 }}>
 					<Input
-						{...register("record_number")}
+						{...register("ID")}
 						aria-label="Record Number"
-						isInvalid={!!errors.record_number}
-						errorMessage={errors.record_number?.message}
+						isInvalid={!!errors.ID}
+						errorMessage={errors.ID?.message}
 						key={"f_name"}
 						type="text"
 						variant="bordered"
 						color="primary"
 						radius="sm"
 						size="lg"
-						isReadOnly={location.pathname.includes("info")}
+						isDisabled={true}
 						className="w-full"
 						classNames={{
 							label: "text-darkText font-semibold ",
@@ -405,7 +403,6 @@ const Form = ({ data, params, refetch }) => {
 									innerWrapper: "h-full",
 								}}
 								aria-label="Birthdate"
-								// isDateUnavailable={isDateUnavailable}
 								maxValue={sixMonthsAgo}
 							/>
 						)}

@@ -1,9 +1,10 @@
 import SplineChart from "@/components/layout/shared/chart/spline";
-import { Select, SelectItem, Button, Tabs, Tab, Divider } from "@nextui-org/react";
+import { Select, SelectItem, Button, Tabs, Tab, Divider,Skeleton } from "@nextui-org/react";
 import TableDashboard from "./Table";
 import { useEffect, useLayoutEffect, useState } from "react";
 import { Ellipsis, Plus, ChevronUp, Trash, UserRound, Pencil, Triangle } from "lucide-react";
 import DonutChart from "@/components/layout/shared/chart/donut";
+import PropTypes from "prop-types"
 import {
 	Accordion,
 	AccordionContent,
@@ -18,12 +19,26 @@ import { useQuery } from "@tanstack/react-query";
 import AppointmentsAPIManager from "@/services/api/managers/appointments/AppointmentsAPIManager";
 import { getLocalTimeZone, today } from "@internationalized/date";
 import { formatTimeAccordionData } from "./utils";
+import DashboardAPIManager from "@/services/api/managers/dashboard/DashboardAPIManager.js";
+import AppointmentModal from "@/components/layout/shared/appointment/index.jsx";
+import ReschedModal from "@/components/layout/Modals/ReschedModal.jsx";
+import {useAppStore} from "@/store/zustand.js";
 
 const AdminDashboard = () => {
+	const {setNewAppointmentModal} = useAppStore()
+
 	const zoomedDevices = useMediaQuery({
 		query: "(min-device-width: 900px) and (max-device-width: 1600px)",
 	});
 	const [selected, setSelected] = useState("new-appointments");
+	const [filterSelected, setFilterSelected] = useState(new Set(["Monthly"]))
+
+	const {data, isSuccess, isLoading } = useQuery({
+		queryKey: ['dashboard-statistics'],
+		queryFn: DashboardAPIManager.getTotalPatientsStatistics
+	})
+
+	const [refetchTodayAppointments, setRefetchTodayAppointments] = useState()
 
 	return (
 		<div style={{ flex: 1 }} className="bg-[#f9f9f9]">
@@ -46,7 +61,8 @@ const AdminDashboard = () => {
 										<Select
 											aria-label="Sort by"
 											variant="bordered"
-											selectedKeys={["Yearly"]}
+											selectedKeys={filterSelected}
+											onSelectionChange={setFilterSelected}
 											color="primary"
 											className="bg-white "
 											classNames={{
@@ -107,11 +123,16 @@ const AdminDashboard = () => {
 							<div className="flex items-center pl-5 mt-2">
 								<div style={{ flex: 2 }}>
 									<h1 className="text-6xl font-bold text-end xl:text-start">
-										99
+										{data?.total_patients || 0}
 									</h1>
 								</div>
 								<div style={{ flex: 5 }} className="h-48">
-									<DonutChart />
+									{
+										isLoading ? <Skeleton className="rounded-lg">
+											<div className="h-full w-48"></div>
+										</Skeleton> : <DonutChart femaleCount={parseInt(data?.gender_counts?.Female || 0)} maleCount={parseInt(data?.gender_counts?.Male || 0)} />
+									}
+
 								</div>
 							</div>
 						</div>
@@ -122,6 +143,12 @@ const AdminDashboard = () => {
 									variant="light"
 									disableRipple
 									className="flex items-center gap-3 text-primary data-[hover=true]:opacity-70 data-[hover=true]:bg-transparent"
+									onClick={() => setNewAppointmentModal({
+										isOpen: true,
+										title: "New Appointment",
+										data: null,
+										refetch: refetchTodayAppointments,
+									})}
 								>
 									<span className="~text-sm/base font-semibold">
 										New Appointment
@@ -132,12 +159,14 @@ const AdminDashboard = () => {
 								</Button>
 							</div>
 							<div className="flex flex-col">
-								<AccordionSchedule />
+								<AccordionSchedule setRefetchTodayAppointments={setRefetchTodayAppointments} />
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
+			<AppointmentModal />
+			<ReschedModal />
 		</div>
 	);
 };
@@ -176,17 +205,16 @@ const data = [
 ];
 
 // AccordionSchedule component
-const AccordionSchedule = () => {
+const AccordionSchedule = ({setRefetchTodayAppointments}) => {
 	const [selectedChapter, setSelectedChapter] = useState("");
 	const [upcomingActiveIndex, setUpcomingActiveIndex] = useState(undefined);
-	const [upcomingActiveTime, setUpcomingActiveTime] = useState("");
 
 	const [appointmentsArr, setAppointmentsArr] = useState([]);
 
 	const zoomedDevices = useMediaQuery({
 		query: "(min-device-width: 900px) and (max-device-width: 1600px)",
 	});
-	const { data, isLoading, isSuccess } = useQuery({
+	const { data, isLoading, isSuccess, refetch } = useQuery({
 		queryKey: ["appointments-today"],
 		queryFn: async () =>
 			await AppointmentsAPIManager.getTodaysAppointment({
@@ -195,6 +223,9 @@ const AccordionSchedule = () => {
 	});
 
 	useEffect(() => {
+		// send the refetch on parent callback
+		setRefetchTodayAppointments(refetch)
+
 		if (isSuccess) {
 			const timesArray = formatTimeAccordionData(data);
 			setAppointmentsArr(timesArray);
@@ -475,3 +506,6 @@ const AccordionSchedule = () => {
 		</>
 	);
 };
+AccordionSchedule.propTypes = {
+	setRefetchTodayAppointments:PropTypes.any
+}

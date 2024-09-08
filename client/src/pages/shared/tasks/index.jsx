@@ -1,4 +1,7 @@
-import { Breadcrumbs, BreadcrumbItem, Button, Divider, Checkbox } from "@nextui-org/react";
+import { Breadcrumbs, BreadcrumbItem, Button, Divider, Checkbox,Dropdown,
+	DropdownTrigger,
+	DropdownMenu,
+	DropdownItem } from "@nextui-org/react";
 import {
 	Plus,
 	Filter,
@@ -6,14 +9,19 @@ import {
 	Star,
 	Ellipsis,
 	Check,
-	RotateCw,
 	SquarePen,
 	Clock,
 	Trash,
 	Tag,
+
 } from "lucide-react";
+import {useAppStore} from "@/store/zustand.js";
+import TasksModal from "@/components/layout/Modals/TasksModal.jsx";
+import {useState} from "react"
 
 const Tasks = () => {
+	const {setTaskModal, setAlertDialogDetails} = useAppStore();
+	const [selectedKeys, setSelectedKeys] = useState(new Set(["text"]));
 	return (
 		<div style={{ flex: 1 }} className="bg-[#f9f9f9]">
 			<div className="w-full h-full p-5">
@@ -32,12 +40,31 @@ const Tasks = () => {
 								</h3>
 							</div>
 							<div className="flex gap-3">
-								<Button isIconOnly variant="bordered" radius="sm" size="lg">
+								<Button isIconOnly variant="bordered" radius="sm" size="lg" onClick={() => setTaskModal({
+									isOpen: true,
+									title: "Add Task",
+								})}>
 									<Plus />
 								</Button>
-								<Button isIconOnly variant="bordered" radius="sm" size="lg">
-									<Filter />
-								</Button>
+								<Dropdown>
+									<DropdownTrigger>
+										<Button isIconOnly variant="bordered" radius="sm" size="lg">
+											<Filter />
+										</Button>
+									</DropdownTrigger>
+									<DropdownMenu
+										aria-label="Multiple selection example"
+										variant="flat"
+										closeOnSelect={false}
+										disallowEmptySelection
+										selectionMode="multiple"
+										selectedKeys={selectedKeys}
+										onSelectionChange={setSelectedKeys}
+									>
+										<DropdownItem key="urgent">Urgent</DropdownItem>
+									</DropdownMenu>
+								</Dropdown>
+
 								<Button isIconOnly variant="bordered" radius="sm" size="lg">
 									<CircleHelp />
 								</Button>
@@ -64,7 +91,7 @@ const Tasks = () => {
 										>
 											<div className="flex flex-col">
 												<span className="text-xl font-semibold">
-													Check the patient's teeth
+													Check the patient{`'`}s teeth
 												</span>
 												<small>Today</small>
 											</div>
@@ -87,16 +114,32 @@ const Tasks = () => {
 								</h3>
 							</div>
 							<div className="flex gap-3">
-								<Button isIconOnly variant="bordered" radius="sm" size="lg">
+								<Button isIconOnly variant="bordered" radius="sm" size="lg" onClick={() => setAlertDialogDetails({
+											isOpen: true,
+											dialogType: "confirm",
+											type: "info",
+											title: 'Info!',
+											message: "Are you sure you want to complete this task?"
+										})}>
 									<Check color="#27AE60" />
 								</Button>
-								<Button isIconOnly variant="bordered" radius="sm" size="lg">
-									<RotateCw />
-								</Button>
-								<Button isIconOnly variant="bordered" radius="sm" size="lg">
+								<Button isIconOnly variant="bordered" radius="sm" size="lg" onClick={() => setTaskModal({
+											isOpen: true,
+											title: "Update Task",
+											data: {
+												TITLE: "Test",
+												DESCRIPTION: "tEST"
+											}
+										})}>
 									<SquarePen />
 								</Button>
-								<Button isIconOnly variant="bordered" radius="sm" size="lg">
+								<Button isIconOnly variant="bordered" radius="sm" size="lg" onClick={() => setAlertDialogDetails({
+											isOpen: true,
+											dialogType: "confirm",
+											type: "danger",
+											title: 'Danger!',
+											message: "Are you sure you want to delete this task?"
+										})}>
 									<Trash color="#EB5757" />
 								</Button>
 							</div>
@@ -131,6 +174,7 @@ const Tasks = () => {
 					</div>
 				</div>
 			</div>
+			<TasksModal />
 		</div>
 	);
 };

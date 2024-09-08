@@ -47,7 +47,7 @@ export const queryHandler = (queryObj) => {
 /**
  * Converts a date string to a Date object.
  *
- * @param {string} date - The date string to be converted.
+ * @param {Date} date - The date string to be converted.
  * @returns {Date} - The Date object converted from the input date string.
  *
  * @example
@@ -162,6 +162,11 @@ export const clinicRoles = [
 	{ name: "Receptionist", uid: "receptionist" },
 	{ name: "Lab Technician", uid: "lab_technician" },
 ];
+
+export const employeeRoles = [
+    { name: "STAFF", uid: "staff"},
+    { name: "ADMIN", uid: "admiin"},
+]
 
 export const isWeekEndDate = (date) => {
 	return isWeekend(date, "en-PH");

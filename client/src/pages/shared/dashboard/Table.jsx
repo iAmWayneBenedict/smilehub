@@ -14,15 +14,11 @@ import {
 	DropdownItem,
 } from "@nextui-org/react";
 import { columns, appointments } from "./data";
-import { X,
-	Clock,
-	CheckCheck,
-	CalendarDays,
-	Trash2, } from "lucide-react";
-import PropTypes from "prop-types"
+import { X, Clock, CheckCheck, CalendarDays, Trash2 } from "lucide-react";
+import PropTypes from "prop-types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import AppontmentsAPIManager from "@/services/api/managers/appointments/AppointmentsAPIManager.js";
-import {useAppStore} from "@/store/zustand.js";
+import { useAppStore } from "@/store/zustand.js";
 import AppointmentsAPIManager from "@/services/api/managers/appointments/AppointmentsAPIManager.js";
 
 const INITIAL_VISIBLE_COLUMNS = [
@@ -33,7 +29,7 @@ const INITIAL_VISIBLE_COLUMNS = [
 	"STATUS",
 ];
 
-export default function TableDashboard({type}) {
+export default function TableDashboard({ type }) {
 	const [filterValue, setFilterValue] = React.useState("");
 	const [selectedKeys, setSelectedKeys] = React.useState(new Set([]));
 	const [visibleColumns, setVisibleColumns] = React.useState(new Set(INITIAL_VISIBLE_COLUMNS));
@@ -43,7 +39,7 @@ export default function TableDashboard({type}) {
 		column: "APPOINTMENT_TIME",
 		direction: "ascending",
 	});
-	const {setNewScheduleModal,setAlertDialogDetails} = useAppStore()
+	const { setNewScheduleModal, setAlertDialogDetails } = useAppStore();
 
 	// handle header columns
 	const headerColumns = React.useMemo(() => {
@@ -52,10 +48,10 @@ export default function TableDashboard({type}) {
 		return columns.filter((column) => Array.from(visibleColumns).includes(column.uid));
 	}, [visibleColumns]);
 
-	const {data, isSuccess, isLoading, refetch} = useQuery({
-		queryKey: ['dashboardAppointments'],
-		queryFn: AppontmentsAPIManager.getPatientAppointments
-	})
+	const { data, isSuccess, isLoading, refetch } = useQuery({
+		queryKey: ["dashboardAppointments"],
+		queryFn: AppontmentsAPIManager.getPatientAppointments,
+	});
 
 	const changeStatusMutation = useMutation({
 		mutationFn: AppointmentsAPIManager.postChangeStatusAppointment,
@@ -102,15 +98,15 @@ export default function TableDashboard({type}) {
 
 	// filter appointments
 	const filteredItems = React.useMemo(() => {
-		if(isLoading) return []
+		if (isLoading) return [];
 		let filteredAppointments = [];
-		if(type === "completed") {
-			filteredAppointments = data?.filter(item => item.STATUS === "Completed")
-		}else {
-			filteredAppointments = data?.filter(item => item.STATUS !== "Completed")
+		if (type === "completed") {
+			filteredAppointments = data?.filter((item) => item.STATUS === "Completed");
+		} else {
+			filteredAppointments = data?.filter((item) => item.STATUS !== "Completed") || [];
 		}
 		//	limit to 5 items only
-		return filteredAppointments.slice(0,5);
+		return filteredAppointments.slice(0, 5);
 	}, [type, data, isLoading, isSuccess]);
 
 	// paginate appointments
@@ -120,7 +116,6 @@ export default function TableDashboard({type}) {
 
 	// sort appointments
 	const sortedItems = React.useMemo(() => {
-		console.log(items)
 		return [...items].sort((a, b) => {
 			const first = a[sortDescriptor.column];
 			const second = b[sortDescriptor.column];
@@ -320,7 +315,6 @@ export default function TableDashboard({type}) {
 				wrapper: "max-h-[382px] shadow-none",
 			}}
 			selectedKeys={selectedKeys}
-			selectionMode="multiple"
 			sortDescriptor={sortDescriptor}
 			topContentPlacement="outside"
 			onSelectionChange={setSelectedKeys}
@@ -348,5 +342,5 @@ export default function TableDashboard({type}) {
 	);
 }
 TableDashboard.propTypes = {
-	type: PropTypes.string
-}
+	type: PropTypes.string,
+};

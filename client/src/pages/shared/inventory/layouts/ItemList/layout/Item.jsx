@@ -107,19 +107,6 @@ const Item = () => {
 											</p>
 										</div>
 									</div>
-									<div
-										style={{ flex: 1 }}
-										className="flex flex-col border-2 rounded-md border-[#bcbec1]"
-									>
-										<div className="border-b-1 border-[#bcbec1] px-6 py-3 ~text-lg/xl font-bold">
-											Usage History
-										</div>
-										<div className="flex flex-row p-6">
-											<p className="~text-lg/xl font-medium">
-												Used on 3 patients this month.
-											</p>
-										</div>
-									</div>
 								</div>
 								<div>
 									<Button

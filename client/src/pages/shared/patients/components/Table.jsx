@@ -37,6 +37,7 @@ const INITIAL_VISIBLE_COLUMNS = [
 ];
 
 export default function TablePatients({
+	type,
 	filterType: statusFilterProp,
 	filterKeys: filterKeysProp,
 }) {
@@ -59,9 +60,13 @@ export default function TablePatients({
 
 	const { setAlertDialogDetails, setNewAppointmentModal } = useAppStore();
 
-	const { data, isLoading, isSuccess } = useQuery({
+	const { data, isLoading, isSuccess, refetch } = useQuery({
 		queryKey: ["patients-appointments"],
 		queryFn: PatientsAPIManager.getAppointmentPatient,
+	});
+	const { data:patientsData, isLoading:isLoadingPatientData, isSuccess:isSuccessPatientData, refetch:refetchPatientData } = useQuery({
+		queryKey: ["all-patients"],
+		queryFn: PatientsAPIManager.getAllPatients,
 	});
 
 	const mutationArchive = useMutation({
@@ -73,6 +78,8 @@ export default function TablePatients({
 				title: "Success!",
 				message: "Patient archived successfully",
 			});
+			refetchPatientData()
+			refetch()
 		},
 		onError: (error) => {
 			console.error(error);
@@ -96,8 +103,9 @@ export default function TablePatients({
 	}, [visibleColumns]);
 
 	const filteredItems = React.useMemo(() => {
-		if (!isSuccess) return [];
-		let filteredPatients = [...data.patients];
+		if (!isSuccess || !isSuccessPatientData) return [];
+		const archivedPatients = patientsData.filter(patient => patient.ROLE === "ARCHIVE").map(patient => patient.ID)
+		let filteredPatients = data.patients.filter(patient => type === "archived" ? archivedPatients.includes(patient.ID) : !archivedPatients.includes(patient.ID));
 
 		if (hasSearchFilter) {
 			filteredPatients = filteredPatients.filter((patient) => {
@@ -118,7 +126,7 @@ export default function TablePatients({
 		}
 
 		return filteredPatients;
-	}, [data, isSuccess, filterValue, statusFilter, filterKeys]);
+	}, [data, isSuccess, filterValue, statusFilter, filterKeys, isSuccessPatientData]);
 
 	const items = React.useMemo(() => {
 		const start = (page - 1) * rowsPerPage;
@@ -253,15 +261,7 @@ export default function TablePatients({
 								<DropdownItem key={"edit"} aria-label="edit">
 									Edit
 								</DropdownItem>
-								<DropdownItem
-									key={"archive"}
-									className="text-warning"
-									aria-label="archive"
-									color="warning"
-								>
-									Archive
-								</DropdownItem>
-								{appointment["ROLE"] == "ARCHIVE" && (
+								{type === "regular" && (
 									<DropdownItem
 										key={"archive"}
 										className="text-warning"
@@ -271,7 +271,7 @@ export default function TablePatients({
 										Archive
 									</DropdownItem>
 								)}
-								{appointment["ROLE"] == "PATIENT" && (
+								{type === "archived" && (
 									<DropdownItem
 										key={"patient"}
 										className="text-warning"
@@ -387,7 +387,6 @@ export default function TablePatients({
 				wrapper: "w-full shadow-none",
 			}}
 			selectedKeys={selectedKeys}
-			selectionMode="multiple"
 			sortDescriptor={sortDescriptor}
 			topContentPlacement="outside"
 			onSelectionChange={setSelectedKeys}
@@ -417,6 +416,7 @@ export default function TablePatients({
 	);
 }
 TablePatients.propTypes = {
+	type: PropTypes.string,
 	filterType: PropTypes.string,
 	filterKeys: PropTypes.array,
 };

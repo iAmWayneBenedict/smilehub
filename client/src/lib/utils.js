@@ -119,6 +119,15 @@ export const getThisWeekMondayAndFriday = () => {
 		},
 	};
 };
+
+export function formatDate(date) {
+	const options = { day: "2-digit", month: "long", year: "numeric" };
+	const formattedDate = date.toLocaleDateString("en-PH", options);
+
+	// Custom formatting to add a comma between day and month
+	const dateParts = formattedDate.split(" ");
+	return `${dateParts[1]} ${dateParts[0]} ${dateParts[2]}`;
+}
 export const getISODateString = (dateString) => {
 	const dateObject = new Date(dateString);
 	return dateObject.toISOString()

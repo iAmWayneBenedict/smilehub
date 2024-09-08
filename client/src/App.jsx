@@ -22,8 +22,8 @@ import Patients from "./pages/shared/patients";
 import Appointments from "./pages/shared/appointments";
 import AddPatient from "./pages/shared/patients/components/AddPatient";
 import PatientInfo from "./pages/shared/patients/components/PatientInfo";
-import Dentists from "./pages/admin/dentists";
-import { default as DentistRegistration } from "./pages/shared/profile/Registration";
+import Employees from "./pages/admin/employees";
+import { default as EmployeeRegistration } from "./pages/shared/profile/Registration";
 import Profile from "./pages/shared/profile/Profile";
 import InvalidSmallScreen from "./components/layout/shared/invalids/InvalidSmallScreen";
 import ProgressNotes from "./pages/shared/patients/components/ProgressNotes";
@@ -36,6 +36,7 @@ import Item from "./pages/shared/inventory/layouts/ItemList/layout/Item";
 import AddItem from "./pages/shared/inventory/layouts/ItemList/layout/AddItem";
 import Tasks from "./pages/shared/tasks";
 import Calendar from "./pages/shared/calendar";
+import TermsAndPrivacyPolicy from "@/pages/TermsAndPrivacyPolicy/index.jsx";
 
 function App() {
 	const navigate = useNavigate();
@@ -44,6 +45,7 @@ function App() {
 	useValidateLoggedUser();
 
 	const queryClient = new QueryClient();
+
 	return (
 		<NextUIProvider navigate={navigate}>
 			<QueryClientProvider client={queryClient}>
@@ -59,6 +61,7 @@ function App() {
 					<Route path="/blogs" element={<LayoutWrapper child={<Blogs />} />} />
 					<Route path="/about" element={<LayoutWrapper child={<About />} />} />
 					<Route path="/contact" element={<LayoutWrapper child={<Contact />} />} />
+					<Route path="/terms-and-privacy-policy" element={<LayoutWrapper child={<TermsAndPrivacyPolicy />} />} />
 
 					<Route path="/admin">
 						{/* //* disable auth routes if there is a token */}
@@ -95,14 +98,14 @@ function App() {
 								/>
 							</Route>
 
-							<Route path="dentists">
-								<Route index element={<LayoutWrapper child={<Dentists />} />} />
+							<Route path="Employees">
+								<Route index element={<LayoutWrapper child={<Employees />} />} />
 								<Route
 									path="registration"
-									element={<LayoutWrapper child={<DentistRegistration />} />}
+									element={<LayoutWrapper child={<EmployeeRegistration />} />}
 								/>
 								<Route
-									path="profile"
+									path="profile/:id"
 									element={<LayoutWrapper child={<Profile />} />}
 								/>
 							</Route>

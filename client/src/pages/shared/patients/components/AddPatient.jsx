@@ -15,7 +15,8 @@ import { useMutation } from "@tanstack/react-query";
 import PatientsAPIManager from "@/services/api/managers/patients/PatientsAPIManager";
 import { convertDateYYYYMMDD } from "@/services/api/utils";
 import { useAppStore, useAuthTokenPersisted } from "@/store/zustand";
-import { decrypt } from "@/lib/utils";
+import {decrypt, formatDate} from "@/lib/utils";
+import {sendEmail} from "@/services/email/index.js";
 
 const AddPatient = () => {
 	const { setAlertDialogDetails } = useAppStore();
@@ -29,6 +30,7 @@ const AddPatient = () => {
 		control,
 		reset,
 		setError,
+		getValues,
 		formState: { errors },
 	} = useForm({
 		defaultValues: {
@@ -43,6 +45,13 @@ const AddPatient = () => {
 	const mutation = useMutation({
 		mutationFn: PatientsAPIManager.postAddPatient,
 		onSuccess: () => {
+//			sendEmail({
+//				type: "credentials",
+//				name: `${getValues("FIRSTNAME")} ${getValues("LASTNAME")}`,
+//				email: getValues("EMAIL"),
+//				date: formatDate(new Date(convertDateYYYYMMDD(getValues("APPOINTMENT_DATE")))),
+//				time: getValues("APPOINTMENT_TIME")?.split("-")[0]
+//			})
 			reset();
 			setAlertDialogDetails({
 				isOpen: true,
