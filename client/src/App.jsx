@@ -114,7 +114,7 @@ function App() {
 								path="appointments/:type"
 								element={<LayoutWrapper child={<Appointments />} />}
 							/>
-							<Route path="profile" element={<LayoutWrapper child={<Profile />} />} />
+							<Route path="profile/:id" element={<LayoutWrapper child={<Profile />} />} />
 
 							<Route path="inventory">
 								<Route index element={<LayoutWrapper child={<Inventory />} />} />

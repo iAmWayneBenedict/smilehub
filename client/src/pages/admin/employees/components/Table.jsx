@@ -82,7 +82,7 @@ export default function TableEmployees() {
 		let filteredEmployee = [...data];
 		if (hasSearchFilter && statusFilter === "all") {
 			filteredEmployee = filteredEmployee.filter((employee) => {
-				return employee.name.toLowerCase().includes(filterValue?.toLowerCase());
+				return employee.name?.toLowerCase()?.includes(filterValue?.toLowerCase());
 			});
 		} else if(statusFilter === "archive") {
 			filteredEmployee = filteredEmployee.filter((employee) => {

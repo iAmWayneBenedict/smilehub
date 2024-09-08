@@ -104,9 +104,9 @@ export default function TablePatients({
 
 	const filteredItems = React.useMemo(() => {
 		if (!isSuccess || !isSuccessPatientData) return [];
-		const archivedPatients = patientsData.filter(patient => patient.ROLE === "ARCHIVE").map(patient => patient.ID)
+		const archivedPatients = patientsData.filter(patient => patient.ROLE === "ARCHIVE").map(patient => parseInt(patient.ID))
 		let filteredPatients = data.patients.filter(patient => type === "archived" ? archivedPatients.includes(patient.ID) : !archivedPatients.includes(patient.ID));
-
+		console.log(archivedPatients)
 		if (hasSearchFilter) {
 			filteredPatients = filteredPatients.filter((patient) => {
 				return patient.FULLNAME.toLowerCase().includes(filterValue?.toLowerCase());
