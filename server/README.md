@@ -1609,6 +1609,249 @@ Error (404 Not Found):
 }
 ```
 
+### 33. Add New Item
+
+- **Endpoints:**
+  - `POST /POST/SHARED/inventoryItem.php`  
+    - **Description:** Add a new item to the inventory.
+
+#### Request Body
+
+The request should be sent as JSON with the following structure:
+
+```json
+Note: Ensure that the NAME provided is unique. The system will not allow adding a item with a name that already exists except if the ITEM_GROUP is different.
+{
+    "NAME": "Item Name",
+    "ITEM_GROUP": "Dental Care Equipment",
+    "LOCATION": "Storage Room A",
+    "QUANTITY": 10
+}
+```
+
+#### Response
+
+```json
+Success (200 OK):
+{
+    "message": "Item added to inventory successfully."
+}
+```
+
+```json
+Error (400 Bad Request):
+{
+    "errors": {
+        "NAME": "Item name is required.",
+        "ITEM_GROUP": "Item group is required.",
+        "LOCATION": "Location is required.",
+        "QUANTITY": "Quantity is required and must be a number."
+    }
+}
+Note: The exact error messages depend on which validations fail.
+```
+
+```json
+Error (400 Bad Request):
+{
+    "message": "Item with the same name in this group already exists."
+}
+```
+
+```json
+Error (500 Internal Server Error):
+{
+    "message": "Failed to add item to inventory."
+}
+```
+
+### 34. Update Item
+
+- **Endpoints:**
+  - `POST /EDIT/SHARED/INVENTORY/inventoryItem.php`  
+    - **Description:** Update an existing inventory item.
+
+#### Request Body
+
+The request should be sent as JSON with the following structure:
+
+```json
+Note: Ensure that the NAME provided is unique. The system will not allow adding a item with a name that already exists except if the ITEM_GROUP is different.
+{
+    "ID": "1",
+    "NAME": "New Item Name",
+    "ITEM_GROUP": "Dental Care Product",
+    "LOCATION": "Storage Room A",
+    "QUANTITY": 20
+}
+
+```
+
+#### Response
+
+```json
+Success (200 OK):
+{
+    "message": "Item updated successfully."
+}
+```
+
+```json
+Error (400 Bad Request):
+{
+    "errors": {
+        "ID": "Item ID is required.",
+        "NAME": "Item name is required.",
+        "ITEM_GROUP": "Item group is required.",
+        "LOCATION": "Location is required.",
+        "QUANTITY": "Quantity is required.",
+        "NAME": "Item with the same name and group already exists."
+    }
+}
+Note: The exact error messages depend on which validations fail.
+```
+
+```json
+Error (404 Not Found):
+{
+    "message": "Item not found."
+}
+```
+
+```json
+Error (500 Internal Server Error):
+{
+    "message": "Failed to update item."
+}
+```
+
+### 35. Remove Item
+
+- **Endpoints:**
+  - `POST /DELETE/SHARED/INVENTORY/inventoryItem.php`  
+    - **Description:** Delete an existing inventory item.
+
+#### Request Body
+
+```json
+{
+    "ID": 1
+}
+```
+
+#### Response
+
+```json
+Success (200 OK):
+{
+    "message": "Item deleted successfully."
+}
+```
+
+```json
+Error (400 Bad Request):
+{
+    "errors": {
+        "ID": "Item ID is required."
+    }
+}
+```
+
+```json
+Error (404 Not Found):
+{
+    "message": "Item not found."
+}
+```
+
+```json
+Error (500 Internal Server Error):
+{
+    "message": "Failed to delete item."
+}
+```
+
+### 36. Fetch All Items
+
+- **Endpoints:**
+  - `GET /GET/SHARED/INVENTORY/inventoryItems.php`  
+    - **Description:** Fetch all inventory items.
+
+#### Response
+
+```json
+Success (200 OK):
+[
+    {
+        "ID": "1",
+        "NAME": "Item 1",
+        "ITEM_GROUP": "Group 1",
+        "LOCATION": "Location 1",
+        "QUANTITY": "10",
+    },
+    {
+        "ID": "2",
+        "NAME": "Item 2",
+        "ITEM_GROUP": "Group 2",
+        "LOCATION": "Location 2",
+        "QUANTITY": "5",
+    }
+]
+```
+
+```json
+Error (404 Not Found):
+{
+    "message": "No inventory items found."
+}
+```
+
+### 37. Fetch Item Details by ID
+
+- **Endpoints:**
+  - `GET /GET/SHARED/INVENTORY/inventoryItem.php`  
+    - **Description:** Fetch an inventory item based on its ID.
+
+#### Request Body
+
+The request should be sent as JSON with the following structure:
+
+```json
+{
+    "ID": 1
+}
+```
+
+#### Response
+
+```json
+Success (200 OK):
+{
+    "ID": "1",
+    "NAME": "Item 1",
+    "ITEM_GROUP": "Group 1",
+    "LOCATION": "Location 1",
+    "QUANTITY": "10",
+    "DATETIME": "2024-09-22 10:00:00"
+}
+```
+
+```json
+Error (400 Bad Request):
+{
+    "errors": {
+        "ID": "Item ID is required."
+    }
+}
+```
+
+```json
+Error (404 Not Found):
+{
+    "message": "Item not found."
+}
+```
+
 ## Development Setup
 
 To set up the development environment for the SmileHub API, follow these steps:
