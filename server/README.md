@@ -1187,21 +1187,33 @@ Note: To filter by year (showing data for the last 10 years, including the curre
 }
 ```
 
-#### Response
+### 24. Add New Task
+
+- **Endpoints:**
+  - `POST /POST/SHARED/task.php`  
+    - **Description:** Add a new task in the system.
+
+#### Request Body
+
+The request should be sent as JSON with the following structure:
 
 ```json
-Success (200 OK) (For Monthly Filter):
+Note: Allowed values for status are "Pending", "On-going", "Completed", "On Hold", "Cancelled", "Urgent", "Overdue".
 {
-    "data": [31, 40, 0, 51, 42, 0, 40, 0, 51, 42, 0, 42],
-    "categories": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    "TITLE": "Task Title",
+    "DESCRIPTION": "Task Description",
+    "STATUS": "Pending",
+    "CREATOR": "sample name",
+    "CREATOR_EMAIL": "sample@gmail.com"
 }
 ```
 
+#### Response
+
 ```json
-Success (200 OK) (For Yearly Filter):
+Success (200 OK):
 {
-    "data": [31, 40, 51, 42, 40, 51, 42, 12, 32, 20],
-    "categories": ["2015","2016","2017", "2018", "2019", "2020", "2021", "2022", "2023","2024"]
+    "message": "Task created successfully."
 }
 ```
 
@@ -1209,11 +1221,214 @@ Success (200 OK) (For Yearly Filter):
 Error (400 Bad Request):
 {
     "errors": {
-        "filter": "Invalid filter provided. Allowed values are 'month' or 'year'.",
-        "year": "Year is required when filter is set to 'month'."
+        "TITLE": "Title is required.",
+        "DESCRIPTION": "Description is required.",
+        "STATUS": "Status is required.",
+        "CREATOR": "Creator is required.",
+        "CREATOR_EMAIL": "Creator email is required."
     }
 }
 Note: The exact error messages depend on which validations fail.
+```
+
+```json
+Error (500 Internal Server Error):
+{
+    "message": "Failed to create task."
+}
+```
+
+### 25. Update Task
+
+- **Endpoints:**
+  - `POST /EDIT/SHARED/TASK/task.php`  
+    - **Description:** Update an existing task in the system.
+
+#### Request Body
+
+The request should be sent as JSON with the following structure:
+
+```json
+Note: Allowed values for status are "Pending", "On-going", "Completed", "On Hold", "Cancelled", "Urgent", "Overdue".
+{
+    "ID": 1,
+    "TITLE": "Updated Task Title",
+    "DESCRIPTION": "Updated Task Description",
+    "STATUS": "On-going"
+}
+```
+
+#### Response
+
+```json
+Success (200 OK):
+{
+    "message": "Task updated successfully."
+}
+```
+
+```json
+Error (400 Bad Request):
+{
+    "errors": {
+        "ID": "Task ID is required.",
+        "TITLE": "Title is required.",
+        "DESCRIPTION": "Description is required.",
+        "STATUS": "Status is required."
+    }
+}
+Note: The exact error messages depend on which validations fail.
+```
+```json
+Error (404 Not Found):
+{
+    "message": "Task not found."
+}
+```
+
+```json
+Error (500 Internal Server Error):
+{
+    "message": "Failed to update task."
+}
+```
+
+### 26. Remove Task
+
+- **Endpoints:**
+  - `POST /DELETE/SHARED/TASK/task.php`  
+    - **Description:** Delete a task from the system.
+
+#### Request Body
+
+```json
+{
+    "ID": 1
+}
+```
+
+#### Response
+
+```json
+Success (200 OK):
+{
+    "message": "Task deleted successfully."
+}
+```
+
+```json
+Error (400 Bad Request):
+{
+    "errors": {
+        "ID": "Task ID is required."
+    }
+}
+```
+
+```json
+Error (404 Not Found):
+{
+    "message": "Task not found."
+}
+```
+
+```json
+Error (500 Internal Server Error):
+{
+    "message": "Failed to delete the task."
+}
+```
+
+### 27. Fetch All Tasks
+
+- **Endpoints:**
+  - `GET /GET/SHARED/TASK/tasks.php`  
+    - **Description:** Fetch all tasks in the system, with an optional filter by status.
+- **Query Parameters:**
+  - `GET /GET/SHARED/TASK/tasks.php?status=Completed`  
+    - **status (Optional):** Filter tasks by their status (e.g., Pending, Completed). If this parameter is not provided, all tasks will be retrieved.   
+
+- **Note:**
+  - When the status parameter is provided, only tasks that match the specified status will be returned.
+
+#### Response
+
+```json
+Success (200 OK):
+[
+    {
+        "ID": 5,
+        "TITLE": "Task Title 3",
+        "DESCRIPTION": "Task Description",
+        "STATUS": "Pending",
+        "CREATOR": "sample name",
+        "CREATOR_EMAIL": "sample@gmail.com",
+        "DATETIME": "2024-09-22 12:17:10"
+    },
+    {
+        "ID": 4,
+        "TITLE": "Task Title 2",
+        "DESCRIPTION": "Task Description",
+        "STATUS": "On-going",
+        "CREATOR": "sample name",
+        "CREATOR_EMAIL": "sample@gmail.com",
+        "DATETIME": "2024-09-22 12:17:06"
+    }
+]
+```
+
+```json
+Error (404 Not Found):
+{
+    "message": "No available tasks."
+}
+```
+
+### 28. Fetch Task Details by ID
+
+- **Endpoints:**
+  - `GET /GET/SHARED/TASK/task.php`  
+    - **Description:** Fetch a specific task in the system based on its ID.
+
+#### Request Body
+
+The request should be sent as JSON with the following structure:
+
+```json
+{
+    "ID": 1
+}
+```
+
+#### Response
+
+```json
+Success (200 OK):
+{
+    "ID": 1,
+    "TITLE": "Task Title",
+    "DESCRIPTION": "Task Description",
+    "STATUS": "Pending",
+    "CREATOR": "sample name",
+    "CREATOR_EMAIL": "sample@gmail.com",
+    "DATETIME": "2024-09-22 12:00:00"
+}
+```
+
+```json
+Error (400 Bad Request):
+{
+    "errors": {
+        "ID": "Task ID is required."
+    }
+}
+```
+
+```json
+Error (404 Not Found):
+{
+    "message": "Task not found."
+}
 ```
 
 ## Development Setup
