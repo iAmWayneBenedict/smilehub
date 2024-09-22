@@ -5,8 +5,8 @@ const SplineChart = () => {
 	var options = {
 		series: [
 			{
-				name: "series1",
-				data: [31, 40, 28, 51, 42, 109, 100, 31, 40, 28, 51, 42], // *change this data to your data
+				name: "Total Visits",
+				data: [31, 0, 28, 51, 42, 109, 100, 31, 40, 28, 51, 42], // *change this data to your data
 			},
 		],
 		chart: {

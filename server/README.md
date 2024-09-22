@@ -1162,6 +1162,60 @@ Error (500 Internal Server Error):
 }
 ```
 
+### 23. Fetch Completed Appointments Count (Filter by Month or Year)
+
+- **Endpoints:**
+  - `GET /GET/SHARED/STATISTICS/visits.php`  
+    - **Description:** Retrieves the total count of completed appointments per month or per year based on the filter (month or year) provided in the request body.
+
+#### Request Body
+
+The request should be sent as JSON with the following structure:
+
+```json
+Note: To filter by month (January to December).
+{
+    "filterBy": "month",
+    "year": 2024
+}
+```
+
+```json
+Note: To filter by year (showing data for the last 10 years, including the current year).
+{
+    "filterBy": "year"
+}
+```
+
+#### Response
+
+```json
+Success (200 OK) (For Monthly Filter):
+{
+    "data": [31, 40, 0, 51, 42, 0, 40, 0, 51, 42, 0, 42],
+    "categories": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+}
+```
+
+```json
+Success (200 OK) (For Yearly Filter):
+{
+    "data": [31, 40, 51, 42, 40, 51, 42, 12, 32, 20],
+    "categories": ["2015","2016","2017", "2018", "2019", "2020", "2021", "2022", "2023","2024"]
+}
+```
+
+```json
+Error (400 Bad Request):
+{
+    "errors": {
+        "filter": "Invalid filter provided. Allowed values are 'month' or 'year'.",
+        "year": "Year is required when filter is set to 'month'."
+    }
+}
+Note: The exact error messages depend on which validations fail.
+```
+
 ## Development Setup
 
 To set up the development environment for the SmileHub API, follow these steps:
