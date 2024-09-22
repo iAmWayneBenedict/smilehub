@@ -1279,6 +1279,7 @@ Error (400 Bad Request):
 }
 Note: The exact error messages depend on which validations fail.
 ```
+
 ```json
 Error (404 Not Found):
 {
@@ -1428,6 +1429,183 @@ Error (400 Bad Request):
 Error (404 Not Found):
 {
     "message": "Task not found."
+}
+```
+
+### 29. Add New Item Group
+
+- **Endpoints:**
+  - `POST /POST/SHARED/inventoryItemGroup.php`  
+    - **Description:** Add a new inventory item group to the system.
+
+#### Request Body
+
+The request should be sent as JSON with the following structure:
+
+```json
+Note: Ensure that the NAME provided is unique. The system will not allow adding a group with a name that already exists.
+{
+    "NAME": "Dental Care Equipment"
+}
+```
+
+#### Response
+
+```json
+Success (200 OK):
+{
+    "message": "Inventory group added successfully."
+}
+```
+
+```json
+Error (400 Bad Request):
+{
+    "errors": {
+        "NAME": "Group name is required."
+    }
+}
+```
+
+```json
+Error (400 Bad Request):
+{
+    "message": "Group name already exists."
+}
+```
+
+```json
+Error (500 Internal Server Error):
+{
+    "message": "Failed to add inventory group."
+}
+```
+
+### 30. Update Item Group
+
+- **Endpoints:**
+  - `POST /EDIT/SHARED/INVENTORY/inventoryItemGroup.php`  
+    - **Description:** Update an existing inventory group in the system.
+
+#### Request Body
+
+The request should be sent as JSON with the following structure:
+
+```json
+{
+    "ID": 1,
+    "NAME": "Updated Group Name"
+}
+```
+
+#### Response
+
+```json
+Success (200 OK):
+{
+    "message": "Inventory group updated successfully."
+}
+```
+
+```json
+Error (400 Bad Request):
+{
+    "errors": {
+        "ID": "Group ID is required.",
+        "NAME": "Group name is required."
+    }
+}
+Note: The exact error messages depend on which validations fail.
+```
+
+```json
+Error (404 Not Found):
+{
+    "message": "Inventory group not found."
+}
+```
+
+```json
+Error (500 Internal Server Error):
+{
+    "message": "Failed to update inventory group."
+}
+```
+
+### 31. Remove Item Group
+
+- **Endpoints:**
+  - `POST /DELETE/SHARED/INVENTORY/inventoryItemGroup.php`  
+    - **Description:** Delete an existing inventory group from the system.
+
+#### Request Body
+
+```json
+{
+    "ID": 1
+}
+```
+
+#### Response
+
+```json
+Success (200 OK):
+{
+    "message": "Inventory group deleted successfully."
+}
+```
+
+```json
+Error (400 Bad Request):
+{
+    "errors": {
+        "ID": "Group ID is required."
+    }
+}
+```
+
+```json
+Error (404 Not Found):
+{
+    "message": "Inventory group not found."
+}
+```
+
+```json
+Error (500 Internal Server Error):
+{
+    "message": "Failed to delete inventory group."
+}
+```
+
+### 32. Fetch All Item Group
+
+- **Endpoints:**
+  - `GET /GET/SHARED/INVENTORY/inventoryItemsGroup.php`  
+    - **Description:** Fetch all inventory groups from the system.
+
+#### Response
+
+```json
+Success (200 OK):
+[
+    {
+        "ID": 1,
+        "NAME": "Dental Care Equipment",
+        "DATETIME": "2024-01-01 12:00:00"
+    },
+    {
+        "ID": 2,
+        "NAME": "Dental Care Product",
+        "DATETIME": "2024-01-02 12:00:00"
+    }
+]
+```
+
+```json
+Error (404 Not Found):
+{
+    "message": "No inventory groups found."
 }
 ```
 
