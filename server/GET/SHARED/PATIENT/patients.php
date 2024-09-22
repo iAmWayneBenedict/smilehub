@@ -10,7 +10,7 @@ require_once "../../../cors.php";
  */
 function patients($conn) {
     // Query to select all patients' ID and full names
-    $query = "SELECT ID, CONCAT(FIRSTNAME, ' ', LASTNAME) AS FULLNAME, ROLE FROM patient_table";
+    $query = "SELECT ID, CONCAT(FIRSTNAME, ' ', LASTNAME) AS FULLNAME, EMAIL, ROLE FROM patient_table";
     $result = $conn->query($query);
     
     $patients = [];

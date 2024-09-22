@@ -10,7 +10,7 @@ require_once "../../../cors.php";
  */
 function dentists($conn) {
     // Query to select all dentist details
-    $query = "SELECT ID, FULLNAME, EMAIL, BIRTHDAY, GENDER ,ROLE, DATETIME FROM employee_table";
+    $query = "SELECT ID, FULLNAME, EMAIL, BIRTHDAY, GENDER ,ROLE, DATETIME, STATUS FROM employee_table";
     $result = $conn->query($query);
     
     $dentists = [];
