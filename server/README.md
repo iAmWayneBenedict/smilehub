@@ -1805,28 +1805,53 @@ Error (500 Internal Server Error):
 
 - **Endpoints:**
   - `GET /GET/SHARED/INVENTORY/inventoryItems.php`  
-    - **Description:** Fetch all inventory items.
+    - **Description:** Fetch all inventory items and identify those with a quantity shortage (less than 10).
 
 #### Response
 
 ```json
 Success (200 OK):
-[
-    {
-        "ID": "1",
-        "NAME": "Item 1",
-        "ITEM_GROUP": "Group 1",
-        "LOCATION": "Location 1",
-        "QUANTITY": "10",
-    },
-    {
-        "ID": "2",
-        "NAME": "Item 2",
-        "ITEM_GROUP": "Group 2",
-        "LOCATION": "Location 2",
-        "QUANTITY": "5",
-    }
-]
+{
+    "all_items": [
+        {
+            "ID": 4,
+            "NAME": "Updated Item Name A",
+            "ITEM_GROUP": "Dental Care Equipment A",
+            "LOCATION": "Updated Storage Location",
+            "QUANTITY": "20"
+        },
+        {
+            "ID": 7,
+            "NAME": "Updated Item Name B",
+            "ITEM_GROUP": "Dental Care Equipment B",
+            "LOCATION": "Updated Storage Location",
+            "QUANTITY": "9"
+        },
+        {
+            "ID": 8,
+            "NAME": "Updated Item Name C",
+            "ITEM_GROUP": "Dental Care Equipment B",
+            "LOCATION": "Updated Storage Location",
+            "QUANTITY": "20"
+        },
+        {
+            "ID": 9,
+            "NAME": "Updated Item Name D",
+            "ITEM_GROUP": "Dental Care Equipment A",
+            "LOCATION": "Updated Storage Location",
+            "QUANTITY": "20"
+        }
+    ],
+    "items_shortage": [
+        {
+            "ID": 7,
+            "NAME": "Updated Item Name B",
+            "ITEM_GROUP": "Dental Care Equipment B",
+            "LOCATION": "Updated Storage Location",
+            "QUANTITY": "9"
+        }
+    ]
+}
 ```
 
 ```json
