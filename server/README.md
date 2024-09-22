@@ -1609,7 +1609,37 @@ Error (404 Not Found):
 }
 ```
 
-### 33. Add New Item
+### 33. Fetch Inventory Groups with Quantities
+- **Endpoints:**
+  - `GET /GET/SHARED/INVENTORY/inventoryItemsGroupWithQuantity.php`  
+    - **Description:** Fetch all inventory groups along with their total quantities.
+
+#### Response
+
+```json
+Success (200 OK):
+[
+    {
+        "ID": 1,
+        "GROUP_NAME": "Dental Care Equipment A",
+        "QUANTITY": "20"
+    },
+    {
+        "ID": 2,
+        "GROUP_NAME": "Dental Care Equipment B",
+        "QUANTITY": "15"
+    }
+]
+```
+
+```json
+Error (404 Not Found):
+{
+    "message": "No inventory groups found."
+}
+```
+
+### 34. Add New Item
 
 - **Endpoints:**
   - `POST /POST/SHARED/inventoryItem.php`  
@@ -1665,7 +1695,7 @@ Error (500 Internal Server Error):
 }
 ```
 
-### 34. Update Item
+### 35. Update Item
 
 - **Endpoints:**
   - `POST /EDIT/SHARED/INVENTORY/inventoryItem.php`  
@@ -1725,7 +1755,7 @@ Error (500 Internal Server Error):
 }
 ```
 
-### 35. Remove Item
+### 36. Remove Item
 
 - **Endpoints:**
   - `POST /DELETE/SHARED/INVENTORY/inventoryItem.php`  
@@ -1771,7 +1801,7 @@ Error (500 Internal Server Error):
 }
 ```
 
-### 36. Fetch All Items
+### 37. Fetch All Items
 
 - **Endpoints:**
   - `GET /GET/SHARED/INVENTORY/inventoryItems.php`  
@@ -1806,7 +1836,7 @@ Error (404 Not Found):
 }
 ```
 
-### 37. Fetch Item Details by ID
+### 38. Fetch Item Details by ID
 
 - **Endpoints:**
   - `GET /GET/SHARED/INVENTORY/inventoryItem.php`  
