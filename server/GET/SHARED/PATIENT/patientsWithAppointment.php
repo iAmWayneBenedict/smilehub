@@ -14,22 +14,22 @@ function getAppointmentsAndPatients($conn) {
 
     // Query to fetch the necessary data, including patient ID, grouping by email
     $query = "
-        SELECT 
-            p.ID AS PATIENT_ID,
-            a.FULLNAME,
-            MAX(CASE WHEN a.APPOINTMENT_DATE < ? THEN a.APPOINTMENT_DATE END) AS Last_Appointment,
-            MIN(CASE WHEN a.APPOINTMENT_DATE >= ? THEN a.APPOINTMENT_DATE END) AS Next_Appointment,
-            COALESCE(
-                MAX(CASE WHEN a.APPOINTMENT_DATE < ? THEN a.PURPOSE END),
-                MAX(CASE WHEN a.APPOINTMENT_DATE >= ? THEN a.PURPOSE END)
-            ) AS DIAGNOSIS,
-            COALESCE(
-                MAX(CASE WHEN a.APPOINTMENT_DATE < ? THEN a.STATUS END),
-                MAX(CASE WHEN a.APPOINTMENT_DATE >= ? THEN a.STATUS END)
-            ) AS STATUS
-        FROM appointment_table a
-        JOIN patient_table p ON a.EMAIL = p.EMAIL
-        GROUP BY p.ID, a.EMAIL
+    SELECT 
+        p.ID AS PATIENT_ID,
+        MAX(a.FULLNAME) AS FULLNAME,  -- Apply MAX to handle ONLY_FULL_GROUP_BY
+        MAX(CASE WHEN a.APPOINTMENT_DATE < ? THEN a.APPOINTMENT_DATE END) AS Last_Appointment,
+        MIN(CASE WHEN a.APPOINTMENT_DATE >= ? THEN a.APPOINTMENT_DATE END) AS Next_Appointment,
+        COALESCE(
+            MAX(CASE WHEN a.APPOINTMENT_DATE < ? THEN a.PURPOSE END),
+            MAX(CASE WHEN a.APPOINTMENT_DATE >= ? THEN a.PURPOSE END)
+        ) AS DIAGNOSIS,
+        COALESCE(
+            MAX(CASE WHEN a.APPOINTMENT_DATE < ? THEN a.STATUS END),
+            MAX(CASE WHEN a.APPOINTMENT_DATE >= ? THEN a.STATUS END)
+        ) AS STATUS
+    FROM appointment_table a
+    JOIN patient_table p ON a.EMAIL = p.EMAIL
+    GROUP BY p.ID, a.EMAIL
     ";
     
     $stmt = $conn->prepare($query);
