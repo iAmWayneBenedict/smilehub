@@ -1187,6 +1187,53 @@ Note: To filter by year (showing data for the last 10 years, including the curre
 }
 ```
 
+#### Response
+
+```json
+Success (200 OK):
+{
+    "data": [
+        12,
+        21,
+        10,
+        9,
+        4,
+        11,
+        33,
+        1,
+        10,
+        16,
+        9,
+        43
+    ],
+    "categories": [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec"
+    ]
+}
+Note: The response data will depends on the filter type in your request body (Montly or Yearly).
+```
+
+```json
+Error (400 Bad Request):
+{
+    "errors": {
+        "filterBy": "Filter type (month or year) is required."
+    }
+}
+Note: The exact error messages depend on which validations fail.
+```
+
 ### 24. Add New Task
 
 - **Endpoints:**
