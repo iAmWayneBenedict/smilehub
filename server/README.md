@@ -15,8 +15,8 @@ The base URL for accessing the API is: http://localhost/smilehub/server
     - **Description:** Register a new patient in the system.
   - `POST /POST/STAFF/register.php`  
     - **Description:** Register a new staff member in the system.
-  - `POST /POST/ADMIN/register.php`  
-    - **Description:** Register a new admin in the system.
+  - `POST /POST/DENTIST/register.php`  
+    - **Description:** Register a new dentist in the system.
 
 #### Request Body
 
@@ -33,7 +33,7 @@ Note: Request body for Patient
 ```
 
 ```json
-Note: Request body for Staff and admin account
+Note: Request body for Staff and Dentist account
 {
     "FULLNAME": "John Doe",
     "EMAIL": "johndoe@example.com",
@@ -82,7 +82,7 @@ Error (500 Internal Server Error):
   - `POST /POST/PATIENT/login.php`  
     - **Description:** Authenticate a patient and log them into the system.
   - `POST /POST/SHARED/login.php`  
-    - **Description:** Authenticate both staff and admin and log them into the system.
+    - **Description:** Authenticate both staff and dentist and log them into the system.
 
 #### Request Body
 
@@ -173,7 +173,7 @@ Error (404 Not Found):
   - `POST /POST/PATIENT/appointment.php`  
     - **Description:** Create a new appointment for a user (This route is for patients account only).
   - `POST /POST/SHARED/appointment.php`  
-    - **Description:** Create a new appointment for a user (This route is for staff and admin account only).
+    - **Description:** Create a new appointment for a user (This route is for staff and dentist account only).
 
 #### Request Body
 
@@ -192,7 +192,7 @@ Note: Request body for patients account
 ```
 
 ```json
-Note: Request body for staff or admin account
+Note: Request body for staff or dentist account
 {
     "PATIENT_ID": "123",
     "APPOINTMENT_DATE": "2024-08-04",
@@ -239,7 +239,7 @@ Error (400 Bad Request):
 ```
 
 ```json
-Note: This error can occur only in staff or admin account
+Note: This error can occur only in staff or dentist account
 Error (400 Not Found):
 {
     "message": "Patient not found."
@@ -304,7 +304,7 @@ Error (404 Not Found):
 
 - **Endpoints:**
   - `POST /EDIT/SHARED/APPOINTMENT/reschedule.php`  
-    - **Description:** Allows a staff or admin to reschedule an appointment by providing the new appointment date and time based on the appointment ID.
+    - **Description:** Allows a staff or dentist to reschedule an appointment by providing the new appointment date and time based on the appointment ID.
 
 - **Note:**
   - Only appointments with a status of Pending can be rescheduled.
@@ -578,7 +578,7 @@ Error (404 Not Found):
 
 - **Endpoints:**
   - `POST /POST/SHARED/patient.php`  
-    - **Description:** Register a new patient in the system (This is for staff and admin account only).
+    - **Description:** Register a new patient in the system (This is for staff and dentist account only).
 
 #### Request Body
 
@@ -836,8 +836,8 @@ Error (404 Not Found):
 ### 16. Add New Dentist
 
 - **Endpoints:**
-  - `POST /POST/ADMIN/dentist.php`  
-    - **Description:** Add a new dentist in the system (This is for admin account only).
+  - `POST /POST/DENTIST/dentist.php`  
+    - **Description:** Add a new dentist in the system (This is for dentist account only).
 
 #### Request Body
 
@@ -1951,6 +1951,209 @@ Error (400 Bad Request):
 Error (404 Not Found):
 {
     "message": "Item not found."
+}
+```
+
+### 39. Add Progress Note
+
+- **Endpoints:**
+  - `POST /POST/DENTIST/progressNotes.php`  
+    - **Description:** Add a new progress note to the system.
+
+#### Request Body
+
+The request should be sent as JSON with the following structure:
+
+```json
+{
+    "ID": "1",
+    "PATIENT_ID": "123",
+    "NOTES": "Patient showed improvement.",
+    "DATE": "2024-09-22"
+}
+```
+
+#### Response
+
+```json
+Success (200 OK):
+{
+    "message": "Progress note added successfully."
+}
+```
+
+```json
+Error (400 Bad Request):
+{
+    "errors": {
+        "ID": "Note ID is required.",
+        "PATIENT_ID": "Patient ID is required.",
+        "NOTES": "Notes are required.",
+        "DATE": "Date is required."
+    }
+}
+Note: The exact error messages depend on which validations fail.
+```
+
+```json
+Error (500 Internal Server Error):
+{
+    "message": "Failed to add progress note."
+}
+```
+
+### 40. Update Progress Note
+
+- **Endpoints:**
+  - `POST /EDIT/DENTIST/progressNotes.php`  
+    - **Description:** Update an existing progress note in the system.
+
+#### Request Body
+
+The request should be sent as JSON with the following structure:
+
+```json
+{
+    "ID": "1",
+    "PATIENT_ID": "123",
+    "NOTES": "Updated notes for the progress.",
+    "DATE": "2024-09-23"
+}
+```
+
+#### Response
+
+```json
+Success (200 OK):
+{
+    "message": "Progress note updated successfully."
+}
+```
+
+```json
+Error (400 Bad Request):
+{
+    "errors": {
+        "ID": "Progress note ID is required.",
+        "PATIENT_ID": "Patient ID is required.",
+        "NOTES": "Notes are required.",
+        "DATE": "Date is required."
+    }
+}
+Note: The exact error messages depend on which validations fail.
+```
+
+```json
+Error (404 Not Found):
+{
+    "message": "Progress note not found."
+}
+```
+
+```json
+Error (500 Internal Server Error):
+{
+    "message": "Failed to update progress note."
+}
+```
+
+### 41. Remove Progress Note
+
+- **Endpoints:**
+  - `POST /DELETE/DENTIST/progressNotes.php`  
+    - **Description:** Delete an existing progress note in the system.
+
+#### Request Body
+
+The request should be sent as JSON with the following structure:
+
+```json
+{
+    "ID": "1"
+}
+```
+
+#### Response
+
+```json
+Success (200 OK):
+{
+    "message": "Progress note deleted successfully."
+}
+```
+
+```json
+Error (400 Bad Request):
+{
+    "errors": {
+        "ID": "Progress note ID is required."
+    }
+}
+```
+
+```json
+Error (404 Not Found):
+{
+    "message": "Progress note not found."
+}
+```
+
+```json
+Error (500 Internal Server Error):
+{
+    "message": "Failed to delete the progress note."
+}
+```
+
+### 42. Fetch All Progress Notes by Patient ID
+
+- **Endpoints:**
+  - `GET /GET/DENTIST/progressNotesByPatientId.php`  
+    - **Description:** Fetch all progress notes for a specific patient based on their ID.
+
+#### Request Body
+
+The request should be sent as JSON with the following structure:
+
+```json
+{
+    "PATIENT_ID": 1
+}
+```
+
+#### Response
+
+```json
+Success (200 OK):
+[
+    {
+        "ID": 1,
+        "PATIENT_ID": 1,
+        "NOTES": "Patient shows improvement.",
+        "DATE": "2024-09-23"
+    },
+    {
+        "ID": 2,
+        "PATIENT_ID": 1,
+        "NOTES": "Patient requires further examination.",
+        "DATE": "2024-09-24"
+    }
+]
+```
+
+```json
+Error (400 Bad Request):
+{
+    "errors": {
+        "PATIENT_ID": "Patient ID is required."
+    }
+}
+```
+
+```json
+Error (404 Not Found):
+{
+    "message": "No progress notes found for this patient."
 }
 ```
 

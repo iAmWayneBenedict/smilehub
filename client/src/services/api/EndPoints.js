@@ -18,7 +18,7 @@ const END_POINTS = {
 	// register
 	PATIENT_REGISTER: () => "/POST/PATIENT/register.php",
 	STAFF_REGISTER: () => "/POST/STAFF/register.php",
-	ADMIN_REGISTER: () => "/POST/ADMIN/register.php",
+	ADMIN_REGISTER: () => "/POST/DENTIST/register.php",
 
 	// login
 	PATIENT_LOGIN: () => "/POST/PATIENT/login.php",
@@ -43,7 +43,7 @@ const END_POINTS = {
 	GET_APPOINTMENT_PATIENT: () => "/GET/SHARED/PATIENT/patientsWithAppointment.php",
 
 	// employees
-	POST_ADD_EMPLOYEE: () => "/POST/ADMIN/dentist.php",
+	POST_ADD_EMPLOYEE: () => "/POST/DENTIST/dentist.php",
 	GET_ALL_EMPLOYEE: () => "/GET/SHARED/EMPLOYEE/employees.php",
 	POST_CHANGE_EMPLOYEE_STATUS: () => "/EDIT/SHARED/EMPLOYEE/changeStatus.php",
 	GET_EMPLOYEE_DETAILS: () => "/GET/SHARED/DENTIST/dentist.php",
