@@ -2157,6 +2157,197 @@ Error (404 Not Found):
 }
 ```
 
+### 43. Add New Assessment
+
+- **Endpoints:**
+  - `POST /POST/DENTIST/assessment.php`  
+    - **Description:** Add a new assessment record to the system.
+
+#### Request Body
+
+The request should be sent as JSON with the following structure:
+
+```json
+Note: Allowed values for PRESENCE_OF_DECAY, CAVITIES and SENSITIVITY are "no", "yes", or "", lowercase is necessary.
+{
+    "PATIENT_ID": 1,
+    "TOOTH_NO": "18",
+    "COLOR": "White",
+    "TEXTURE": "Smooth",
+    "GUM_HEALTH": "Healthy",
+    "PRESENCE_OF_DECAY": "",
+    "CAVITIES": "no",
+    "SENSITIVITY": "yes",
+    "MOBILITY": "Normal",
+    "PREVIOUS_TREATMENT": "None"
+}
+```
+
+#### Response
+
+```json
+Success (200 OK):
+{
+    "message": "Assessment record added successfully."
+}
+```
+
+```json
+Error (400 Bad Request):
+{
+    "errors": {
+        "PATIENT_ID": "Patient ID is required.",
+        "TOOTH_NO": "Tooth number is required.",
+        "COLOR": "Color is required.",
+        "TEXTURE": "Texture is required.",
+        "GUM_HEALTH": "Gum health is required.",
+        "PRESENCE_OF_DECAY": "Invalid value for Presence of decay. Allowed values are 'yes', 'no', or blank.",
+        "CAVITIES": "Invalid value for Cavities. Allowed values are 'yes', 'no', or blank.",
+        "SENSITIVITY": "Invalid value for Sensitivity. Allowed values are 'yes', 'no', or blank.",
+        "MOBILITY": "Mobility is required.",
+        "PREVIOUS_TREATMENT": "Previous treatment is required."
+    }
+}
+Note: The exact error messages depend on which validations fail.
+```
+
+```json
+Error (500 Internal Server Error):
+{
+    "message": "Failed to add assessment record."
+}
+```
+
+### 44. Update Assessment
+
+- **Endpoints:**
+  - `POST /EDIT/DENTIST/assessment.php`  
+    - **Description:** Update an existing assessment record in the system.
+
+#### Request Body
+
+The request should be sent as JSON with the following structure:
+
+```json
+Note: Allowed values for PRESENCE_OF_DECAY, CAVITIES and SENSITIVITY are "no", "yes", or "", lowercase is necessary.
+{
+    "PATIENT_ID": 1,
+    "TOOTH_NO": "18",
+    "COLOR": "White",
+    "TEXTURE": "Smooth",
+    "GUM_HEALTH": "Healthy",
+    "PRESENCE_OF_DECAY": "",
+    "CAVITIES": "no",
+    "SENSITIVITY": "yes",
+    "MOBILITY": "Normal",
+    "PREVIOUS_TREATMENT": "None"
+}
+```
+
+#### Response
+
+```json
+Success (200 OK):
+{
+    "message": "Assessment record updated successfully."
+}
+```
+
+```json
+Error (400 Bad Request):
+{
+    "errors": {
+        "PATIENT_ID": "Patient ID is required.",
+        "TOOTH_NO": "Tooth number is required.",
+        "COLOR": "Color is required.",
+        "TEXTURE": "Texture is required.",
+        "GUM_HEALTH": "Gum health is required.",
+        "PRESENCE_OF_DECAY": "Invalid value for Presence of decay. Allowed values are 'yes', 'no', or blank.",
+        "CAVITIES": "Invalid value for Cavities. Allowed values are 'yes', 'no', or blank.",
+        "SENSITIVITY": "Invalid value for Sensitivity. Allowed values are 'yes', 'no', or blank.",
+        "MOBILITY": "Mobility is required.",
+        "PREVIOUS_TREATMENT": "Previous treatment is required."
+    }
+}
+Note: The exact error messages depend on which validations fail.
+```
+
+```json
+Error (404 Not Found):
+{
+    "message": "No assessment found with the provided Patient ID and Tooth Number."
+}
+```
+
+```json
+Error (500 Internal Server Error):
+{
+    "message": "Failed to update assessment record."
+}
+```
+
+### 45. Fetch Assessment by Patient ID and Tooth Number
+
+- **Endpoints:**
+  - `GET /GET/DENTIST/assessment.php`  
+    - **Description:** Update an existing assessment record in the system.
+
+#### Request Body
+
+The request should be sent as JSON with the following structure:
+
+```json
+{
+    "PATIENT_ID": "1",
+    "TOOTH_NO": "18"
+}
+```
+
+#### Response
+
+```json
+Success (200 OK):
+{
+    "ID": "123",
+    "PATIENT_ID": 1,
+    "TOOTH_NO": "18",
+    "COLOR": "White",
+    "TEXTURE": "Smooth",
+    "GUM_HEALTH": "Healthy",
+    "PRESENCE_OF_DECAY": "",
+    "CAVITIES": "no",
+    "SENSITIVITY": "yes",
+    "MOBILITY": "Normal",
+    "PREVIOUS_TREATMENT": "None",
+    "DATETIME": "2024-09-24 12:34:56"
+}
+```
+
+```json
+Error (400 Bad Request):
+{
+    "errors": {
+        "PATIENT_ID": "Patient ID is required.",
+        "TOOTH_NO": "Tooth number is required."
+    }
+}
+Note: The exact error messages depend on which validations fail.
+```
+
+```json
+Error (404 Not Found):
+{
+    "message": "No assessment found with the provided Patient ID and Tooth Number."
+}
+```
+
+```json
+Error (500 Internal Server Error):
+{
+    "message": "Failed to fetch assessment record."
+}
+```
+
 ## Development Setup
 
 To set up the development environment for the SmileHub API, follow these steps:
