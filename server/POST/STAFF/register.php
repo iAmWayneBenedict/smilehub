@@ -68,6 +68,7 @@ function register($conn, $data) {
     }
 
     $ROLE = "STAFF";
+    $STATUS = "ACTIVE";
     // Hash the password
     $HASHED_PASSWORD = password_hash($data->PASSWORD, PASSWORD_DEFAULT);
 
@@ -75,16 +76,18 @@ function register($conn, $data) {
         FULLNAME,
         EMAIL,
         PASSWORD,
-        ROLE)
+        ROLE,
+        STATUS)
         VALUES
-        (?, ?, ?, ?)";
+        (?, ?, ?, ?, ?)";
 
     $stmt = $conn->prepare($query);
-    $stmt->bind_param('ssss',
+    $stmt->bind_param('sssss',
         $data->FULLNAME,
         $data->EMAIL,
         $HASHED_PASSWORD,
-        $ROLE
+        $ROLE,
+        $STATUS
     );
     $result = $stmt->execute();
     $stmt->close();
