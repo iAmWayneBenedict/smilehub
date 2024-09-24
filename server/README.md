@@ -2348,6 +2348,35 @@ Error (500 Internal Server Error):
 }
 ```
 
+### 46. Uploading a File
+
+- **Endpoints:**
+  - `POST /POST/uploadFile.php`  
+    - **Description:** Upload files associated with patient records.
+
+#### Request Body
+
+The request should be sent as form-data with the file included:
+##### Key: file1
+##### Value: (Select file to upload)
+
+#### Response
+
+```json
+Success (200 OK):
+{
+    "message": "Files uploaded successfully.",
+    "fileName": ["unique_filename_1.ext"]
+}
+```
+
+```json
+Error (500 Internal Server Error):
+{
+    "message": "No file uploaded or file upload error occurred"
+}
+```
+
 ## Development Setup
 
 To set up the development environment for the SmileHub API, follow these steps:
