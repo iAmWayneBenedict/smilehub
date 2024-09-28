@@ -1962,16 +1962,32 @@ Error (404 Not Found):
 
 #### Request Body
 
-The request should be sent as JSON with the following structure:
+The request should be sent as form-data with the following fields:
 
-```json
-{
-    "ID": "1",
-    "PATIENT_ID": "123",
-    "NOTES": "Patient showed improvement.",
-    "DATE": "2024-09-22"
-}
-```
+- **Key: PATIENT_ID**
+  - `Value: 1` 
+- **Key: COMPLAINT**
+  - `Value: TEST COMPLAINT` 
+- **Key: HISTORY_UPDATE**
+  - `Value: TEST HISTORY_UPDATE` 
+- **Key: DIAGNOSIS**
+  - `Value: TEST DIAGNOSIS` 
+- **Key: PROCEDURES**
+  - `Value: TEST PROCEDURES` 
+- **Key: MATERIALS_USED**
+  - `Value: TEST MATERIALS_USED` 
+- **Key: INSTRUCTION**
+  - `Value: TEST INSTRUCTION` 
+- **Key: RESPONSE**
+  - `Value: TEST RESPONSE` 
+- **Key: TREATMENT_PLAN**
+  - `Value: TEST TREATMENT_PLAN` 
+- **Key: X_RAY_FILE**
+  - `Value: (Select file to upload)` 
+- **Key: SIGNATURE**
+  - `Value: (Select file to upload)` 
+- **Key: DATE**
+  - `Value: YYYY-MM-DD` 
 
 #### Response
 
@@ -1986,19 +2002,41 @@ Success (200 OK):
 Error (400 Bad Request):
 {
     "errors": {
-        "ID": "Note ID is required.",
         "PATIENT_ID": "Patient ID is required.",
-        "NOTES": "Notes are required.",
-        "DATE": "Date is required."
+        "COMPLAINT": "Complaint is required.",
+        "HISTORY_UPDATE": "History update is required.",
+        "DIAGNOSIS": "DIAGNOSIS is required.",
+        "TREATMENT_PLAN": "TREATMENT_PLAN is required.",
+        "PROCEDURES": "PROCEDURES is required.",
+        "MATERIALS_USED": "MATERIALS_USED is required.",
+        "INSTRUCTION": "INSTRUCTION is required.",
+        "RESPONSE": "RESPONSE is required.",
+        "DATE": "DATE is required."
     }
 }
 Note: The exact error messages depend on which validations fail.
 ```
 
 ```json
+Error (400 Bad Request):
+{
+    "message": "No file found for X_RAY_FILE"
+}
+Note: The exact error messages depend on which file validations fail.
+```
+
+```json
 Error (500 Internal Server Error):
 {
-    "message": "Failed to add progress note."
+    "message": "Failed to move uploaded X-ray file."
+}
+Note: The exact error messages depend on which file validations fail.
+```
+
+```json
+Error (500 Internal Server Error):
+{
+    "message": "Failed to add progress record."
 }
 ```
 
@@ -2010,23 +2048,41 @@ Error (500 Internal Server Error):
 
 #### Request Body
 
-The request should be sent as JSON with the following structure:
+The request should be sent as form-data with the following fields:
 
-```json
-{
-    "ID": "1",
-    "PATIENT_ID": "123",
-    "NOTES": "Updated notes for the progress.",
-    "DATE": "2024-09-23"
-}
-```
+- **Key: ID**
+  - `Value: 1` 
+- **Key: PATIENT_ID**
+  - `Value: 2` 
+- **Key: COMPLAINT**
+  - `Value: TEST COMPLAINT` 
+- **Key: HISTORY_UPDATE**
+  - `Value: TEST HISTORY_UPDATE` 
+- **Key: DIAGNOSIS**
+  - `Value: TEST DIAGNOSIS` 
+- **Key: PROCEDURES**
+  - `Value: TEST PROCEDURES` 
+- **Key: MATERIALS_USED**
+  - `Value: TEST MATERIALS_USED` 
+- **Key: INSTRUCTION**
+  - `Value: TEST INSTRUCTION` 
+- **Key: RESPONSE**
+  - `Value: TEST RESPONSE` 
+- **Key: TREATMENT_PLAN**
+  - `Value: TEST TREATMENT_PLAN` 
+- **Key: X_RAY_FILE**
+  - `Value: (Select file to upload)` 
+- **Key: SIGNATURE**
+  - `Value: (Select file to upload)` 
+- **Key: DATE**
+  - `Value: YYYY-MM-DD` 
 
 #### Response
 
 ```json
 Success (200 OK):
 {
-    "message": "Progress note updated successfully."
+    "message": "Progress record updated successfully."
 }
 ```
 
@@ -2034,10 +2090,17 @@ Success (200 OK):
 Error (400 Bad Request):
 {
     "errors": {
-        "ID": "Progress note ID is required.",
+        "ID": "ID is required.",
         "PATIENT_ID": "Patient ID is required.",
-        "NOTES": "Notes are required.",
-        "DATE": "Date is required."
+        "COMPLAINT": "Complaint is required.",
+        "HISTORY_UPDATE": "History update is required.",
+        "DIAGNOSIS": "DIAGNOSIS is required.",
+        "TREATMENT_PLAN": "TREATMENT_PLAN is required.",
+        "PROCEDURES": "PROCEDURES is required.",
+        "MATERIALS_USED": "MATERIALS_USED is required.",
+        "INSTRUCTION": "INSTRUCTION is required.",
+        "RESPONSE": "RESPONSE is required.",
+        "DATE": "DATE is required."
     }
 }
 Note: The exact error messages depend on which validations fail.
@@ -2046,14 +2109,22 @@ Note: The exact error messages depend on which validations fail.
 ```json
 Error (404 Not Found):
 {
-    "message": "Progress note not found."
+    "message": "Record not found for the provided ID and PATIENT_ID."
 }
 ```
 
 ```json
 Error (500 Internal Server Error):
 {
-    "message": "Failed to update progress note."
+    "message": "Failed to move uploaded X-ray file."
+}
+Note: The exact error messages depend on which file validations fail.
+```
+
+```json
+Error (500 Internal Server Error):
+{
+    "message": "Failed to update progress record."
 }
 ```
 
@@ -2117,7 +2188,7 @@ The request should be sent as JSON with the following structure:
 
 ```json
 {
-    "PATIENT_ID": 1
+    "PATIENT_ID": "1"
 }
 ```
 
@@ -2127,16 +2198,34 @@ The request should be sent as JSON with the following structure:
 Success (200 OK):
 [
     {
-        "ID": 1,
-        "PATIENT_ID": 1,
-        "NOTES": "Patient shows improvement.",
-        "DATE": "2024-09-23"
+        "ID": 34,
+        "PATIENT_ID": "1",
+        "COMPLAINT": "TEST COMPLAIN",
+        "HISTORY_UPDATE": "TEST UPDATE",
+        "X_RAY_FILE": "a76b8436744d65eefcd8b4ad36f9abfb_AESTHETIC-SUNSET-PC-4k.png",
+        "DIAGNOSIS": "TEST DIAGNOSIS",
+        "TREATMENT_PLAN": "TEST TREATMENT PLAN",
+        "PROCEDURES": "TEST PROCEDURES",
+        "MATERIALS_USED": "TEST MATERIALS USED",
+        "INSTRUCTION": "TEST INSTRUCTRION",
+        "RESPONSE": "TEST RESPONSE",
+        "SIGNATURE": "a903ac2a81a69cec157e098bec4586cf_wallpaper2.jpg",
+        "DATE": "2024-09-04 00:00:00"
     },
     {
-        "ID": 2,
-        "PATIENT_ID": 1,
-        "NOTES": "Patient requires further examination.",
-        "DATE": "2024-09-24"
+        "ID": 36,
+        "PATIENT_ID": "1",
+        "COMPLAINT": "TEST COMPLAIN",
+        "HISTORY_UPDATE": "TEST UPDATE",
+        "X_RAY_FILE": "a76b8436744d65eefcd8b4ad36f9abfb_AESTHETIC-SUNSET-PC-4k.png",
+        "DIAGNOSIS": "TEST DIAGNOSIS",
+        "TREATMENT_PLAN": "TEST TREATMENT PLAN",
+        "PROCEDURES": "TEST PROCEDURES",
+        "MATERIALS_USED": "TEST MATERIALS USED",
+        "INSTRUCTION": "TEST INSTRUCTRION",
+        "RESPONSE": "TEST RESPONSE",
+        "SIGNATURE": "a903ac2a81a69cec157e098bec4586cf_wallpaper2.jpg",
+        "DATE": "2024-09-04 00:00:00"
     }
 ]
 ```
@@ -2157,7 +2246,62 @@ Error (404 Not Found):
 }
 ```
 
-### 43. Add New Assessment
+### 43. Fetch Specific Progress Notes by ID and Patient ID
+
+- **Endpoints:**
+  - `GET /GET/DENTIST/progressNotesByPatientIdAndId.php`  
+    - **Description:** Fetch specific progress note for a specific patient based on their ID and Patient ID.
+
+#### Request Body
+
+The request should be sent as JSON with the following structure:
+
+```json
+{
+    "ID": "36",
+    "PATIENT_ID": "1"
+}
+```
+
+#### Response
+
+```json
+Success (200 OK):
+{
+    "ID": 36,
+    "PATIENT_ID": "1",
+    "COMPLAINT": "TEST COMPLAIN",
+    "HISTORY_UPDATE": "TEST UPDATE",
+    "X_RAY_FILE": "a76b8436744d65eefcd8b4ad36f9abfb_AESTHETIC-SUNSET-PC-4k.png",
+    "DIAGNOSIS": "TEST DIAGNOSIS",
+    "TREATMENT_PLAN": "TEST TREATMENT PLAN",
+    "PROCEDURES": "TEST PROCEDURES",
+    "MATERIALS_USED": "TEST MATERIALS USED",
+    "INSTRUCTION": "TEST INSTRUCTRION",
+    "RESPONSE": "TEST RESPONSE",
+    "SIGNATURE": "a903ac2a81a69cec157e098bec4586cf_wallpaper2.jpg",
+    "DATE": "2024-09-04 00:00:00"
+}
+```
+
+```json
+Error (400 Bad Request):
+{
+    "errors": {
+        "ID": "ID is required.",
+        "PATIENT_ID": "Patient ID is required."
+    }
+}
+```
+
+```json
+Error (404 Not Found):
+{
+    "message": "No progress notes found for this patient."
+}
+```
+
+### 44. Add New Assessment
 
 - **Endpoints:**
   - `POST /POST/DENTIST/assessment.php`  
@@ -2218,7 +2362,7 @@ Error (500 Internal Server Error):
 }
 ```
 
-### 44. Update Assessment
+### 45. Update Assessment
 
 - **Endpoints:**
   - `POST /EDIT/DENTIST/assessment.php`  
@@ -2286,7 +2430,7 @@ Error (500 Internal Server Error):
 }
 ```
 
-### 45. Fetch Assessment by Patient ID and Tooth Number
+### 46. Fetch Assessment by Patient ID and Tooth Number
 
 - **Endpoints:**
   - `GET /GET/DENTIST/assessment.php`  
@@ -2348,7 +2492,7 @@ Error (500 Internal Server Error):
 }
 ```
 
-### 46. Uploading a File for Teeth Assessment
+### 47. Uploading a File for Teeth Assessment
 
 - **Endpoints:**
   - `POST /POST/DENTIST/teethAssessment.php`  
@@ -2388,7 +2532,7 @@ Error (500 Internal Server Error):
 }
 ```
 
-### 47. Updating a File for Teeth Assessment
+### 48. Updating a File for Teeth Assessment
 
 - **Endpoints:**
   - `POST /EDIT/DENTIST/teethAssessment.php`  
@@ -2426,7 +2570,7 @@ Error (500 Internal Server Error):
 }
 ```
 
-### 48. Fetching a filename for Teeth Assessment
+### 49. Fetching a File for Teeth Assessment
 
 - **Endpoints:**
   - `GET /GET/DENTIST/teethAssessment.php`  
