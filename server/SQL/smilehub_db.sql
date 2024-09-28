@@ -93,7 +93,7 @@ CREATE TABLE `assessment_table` (
   `MOBILITY` varchar(50) NOT NULL,
   `PREVIOUS_TREATMENT` varchar(50) NOT NULL,
   `DATETIME` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `assessment_table`
@@ -141,7 +141,7 @@ INSERT INTO `employee_table` (`ID`, `FULLNAME`, `EMAIL`, `BIRTHDAY`, `GENDER`, `
 CREATE TABLE `file_table` (
   `ID` int NOT NULL,
   `FILENAME` longtext NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `file_table`
@@ -234,7 +234,7 @@ CREATE TABLE `progress_table` (
   `PATIENT_ID` varchar(100) NOT NULL,
   `NOTES` longtext NOT NULL,
   `DATE` date NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `progress_table`
