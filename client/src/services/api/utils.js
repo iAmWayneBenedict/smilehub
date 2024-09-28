@@ -144,11 +144,52 @@ export const validateTimeStatus = (time) => {
 		if (hours === startHour) {
 			return "active";
 		} else if (hours > startHour) {
-			return "inactive";
+			if (startHour >= 8) return "inactive";
+			return "upcoming";
 		}
 	}
 
 	return "upcoming";
+};
+export const sortTimeWithMeridian = (timeArr) => {
+	if (!timeArr.length) return [];
+	const structuredTimeArr = timeArr.map((time) => {
+		const { startTime, endTime } = extractTime(time.APPOINTMENT_TIME);
+
+		const startHour = startTime.hour;
+		const startMinute = startTime.minute;
+		const startMeridian = startTime.meridian;
+
+		return {
+			startHour,
+			startMinute,
+			startMeridian,
+			data: time,
+		};
+	});
+
+	const sortFunc = (arr) =>
+		arr.sort((a, b) => {
+			// Convert AM/PM into 24-hour format for easier comparison
+			const hourA =
+				a.startMeridian === "PM" && a.startHour !== 12 ? a.startHour + 12 : a.startHour;
+			const hourB =
+				b.startMeridian === "PM" && b.startHour !== 12 ? b.startHour + 12 : b.startHour;
+
+			// Compare by hour first
+			if (hourA !== hourB) {
+				return hourA - hourB;
+			}
+
+			// If hours are the same, compare by minutes
+			return a.startMinute - b.startMinute;
+		});
+	const timesAM = structuredTimeArr.filter((time) => time.startMeridian === "AM");
+	const sortedTimesAMArr = sortFunc(timesAM).map((item) => item.data);
+	const timesPM = structuredTimeArr.filter((time) => time.startMeridian === "PM");
+	const sortedTimesPMArr = sortFunc(timesPM).map((item) => item.data);
+
+	return [...sortedTimesAMArr, ...sortedTimesPMArr];
 };
 
 /**
@@ -164,9 +205,9 @@ export const clinicRoles = [
 ];
 
 export const employeeRoles = [
-    { name: "STAFF", uid: "staff"},
-    { name: "ADMIN", uid: "admiin"},
-]
+	{ name: "STAFF", uid: "staff" },
+	{ name: "ADMIN", uid: "admiin" },
+];
 
 export const isWeekEndDate = (date) => {
 	return isWeekend(date, "en-PH");

@@ -11,7 +11,7 @@ import {
 	Autocomplete,
 	AutocompleteItem,
 } from "@nextui-org/react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm, Controller } from "react-hook-form";
 import { UserRound, Clock4, MapPin, Bell } from "lucide-react";
 import { useState } from "react";
@@ -41,8 +41,15 @@ export default function AppointmentModal() {
 	const [timeDropdownList, setTimeDropdownList] = useState([]);
 	const [patients, setPatients] = useState([]);
 	const { isOpen, onOpenChange, onOpen, onClose } = useDisclosure();
-	const { setAlertDialogDetails, newAppointmentModal, setNewAppointmentModal } = useAppStore();
+	const {
+		setAlertDialogDetails,
+		newAppointmentModal,
+		setNewAppointmentModal,
+		refetchArr,
+		setRefetchArr,
+	} = useAppStore();
 	const [selectedDate, setSelectedDate] = useState({});
+
 	// stores error
 	const [isErrorDetails, setIsErrorDetails] = useState({
 		isError: false,
@@ -56,13 +63,7 @@ export default function AppointmentModal() {
 		}
 	}, [newAppointmentModal]);
 	// form hook
-	const {
-		handleSubmit,
-		setError,
-		reset,
-		control,
-		clearErrors
-	} = useForm({
+	const { handleSubmit, setError, reset, control, clearErrors } = useForm({
 		defaultValues: {
 			PATIENT_ID: "",
 
@@ -75,7 +76,9 @@ export default function AppointmentModal() {
 	useEffect(() => {
 		if (isOpen) {
 			reset();
-			handleInvalidDate()
+			handleInvalidDate();
+			setAlertDialogDetails({});
+			setIsErrorDetails({});
 		}
 
 		return () => {
@@ -84,24 +87,21 @@ export default function AppointmentModal() {
 	}, [isOpen]);
 
 	const handleInvalidDate = (date) => {
-		if(isWeekEndDate(date || today(getLocalTimeZone()))) {
-			console.log(isWeekEndDate(today(getLocalTimeZone())))
+		if (isWeekEndDate(date || today(getLocalTimeZone()))) {
+			console.log(isWeekEndDate(today(getLocalTimeZone())));
 			setError("APPOINTMENT_DATE", {
 				type: "manual",
 				message: "The date must not fall on a weekend.",
-			})
+			});
 		} else {
-			clearErrors("APPOINTMENT_DATE")
+			clearErrors("APPOINTMENT_DATE");
 		}
-	}
+	};
 
 	useEffect(() => {
 		handleGetDate(today(getLocalTimeZone()), false);
 		handleGetPatients();
 	}, [isOpen]);
-	useEffect(() => {
-		console.log(selectedDate);
-	}, [selectedDate]);
 	const handleGetDate = async (date, isForm = true) => {
 		if (isWeekEndDate(date)) return;
 
@@ -152,9 +152,13 @@ export default function AppointmentModal() {
 				message: "",
 			});
 		},
-		onSuccess: (data) => {
-			onClose();
-			newAppointmentModal.refetch();
+		onSuccess: async (data) => {
+			if (newAppointmentModal?.refetch) newAppointmentModal?.refetch();
+			if (refetchArr.length) {
+				console.log(refetchArr);
+				refetchArr.map((item) => item.refetch());
+				setRefetchArr([]);
+			}
 			setNewAppointmentModal({});
 			setAlertDialogDetails({
 				isOpen: true,
@@ -166,6 +170,7 @@ export default function AppointmentModal() {
 				isError: false,
 				message: "",
 			});
+			onClose();
 		},
 		onError: (error) => {
 			setIsErrorDetails({
@@ -339,9 +344,9 @@ export default function AppointmentModal() {
 															setValue={(value) => {
 																field.onChange(value);
 															}}
-															onChange={date => {
-																handleGetDate(date)
-																handleInvalidDate(date)
+															onChange={(date) => {
+																handleGetDate(date);
+																handleInvalidDate(date);
 															}}
 															minValue={today(getLocalTimeZone())}
 															isDateUnavailable={isWeekEndDate}

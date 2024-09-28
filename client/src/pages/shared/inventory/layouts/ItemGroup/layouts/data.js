@@ -1,6 +1,6 @@
 const columns = [
-	{ name: "Group Name", uid: "group_name", sortable: true },
-	{ name: "No. of Items", uid: "no_of_items", sortable: true },
+	{ name: "Item Name", uid: "NAME", sortable: true },
+	{ name: "No. of Items", uid: "QUANTITY", sortable: true },
 	{ name: "Actions", uid: "actions" },
 ];
 
@@ -13,12 +13,12 @@ const statusOptions = [
 const itemsData = [
 	{
 		id: 1,
-		group_name: "Dental Care Equipment",
+		item_name: "Dental Care Equipment",
 		no_of_items: 15,
 	},
 	{
 		id: 2,
-		group_name: "Dental Care Product",
+		item_name: "Dental Care Product",
 		no_of_items: 32,
 	},
 ];

@@ -147,6 +147,7 @@ const PatientInfo = () => {
 										setTeethDiagramModalDetails({
 											isOpen: true,
 											title: "Teeth Diagram",
+											data: { id: params?.id },
 										});
 									}}
 								>
@@ -163,7 +164,8 @@ const PatientInfo = () => {
 									onClick={() => {
 										setAssessmentPatientModal({
 											isOpen: true,
-											title: "Teeth Diagram",
+											title: "Assessment",
+											data: { id: params?.id },
 										});
 									}}
 								>
@@ -426,6 +428,7 @@ const Form = ({ data, params, refetch }) => {
 								onChange={(selectedKeys) => {
 									field.onChange(selectedKeys);
 								}}
+								textValue={"gender"}
 								isInvalid={!!errors.GENDER}
 								errorMessage={errors.GENDER?.message}
 								labelPlacement={"outside"}
@@ -444,6 +447,7 @@ const Form = ({ data, params, refetch }) => {
 										key={gender}
 										isReadOnly={location.pathname.includes("info")}
 										value={gender}
+										textValue={gender}
 									>
 										{gender}
 									</SelectItem>

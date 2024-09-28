@@ -8,6 +8,9 @@ class DashboardAPIManager {
 	static async getTotalPatientsStatistics(body = {}) {
 		return await APIMethods.post(END_POINTS.GET_TOTAL_PATIENTS_STATISTICS(), body);
 	}
+	static async getPatientVisits(body = {}) {
+		return await APIMethods.post(END_POINTS.GET_PATIENT_VISITS(), body);
+	}
 }
 
 export default DashboardAPIManager;

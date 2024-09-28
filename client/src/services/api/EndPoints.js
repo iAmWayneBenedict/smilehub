@@ -51,7 +51,33 @@ const END_POINTS = {
 	POST_UPDATE_PASSWORD: () => "/EDIT/SHARED/PASSWORD/password.php",
 
 	// statistics
-	GET_TOTAL_PATIENTS_STATISTICS: () => "/GET/SHARED/STATISTICS/patients.php"
+	GET_TOTAL_PATIENTS_STATISTICS: () => "/GET/SHARED/STATISTICS/patients.php",
+	GET_PATIENT_VISITS: () => "/GET/SHARED/STATISTICS/VISITS.php",
+
+	// tasks
+	POST_ADD_NEW_TASK: () => "/POST/SHARED/task.php",
+	POST_EDIT_TASK: () => "/EDIT/SHARED/TASK/task.php",
+	POST_DELETE_TASK: () => "/DELETE/SHARED/TASK/task.php",
+	GET_TASK: () => "/GET/SHARED/TASK/task.php",
+	GET_TASKS: (params) => "/GET/SHARED/TASK/tasks.php?" + params,
+
+	// inventory
+	GET_INVENTORY_ITEMS: () => "/GET/SHARED/INVENTORY/inventoryItems.php",
+	GET_INVENTORY_ITEM: () => "/GET/SHARED/INVENTORY/inventoryItem.php",
+	GET_INVENTORY_GROUPS: () => "/GET/SHARED/INVENTORY/inventoryItemsGroup.php",
+	GET_INVENTORY_GROUPS_WITH_QUANTITY: () =>
+		"/GET/SHARED/INVENTORY/inventoryItemsGroupWithQuantity.php",
+	POST_ADD_ITEM: () => "/POST/SHARED/inventoryItem.php",
+	POST_DELETE_ITEM: () => "/DELETE/SHARED/INVENTORY/inventoryItem.php",
+	POST_UPDATE_ITEM: () => "/EDIT/SHARED/INVENTORY/inventoryItem.php",
+	POST_ADD_GROUP: () => "/POST/SHARED/inventoryItemGroup.php",
+	POST_DELETE_GROUP: () => "/DELETE/SHARED/INVENTORY/inventoryItemGroup.php",
+
+	// teeth diagram
+	POST_ADD_DIAGRAM: () => "/POST/DENTIST/teethAssessment.php",
+	POST_ADD_ASSESSMENT: () => "/POST/DENTIST/assessment.php",
+	GET_DIAGRAM: () => "/GET/DENTIST/teethAssessment.php",
+	GET_ASSESSMENT: () => "/GET/DENTIST/assessment.php",
 };
 
 export default END_POINTS;

@@ -19,9 +19,11 @@ import { columns, itemsData } from "../data";
 import { Search, Plus, ChevronsRight } from "lucide-react";
 import { useAppStore } from "@/store/zustand";
 import { useLocation } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import InventoryAPIManager from "@/services/api/managers/inventory/InventoryAPIManager";
 
 //! change this based on the columns in the db
-const INITIAL_VISIBLE_COLUMNS = ["item_name", "item_id", "group", "stock_in_qty", "actions"];
+const INITIAL_VISIBLE_COLUMNS = ["NAME", "ID", "ITEM_GROUP", "QUANTITY", "actions"];
 
 export default function TableAppointments() {
 	const [filterValue, setFilterValue] = React.useState("");
@@ -30,12 +32,17 @@ export default function TableAppointments() {
 	const [statusFilter, setStatusFilter] = React.useState("all");
 	const [rowsPerPage, setRowsPerPage] = React.useState(10);
 	const [sortDescriptor, setSortDescriptor] = React.useState({
-		column: "item_name", //! update this based on the column in the db
+		column: "NAME", //! update this based on the column in the db
 		direction: "ascending",
 	});
 	const location = useLocation();
 	const currentUser = location.pathname.includes("admin") ? "admin" : "staff";
 	const { setAlertDialogDetails, setNewAppointmentModal, setNewScheduleModal } = useAppStore();
+
+	const { data, isLoading, isSuccess, refetch } = useQuery({
+		queryKey: ["inventoryItems"],
+		queryFn: InventoryAPIManager.getInventoryItems,
+	});
 
 	const [page, setPage] = React.useState(1);
 
@@ -50,16 +57,17 @@ export default function TableAppointments() {
 
 	// filters the itemsData based on the search value
 	const filteredItems = React.useMemo(() => {
-		let filteredItemsData = [...itemsData];
+		if (isLoading || !isSuccess) return [];
+		let filteredItemsData = [...data.all_items];
 
 		if (hasSearchFilter) {
 			filteredItemsData = filteredItemsData.filter((item) => {
-				return item.item_name.toLowerCase().includes(filterValue?.toLowerCase());
+				return item.NAME.toLowerCase().includes(filterValue?.toLowerCase());
 			});
 		}
 
 		return filteredItemsData;
-	}, [itemsData, filterValue, statusFilter]);
+	}, [data, filterValue, statusFilter, isLoading, isSuccess]);
 
 	// paginates the filtered items
 	const items = React.useMemo(() => {
@@ -111,25 +119,25 @@ export default function TableAppointments() {
 			}
 		};
 		switch (columnKey) {
-			case "item_name":
+			case "NAME":
 				return (
 					<div className="flex flex-col">
 						<p className="capitalize text-bold text-small">{cellValue}</p>
 					</div>
 				);
-			case "item_id":
+			case "ID":
 				return (
 					<div className="flex flex-col">
 						<p className="capitalize text-bold text-small">{cellValue}</p>
 					</div>
 				);
-			case "group":
+			case "ITEM_GROUP":
 				return (
 					<div className="flex flex-col">
 						<p className="capitalize text-bold text-small">{cellValue}</p>
 					</div>
 				);
-			case "dentist":
+			case "QUANTITY":
 				return (
 					<div className="flex flex-col">
 						<p className="capitalize text-bold text-small">{cellValue}</p>
@@ -140,7 +148,7 @@ export default function TableAppointments() {
 					<div className="relative flex items-center justify-start gap-2">
 						<Button
 							as={Link}
-							href={`/${currentUser}/inventory/item-list/${item.item_name}`}
+							href={`/${currentUser}/inventory/item-list/${item.ID}`}
 							variant="light"
 							className="data-[hover=true]:bg-transparent"
 							endContent={<ChevronsRight />}
@@ -337,7 +345,7 @@ export default function TableAppointments() {
 			</TableHeader>
 			<TableBody emptyContent={"No itemsData found"} items={sortedItems}>
 				{(item) => (
-					<TableRow key={item.id}>
+					<TableRow key={item.ID}>
 						{(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
 					</TableRow>
 				)}

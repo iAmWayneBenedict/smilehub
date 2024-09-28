@@ -5,8 +5,8 @@ import { useAppStore, useAuthTokenPersisted } from "@/store/zustand";
 import "./styles.css";
 import { decrypt } from "@/lib/utils";
 import { useLocation } from "react-router-dom";
-import {useQuery} from "@tanstack/react-query";
-import {useEffect, useState} from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import EmployeesAPIManager from "@/services/api/managers/employees/EmployeesAPIManager.js";
 
 const SharedNavBar = () => {
@@ -15,19 +15,18 @@ const SharedNavBar = () => {
 	const userDetails = decrypt(authToken);
 	const location = useLocation();
 	const currentUserType = userDetails?.role?.toLowerCase();
-	const [currentUser, setCurrentUser] = useState(null)
-	console.log(userDetails)
-	const {data, isSuccess} = useQuery({
-		queryKey: ['patients-nav'],
-		queryFn: EmployeesAPIManager.getAllEmployee
-	})
+	const [currentUser, setCurrentUser] = useState(null);
+	const { data, isSuccess } = useQuery({
+		queryKey: ["patients-nav"],
+		queryFn: EmployeesAPIManager.getAllEmployee,
+	});
 
 	useEffect(() => {
-		if(isSuccess) {
-			const filteredUser = data?.find(employee => employee.EMAIL === userDetails?.email)
-			setCurrentUser(filteredUser)
+		if (isSuccess) {
+			const filteredUser = data?.find((employee) => employee.EMAIL === userDetails?.email);
+			setCurrentUser(filteredUser);
 		}
-	}, [data, isSuccess])
+	}, [data, isSuccess]);
 	return (
 		<div className="flex items-center border-gray-300 border-b-1">
 			<div id="logoNav" className="flex justify-center px-5 border-gray-300 py-7 border-r-1">

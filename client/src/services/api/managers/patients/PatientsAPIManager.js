@@ -23,6 +23,19 @@ class PatientsAPIManager {
 	static async postChangeStatusPatient(body = {}) {
 		return await APIMethods.post(END_POINTS.POST_CHANGE_STATUS_PATIENT(), body);
 	}
+
+	static async getDiagram(body = {}) {
+		return await APIMethods.post(END_POINTS.GET_DIAGRAM(), body);
+	}
+	static async postAddDiagram(body = {}) {
+		return await APIMethods.post(END_POINTS.POST_ADD_DIAGRAM(), body);
+	}
+	static async getAssessment(body = {}) {
+		return await APIMethods.post(END_POINTS.GET_ASSESSMENT(), body);
+	}
+	static async postAddAssessment(body = {}) {
+		return await APIMethods.post(END_POINTS.POST_ADD_ASSESSMENT(), body);
+	}
 }
 
 export default PatientsAPIManager;

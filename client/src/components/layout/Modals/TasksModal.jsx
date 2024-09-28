@@ -1,13 +1,15 @@
 import {
-    Modal,
-    ModalContent,
-    ModalHeader,
-    ModalBody,
-    ModalFooter,
-    Button,
-    useDisclosure,Textarea, Input
+	Modal,
+	ModalContent,
+	ModalHeader,
+	ModalBody,
+	ModalFooter,
+	Button,
+	useDisclosure,
+	Textarea,
+	Input,
 } from "@nextui-org/react";
-import { useAppStore } from "@/store/zustand.js";
+import { useAppStore, useAuthTokenPersisted } from "@/store/zustand.js";
 import { useEffect, useState } from "react";
 import { getLocalTimeZone, today } from "@internationalized/date";
 import { Controller, useForm } from "react-hook-form";
@@ -17,21 +19,23 @@ import { useMutation } from "@tanstack/react-query";
 import CustomDatePicker from "@/components/ui/DatePicker";
 import { useMemo } from "react";
 import { parseDate } from "@internationalized/date";
-import { sortTime } from "@/lib/utils";
+import { decrypt, sortTime } from "@/lib/utils";
+import TasksAPIManager from "@/services/api/managers/task/TasksAPIManager";
 
 export default function TasksModal() {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const { taskModal, setTaskModal, setAlertDialogDetails } = useAppStore();
 	const [timeDropdownList, setTimeDropdownList] = useState([]);
+
+	const { authToken } = useAuthTokenPersisted();
+
+	const user = decrypt(authToken);
 	useEffect(() => {
 		if (taskModal.isOpen) {
 			onOpen();
 
 			if (taskModal.data) {
-			reset({
-				TITLE: taskModal?.data?.TITLE,
-				DESCRIPTION: taskModal?.data?.DESCRIPTION,
-			});
+				reset(taskModal.data);
 			}
 		} else {
 			onClose();
@@ -42,40 +46,54 @@ export default function TasksModal() {
 	const { handleSubmit, control, reset } = useForm({
 		defaultValues: useMemo(() => {
 			if (taskModal.data) {
-				return {
-					TITLE: taskModal?.data?.TITLE,
-					DESCRIPTION: taskModal?.data?.TITLE,
-				};
+				return taskModal.data;
 			}
 		}, [taskModal.isOpen]),
 	});
+	const onSuccess = () => {
+		taskModal?.refetch();
+		taskModal?.confirmCallback && taskModal?.confirmCallback();
+
+		setAlertDialogDetails({
+			isOpen: true,
+			type: "success",
+			title: "Success!",
+			message: "Task added successfully!",
+		});
+
+		onClose();
+	};
+	const onError = (error) => {
+		setAlertDialogDetails({
+			isOpen: true,
+			type: "danger",
+			title: "Error!",
+			message: error.message,
+		});
+	};
 	const mutation = useMutation({
-		mutationFn: AppointmentsAPIManager.postRescheduleAppointment,
-		onSuccess: () => {
-			taskModal.refetch();
-
-			setAlertDialogDetails({
-				isOpen: true,
-				type: "success",
-				title: "Success!",
-				message: "Task added successfully!",
-			});
-
-			onClose();
-		},
-		onError: (error) => {
-			setAlertDialogDetails({
-				isOpen: true,
-				type: "danger",
-				title: "Error!",
-				message: error.message,
-			});
-		},
+		mutationFn: TasksAPIManager.postAddTask,
+		onSuccess,
+		onError,
+	});
+	const updateMutation = useMutation({
+		mutationFn: TasksAPIManager.postEditTask,
+		onSuccess,
+		onError,
 	});
 	const onSubmit = (data) => {
-//		data.TITLE = convertDateYYYYMMDD(data.TITLE);
-//		data.ID = taskModal?.data?.ID;
-//		mutation.mutate(data);
+		if (taskModal.data)
+			updateMutation.mutate({
+				...data,
+				ID: taskModal.data.ID,
+			});
+		else
+			mutation.mutate({
+				...data,
+				STATUS: "Pending",
+				CREATOR: user?.fullname,
+				CREATOR_EMAIL: user?.email,
+			});
 	};
 	return (
 		<>
@@ -84,7 +102,7 @@ export default function TasksModal() {
 				onClose={() => {
 					onClose();
 					setTaskModal({ isOpen: false });
-					reset()
+					reset();
 				}}
 				placement="top-center"
 				backdrop="blur"
@@ -129,7 +147,7 @@ export default function TasksModal() {
 								<Controller
 									name="DESCRIPTION"
 									control={control}
-									rules={{ required: "Progress details is required" }}
+									rules={{ required: "Description is required" }}
 									render={({ field, formState: { errors } }) => (
 										<Textarea
 											value={field.value}
@@ -139,30 +157,33 @@ export default function TasksModal() {
 											isInvalid={!!errors.DESCRIPTION}
 											errorMessage={errors.DESCRIPTION?.message}
 											variant={"bordered"}
-											label="Progress Details"
+											label="Description"
 											radius="sm"
 											size="lg"
 											color="primary"
 											labelPlacement="outside"
 											classNames={{
 												label: "text-darkText font-semibold text-base",
-												inputWrapper:
-													"rounded-lg h-full bg-white",
+												inputWrapper: "rounded-lg h-full bg-white",
 												// mainWrapper: "h-[4rem]",
 											}}
 											minRows={6}
-											placeholder="Progress description"
+											placeholder="Description"
 											className="col-span-12 mb-6 md:col-span-6 md:mb-0"
 										/>
 									)}
 								/>
 							</ModalBody>
 							<ModalFooter>
-								<Button color="light" variant="flat" onPress={() => {
-									onClose()
-									reset()
-									setTaskModal({})
-								}}>
+								<Button
+									color="light"
+									variant="flat"
+									onPress={() => {
+										onClose();
+										reset();
+										setTaskModal({});
+									}}
+								>
 									Close
 								</Button>
 								<Button

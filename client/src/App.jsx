@@ -37,6 +37,9 @@ import AddItem from "./pages/shared/inventory/layouts/ItemList/layout/AddItem";
 import Tasks from "./pages/shared/tasks";
 import Calendar from "./pages/shared/calendar";
 import TermsAndPrivacyPolicy from "@/pages/TermsAndPrivacyPolicy/index.jsx";
+import EditItem from "./pages/shared/inventory/layouts/ItemList/layout/EditItem";
+import AddGroupItem from "./pages/shared/inventory/layouts/ItemGroup/layouts/components/AddGroupItem";
+import EditGroupItem from "./pages/shared/inventory/layouts/ItemGroup/layouts/components/EditGroupItem";
 
 function App() {
 	const navigate = useNavigate();
@@ -61,7 +64,10 @@ function App() {
 					<Route path="/blogs" element={<LayoutWrapper child={<Blogs />} />} />
 					<Route path="/about" element={<LayoutWrapper child={<About />} />} />
 					<Route path="/contact" element={<LayoutWrapper child={<Contact />} />} />
-					<Route path="/terms-and-privacy-policy" element={<LayoutWrapper child={<TermsAndPrivacyPolicy />} />} />
+					<Route
+						path="/terms-and-privacy-policy"
+						element={<LayoutWrapper child={<TermsAndPrivacyPolicy />} />}
+					/>
 
 					<Route path="/admin">
 						{/* //* disable auth routes if there is a token */}
@@ -114,8 +120,82 @@ function App() {
 								path="appointments/:type"
 								element={<LayoutWrapper child={<Appointments />} />}
 							/>
-							<Route path="profile/:id" element={<LayoutWrapper child={<Profile />} />} />
+							<Route
+								path="profile/:id"
+								element={<LayoutWrapper child={<Profile />} />}
+							/>
 
+							<Route path="inventory">
+								<Route index element={<LayoutWrapper child={<Inventory />} />} />
+								<Route
+									path="item-group"
+									element={<LayoutWrapper child={<ItemGroup />} />}
+								/>
+								<Route
+									path="item-group/:group"
+									element={<LayoutWrapper child={<ItemGroupProduct />} />}
+								/>
+								<Route
+									path="item-group/:group/add"
+									element={<LayoutWrapper child={<AddGroupItem />} />}
+								/>
+								<Route
+									path="item-group/:group/edit/:id"
+									element={<LayoutWrapper child={<EditGroupItem />} />}
+								/>
+								<Route
+									path="item-list"
+									element={<LayoutWrapper child={<ItemList />} />}
+								/>
+								<Route
+									exact
+									path="item-list/add"
+									element={<LayoutWrapper child={<AddItem />} />}
+								/>
+								<Route
+									exact
+									path="item-list/edit/:id"
+									element={<LayoutWrapper child={<EditItem />} />}
+								/>
+								<Route
+									path="item-list/:item"
+									element={<LayoutWrapper child={<Item />} />}
+								/>
+							</Route>
+							<Route path="tasks" element={<LayoutWrapper child={<Tasks />} />} />
+						</Route>
+					</Route>
+
+					<Route path="/staff">
+						{/* //* disable auth routes if there is a token */}
+						<Route element={<DisableAuthRoutes />}>
+							<Route path="login" element={<SharedLogin />} />
+							<Route path="register" element={<StaffRegister />} />
+						</Route>
+						<Route element={<StaffAuthRoutes />}>
+							<Route
+								path="dashboard"
+								element={<LayoutWrapper child={<AdminDashboard />} />}
+							/>
+							<Route
+								path="calendar"
+								element={<LayoutWrapper child={<Calendar />} />}
+							/>
+							<Route path="patients">
+								<Route index element={<LayoutWrapper child={<Patients />} />} />
+								<Route
+									path="add"
+									element={<LayoutWrapper child={<AddPatient />} />}
+								/>
+								<Route
+									path="info"
+									element={<LayoutWrapper child={<PatientInfo />} />}
+								/>
+							</Route>
+							<Route
+								path="appointments/:type"
+								element={<LayoutWrapper child={<Appointments />} />}
+							/>
 							<Route path="inventory">
 								<Route index element={<LayoutWrapper child={<Inventory />} />} />
 								<Route
@@ -140,37 +220,8 @@ function App() {
 									element={<LayoutWrapper child={<Item />} />}
 								/>
 							</Route>
-							<Route path="tasks" element={<LayoutWrapper child={<Tasks />} />} />
-						</Route>
-					</Route>
-
-					<Route path="/staff">
-						{/* //* disable auth routes if there is a token */}
-						<Route element={<DisableAuthRoutes />}>
-							<Route path="login" element={<SharedLogin />} />
-							<Route path="register" element={<StaffRegister />} />
-						</Route>
-						<Route element={<StaffAuthRoutes />}>
-							<Route
-								path="dashboard"
-								element={<LayoutWrapper child={<AdminDashboard />} />}
-							/>
-							<Route path="patients">
-								<Route index element={<LayoutWrapper child={<Patients />} />} />
-								<Route
-									path="add"
-									element={<LayoutWrapper child={<AddPatient />} />}
-								/>
-								<Route
-									path="info"
-									element={<LayoutWrapper child={<PatientInfo />} />}
-								/>
-							</Route>
-							<Route
-								path="appointments/:type"
-								element={<LayoutWrapper child={<Appointments />} />}
-							/>
 							<Route path="profile" element={<LayoutWrapper child={<Profile />} />} />
+							<Route path="tasks" element={<LayoutWrapper child={<Tasks />} />} />
 						</Route>
 					</Route>
 				</Routes>

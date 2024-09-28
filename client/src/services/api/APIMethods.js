@@ -41,14 +41,15 @@ class APIMethods {
 	 * Makes a GET request to the specified URL.
 	 *
 	 * @param {string} url - The URL for the GET request.
+	 * @param {Object} data - The data to be sent with the POST request.
 	 * @returns {Promise<Object>} - A promise that resolves to the response data.
 	 *
 	 * @example
 	 * const data = await APIMethods.get('https://api.example.com/data');
 	 * console.log(data);
 	 */
-	static async get(url) {
-		return await this.apiRequest({ method: "GET", url });
+	static async get(url, data) {
+		return await this.apiRequest({ method: "GET", url, data });
 	}
 
 	/**

@@ -1,5 +1,6 @@
 import { Breadcrumbs, BreadcrumbItem } from "@nextui-org/react";
 import TableAppointments from "./components/Table";
+import AddGroup from "@/components/layout/Modals/AddGroup";
 
 const ItemGroup = () => {
 	return (
@@ -17,6 +18,7 @@ const ItemGroup = () => {
 				<div className="mt-10">
 					<TableAppointments />
 				</div>
+				<AddGroup />
 			</div>
 		</div>
 	);

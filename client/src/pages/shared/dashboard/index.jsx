@@ -1,10 +1,22 @@
 import SplineChart from "@/components/layout/shared/chart/spline";
-import { Select, SelectItem, Button, Tabs, Tab, Divider,Skeleton } from "@nextui-org/react";
+import {
+	Select,
+	SelectItem,
+	Button,
+	Tabs,
+	Tab,
+	Divider,
+	Skeleton,
+	DropdownTrigger,
+	Dropdown,
+	DropdownMenu,
+	DropdownItem,
+} from "@nextui-org/react";
 import TableDashboard from "./Table";
 import { useEffect, useLayoutEffect, useState } from "react";
 import { Ellipsis, Plus, ChevronUp, Trash, UserRound, Pencil, Triangle } from "lucide-react";
 import DonutChart from "@/components/layout/shared/chart/donut";
-import PropTypes from "prop-types"
+import PropTypes from "prop-types";
 import {
 	Accordion,
 	AccordionContent,
@@ -14,7 +26,12 @@ import {
 import { cn } from "@/lib/utils";
 import "./styles.css";
 import { useMediaQuery } from "react-responsive";
-import { convertDateYYYYMMDD, extractTime, validateTimeStatus } from "@/services/api/utils";
+import {
+	convertDateYYYYMMDD,
+	extractTime,
+	sortTimeWithMeridian,
+	validateTimeStatus,
+} from "@/services/api/utils";
 import { useQuery } from "@tanstack/react-query";
 import AppointmentsAPIManager from "@/services/api/managers/appointments/AppointmentsAPIManager";
 import { getLocalTimeZone, today } from "@internationalized/date";
@@ -22,23 +39,56 @@ import { formatTimeAccordionData } from "./utils";
 import DashboardAPIManager from "@/services/api/managers/dashboard/DashboardAPIManager.js";
 import AppointmentModal from "@/components/layout/shared/appointment/index.jsx";
 import ReschedModal from "@/components/layout/Modals/ReschedModal.jsx";
-import {useAppStore} from "@/store/zustand.js";
+import { useAppStore, useRealTimeAppointmentsPersisted } from "@/store/zustand.js";
+import { useMutation } from "@tanstack/react-query";
+import { Clock } from "lucide-react";
+import { CheckCheck } from "lucide-react";
+import { CalendarDays } from "lucide-react";
+import { Trash2 } from "lucide-react";
 
 const AdminDashboard = () => {
-	const {setNewAppointmentModal} = useAppStore()
+	const { setNewAppointmentModal } = useAppStore();
+
+	const [visitData, setVisitData] = useState([]);
 
 	const zoomedDevices = useMediaQuery({
 		query: "(min-device-width: 900px) and (max-device-width: 1600px)",
 	});
 	const [selected, setSelected] = useState("new-appointments");
-	const [filterSelected, setFilterSelected] = useState(new Set(["Monthly"]))
+	const [filterSelected, setFilterSelected] = useState(new Set(["Monthly"]));
 
-	const {data, isSuccess, isLoading } = useQuery({
-		queryKey: ['dashboard-statistics'],
-		queryFn: DashboardAPIManager.getTotalPatientsStatistics
-	})
+	const { data, isSuccess, isLoading } = useQuery({
+		queryKey: ["dashboard-statistics"],
+		queryFn: DashboardAPIManager.getTotalPatientsStatistics,
+	});
 
-	const [refetchTodayAppointments, setRefetchTodayAppointments] = useState()
+	// const { data: visitRequestData, isSuccess: isSuccessIsVisitRequestData } = useQuery({
+	// 	queryKey: ["dashboard-visit", filterSelected],
+	// 	queryFn: () => {
+	// 		return DashboardAPIManager.getPatientVisits({
+	// 			filterBy: filterSelected.has("Monthly") ? "month" : "year",
+	// 			year: new Date().getFullYear(),
+	// 		});
+	// 	},
+	// });
+
+	useEffect(() => {
+		mutation.mutate({
+			filterBy: filterSelected.has("Monthly") ? "month" : "year",
+			year: new Date().getFullYear(),
+		});
+	}, [filterSelected]);
+
+	const mutation = useMutation({
+		mutationFn: DashboardAPIManager.getPatientVisits,
+		onSuccess: (data) => {
+			const chartData = {
+				labels: data?.categories || [],
+				data: data?.data || [],
+			};
+			setVisitData(chartData);
+		},
+	});
 
 	return (
 		<div style={{ flex: 1 }} className="bg-[#f9f9f9]">
@@ -80,7 +130,7 @@ const AdminDashboard = () => {
 									</div>
 								</div>
 							</div>
-							<SplineChart />
+							<SplineChart data={visitData} />
 						</div>
 
 						{/* bottom table */}
@@ -127,12 +177,16 @@ const AdminDashboard = () => {
 									</h1>
 								</div>
 								<div style={{ flex: 5 }} className="h-48">
-									{
-										isLoading ? <Skeleton className="rounded-lg">
-											<div className="h-full w-48"></div>
-										</Skeleton> : <DonutChart femaleCount={parseInt(data?.gender_counts?.Female || 0)} maleCount={parseInt(data?.gender_counts?.Male || 0)} />
-									}
-
+									{isLoading ? (
+										<Skeleton className="rounded-lg">
+											<div className="w-48 h-full"></div>
+										</Skeleton>
+									) : (
+										<DonutChart
+											femaleCount={parseInt(data?.gender_counts?.Female || 0)}
+											maleCount={parseInt(data?.gender_counts?.Male || 0)}
+										/>
+									)}
 								</div>
 							</div>
 						</div>
@@ -143,12 +197,14 @@ const AdminDashboard = () => {
 									variant="light"
 									disableRipple
 									className="flex items-center gap-3 text-primary data-[hover=true]:opacity-70 data-[hover=true]:bg-transparent"
-									onClick={() => setNewAppointmentModal({
-										isOpen: true,
-										title: "New Appointment",
-										data: null,
-										refetch: refetchTodayAppointments,
-									})}
+									onClick={() =>
+										setNewAppointmentModal({
+											isOpen: true,
+											title: "New Appointment",
+											data: null,
+											refetch: null,
+										})
+									}
 								>
 									<span className="~text-sm/base font-semibold">
 										New Appointment
@@ -159,7 +215,7 @@ const AdminDashboard = () => {
 								</Button>
 							</div>
 							<div className="flex flex-col">
-								<AccordionSchedule setRefetchTodayAppointments={setRefetchTodayAppointments} />
+								<AccordionSchedule />
 							</div>
 						</div>
 					</div>
@@ -205,46 +261,78 @@ const data = [
 ];
 
 // AccordionSchedule component
-const AccordionSchedule = ({setRefetchTodayAppointments}) => {
-	const [selectedChapter, setSelectedChapter] = useState("");
-	const [upcomingActiveIndex, setUpcomingActiveIndex] = useState(undefined);
+const AccordionSchedule = () => {
+	// const [selectedChapter, setSelectedChapter] = useState("");
+	// const [upcomingActiveIndex, setUpcomingActiveIndex] = useState(undefined);
+	const { realTimeAppointments, setRealTimeAppointments } = useRealTimeAppointmentsPersisted();
+	const { setRefetchArr, refetchArr, setAlertDialogDetails, setNewScheduleModal } = useAppStore();
 
 	const [appointmentsArr, setAppointmentsArr] = useState([]);
 
 	const zoomedDevices = useMediaQuery({
 		query: "(min-device-width: 900px) and (max-device-width: 1600px)",
 	});
-	const { data, isLoading, isSuccess, refetch } = useQuery({
+	const { data, isLoading, isSuccess, isError, error, refetch } = useQuery({
 		queryKey: ["appointments-today"],
-		queryFn: async () =>
-			await AppointmentsAPIManager.getTodaysAppointment({
+		queryFn: () =>
+			AppointmentsAPIManager.getTodaysAppointment({
 				APPOINTMENT_DATE: convertDateYYYYMMDD(today(getLocalTimeZone())),
 			}),
+		retry: false,
 	});
 
 	useEffect(() => {
-		// send the refetch on parent callback
-		setRefetchTodayAppointments(refetch)
+		const isExist = refetchArr.find((item) => item.queryKey === "appointments-today");
+		if (isExist) return;
+		setRefetchArr([...refetchArr, { queryKey: "appointments-today", refetch }]);
+	}, [refetch, refetchArr]);
 
+	useEffect(() => {
 		if (isSuccess) {
-			const timesArray = formatTimeAccordionData(data);
+			// const pendingItems = data.filter((item) => item.STATUS != "Completed");
+			const sortedPendingItems = sortTimeWithMeridian(data);
+			const timesArray = formatTimeAccordionData(sortedPendingItems);
 			setAppointmentsArr(timesArray);
 		}
 	}, [data, isSuccess]);
+	useEffect(() => {
+		if (isError) {
+			setAppointmentsArr([]);
+		}
+	}, [data, isError]);
 	useLayoutEffect(() => {
 		if (!isSuccess) return;
 		const timeChecker = () => {
+			// const pendingItems = data.filter((item) => item.STATUS != "Completed");
+			const sortedPendingItems = sortTimeWithMeridian(data);
+			const getNewRealTimeAppointmentPosition = () => {
+				return sortedPendingItems.findIndex((item, index) => {
+					return realTimeAppointments.upcomingActiveIndex === index;
+				});
+			};
 			let firstUpcomingIndex = undefined;
-			data?.forEach((item, index) => {
+			sortedPendingItems?.forEach((item, index) => {
 				const status = validateTimeStatus(item.APPOINTMENT_TIME);
-				console.log(status);
 				if (status === "active") {
-					setUpcomingActiveIndex(index + 1);
-					setSelectedChapter(`item-${data[index + 1]?.FULLNAME}`);
+					setRealTimeAppointments({
+						selectedChapter: `item-${sortedPendingItems[index + 1]?.FULLNAME}`,
+						upcomingActiveIndex: index + 1,
+					});
+					// setUpcomingActiveIndex(index + 1);
+					// setSelectedChapter(`item-${sortedPendingItems[index + 1]?.FULLNAME}`);
 				} else if (status === "upcoming" && !firstUpcomingIndex) {
-					setUpcomingActiveIndex(index);
-					firstUpcomingIndex = index;
-					setSelectedChapter(`item-${data[index]?.FULLNAME}`);
+					if (realTimeAppointments.upcomingActiveIndex) {
+						return;
+					}
+					if (realTimeAppointments.upcomingActiveIndex <= index || !firstUpcomingIndex) {
+						setRealTimeAppointments({
+							selectedChapter: `item-${sortedPendingItems[index]?.FULLNAME}`,
+							upcomingActiveIndex: index,
+						});
+						firstUpcomingIndex = index;
+						// setUpcomingActiveIndex(index);
+						// setSelectedChapter(`item-${sortedPendingItems[index]?.FULLNAME}`);
+					}
 				}
 			});
 		};
@@ -257,6 +345,137 @@ const AccordionSchedule = ({setRefetchTodayAppointments}) => {
 			clearInterval(timer);
 		};
 	}, [data, isSuccess]);
+
+	const deleteAppointmentMutation = useMutation({
+		mutationFn: AppointmentsAPIManager.postDeleteAppointment,
+		onSuccess: () => {
+			setAlertDialogDetails({
+				isOpen: true,
+				type: "success",
+				title: "Success!",
+				message: "Appointment status deleted successfully!",
+			});
+			if (refetchArr.length) {
+				refetchArr.map((item) => item.refetch());
+				setRefetchArr([]);
+			}
+		},
+		onError: (error) => {
+			setAlertDialogDetails({
+				isOpen: true,
+				type: "danger",
+				title: "Error!",
+				message: error ? error.message : "An error occurred while deleting the appointment",
+			});
+		},
+	});
+	const changeStatusMutation = useMutation({
+		mutationFn: AppointmentsAPIManager.postChangeStatusAppointment,
+		onSuccess: () => {
+			setAlertDialogDetails({
+				isOpen: true,
+				type: "success",
+				title: "Success!",
+				message: "Appointment status changed successfully!",
+			});
+			if (refetchArr.length) {
+				refetchArr.map((item) => item.refetch());
+				setRefetchArr([]);
+			}
+		},
+		onError: (error) => {
+			setAlertDialogDetails({
+				isOpen: true,
+				type: "danger",
+				title: "Error!",
+				message: error
+					? error.message
+					: "An error occurred while changing the status of the appointment",
+			});
+		},
+	});
+	const handleAction = (key, appointment) => {
+		if (key === "reschedule") {
+			setNewScheduleModal({
+				isOpen: true,
+				title: "Change Status",
+				data: {
+					...appointment,
+					APPOINTMENT_DATE: new Date(appointment.APPOINTMENT_DATE),
+				},
+				refetch: refetch,
+			});
+		} else if (key === "delete") {
+			// display the alert dialog
+			setAlertDialogDetails({
+				isOpen: true,
+				title: "Delete Appointment",
+				message: "Are you sure you want to delete this appointment?",
+				type: "danger",
+				dialogType: "confirm",
+			});
+		} else if (key === "cancel") {
+			// display the alert dialog
+			setAlertDialogDetails({
+				isOpen: true,
+				title: "Cancel Appointment",
+				message: "Are you sure you want to cancel this appointment?",
+				type: "warning",
+				dialogType: "confirm",
+				confirmCallback: () => {
+					changeStatusMutation.mutate({
+						ID: appointment.ID,
+						STATUS: "Cancelled",
+					});
+				},
+			});
+		} else if (key === "on_going") {
+			// display the alert dialog
+			setAlertDialogDetails({
+				isOpen: true,
+				title: "Change to 'On Going' Appointment",
+				message: "Are you sure you want to change the status of this appointment?",
+				type: "info",
+				dialogType: "confirm",
+				confirmCallback: () => {
+					changeStatusMutation.mutate({
+						ID: appointment.ID,
+						STATUS: "On-going",
+					});
+				},
+			});
+		} else if (key === "done") {
+			// display the alert dialog
+			setAlertDialogDetails({
+				isOpen: true,
+				title: "Change to 'Done' Appointment",
+				message: "Are you sure you want to change the status of this appointment?",
+				type: "info",
+				dialogType: "confirm",
+				confirmCallback: () => {
+					changeStatusMutation.mutate({
+						ID: appointment.ID,
+						STATUS: "Completed",
+					});
+				},
+			});
+		} else if (key === "pending") {
+			// display the alert dialog
+			setAlertDialogDetails({
+				isOpen: true,
+				title: "Change to 'Pending' Appointment",
+				message: "Are you sure you want to change the status of this appointment?",
+				type: "info",
+				dialogType: "confirm",
+				confirmCallback: () => {
+					changeStatusMutation.mutate({
+						ID: appointment.ID,
+						STATUS: "Pending",
+					});
+				},
+			});
+		}
+	};
 	return (
 		<>
 			{appointmentsArr.map(({ time, appointments: items }, index) => (
@@ -281,12 +500,17 @@ const AccordionSchedule = ({setRefetchTodayAppointments}) => {
 						<div className={cn("", zoomedDevices ? "ml-16" : "~ml-16/24")}>
 							<Accordion
 								type="single"
-								value={selectedChapter}
-								onValueChange={setSelectedChapter}
+								value={realTimeAppointments.selectedChapter}
+								onValueChange={(key) =>
+									setRealTimeAppointments({
+										...realTimeAppointments,
+										selectedChapter: key,
+									})
+								}
 								collapsible
 								className="flex flex-col gap-2"
 							>
-								{items.map((item, index) => {
+								{items.map((item) => {
 									const { startTime } = extractTime(item.APPOINTMENT_TIME);
 
 									// format the time
@@ -297,6 +521,10 @@ const AccordionSchedule = ({setRefetchTodayAppointments}) => {
 									} ${startTime?.meridian}`;
 
 									const status = validateTimeStatus(item.APPOINTMENT_TIME);
+									console.log(
+										item.FULLNAME,
+										realTimeAppointments.selectedChapter
+									);
 									return (
 										<AccordionItem
 											key={index}
@@ -308,12 +536,14 @@ const AccordionSchedule = ({setRefetchTodayAppointments}) => {
 												showChevron={false}
 												className={cn(
 													"relative px-3 py-1 rounded-xl hover:no-underline",
-													selectedChapter !== `item-${item.FULLNAME}`
+													realTimeAppointments.selectedChapter !==
+														`item-${item.FULLNAME}`
 														? "border-0"
 														: "border"
 												)}
 											>
-												{upcomingActiveIndex == index && (
+												{realTimeAppointments.upcomingActiveIndex ==
+													index && (
 													<div
 														data-accordion-item-arrow
 														className="absolute -left-[1rem] -translate-y-1/2 top-1/2"
@@ -337,21 +567,30 @@ const AccordionSchedule = ({setRefetchTodayAppointments}) => {
 															className={cn(
 																"h-3 w-3 bg-[#bdbdbd] rounded-full",
 
-																// For the active appointment
-																upcomingActiveIndex === index &&
-																	"bg-[#27ae60]",
-
 																// For the upcoming appointment except the active one
-																upcomingActiveIndex !== index &&
+																realTimeAppointments.upcomingActiveIndex <=
+																	index &&
 																	status === "upcoming" &&
-																	"bg-[#2F80ED]"
+																	"bg-[#2F80ED]",
+
+																// For the active appointment
+																realTimeAppointments.upcomingActiveIndex ===
+																	index && "bg-[#27ae60]"
 															)}
 														/>
+														{console.log(
+															realTimeAppointments.upcomingActiveIndex,
+															index
+														)}
 														<h6
 															className={cn(
 																"text-sm font-bold",
 																status == "inactive" ||
 																	status == "active"
+																	? "line-through opacity-70"
+																	: "",
+																realTimeAppointments.upcomingActiveIndex >
+																	index
 																	? "line-through opacity-70"
 																	: ""
 															)}
@@ -369,6 +608,11 @@ const AccordionSchedule = ({setRefetchTodayAppointments}) => {
 																status == "inactive" ||
 																	status == "active"
 																	? "line-through opacity-70"
+																	: "",
+
+																realTimeAppointments.upcomingActiveIndex >
+																	index
+																	? "line-through opacity-70"
 																	: ""
 															)}
 														>
@@ -378,14 +622,15 @@ const AccordionSchedule = ({setRefetchTodayAppointments}) => {
 												</div>
 												<div className="flex items-center gap-3">
 													{status === "upcoming" &&
-														upcomingActiveIndex === index &&
-														selectedChapter ===
+														realTimeAppointments.upcomingActiveIndex ===
+															index &&
+														realTimeAppointments.selectedChapter ===
 															`item-${item.FULLNAME}` && (
 															<small className="block text-xs text-gray-400 lg:hidden xl:block">
 																Upcoming
 															</small>
 														)}
-													{selectedChapter ===
+													{realTimeAppointments.selectedChapter ===
 														`item-${item.FULLNAME}` && (
 														<div className="p-1 border rounded-lg">
 															<ChevronUp
@@ -450,13 +695,31 @@ const AccordionSchedule = ({setRefetchTodayAppointments}) => {
 																variant="light"
 																className="border"
 																size={zoomedDevices ? "sm" : "md"}
+																onClick={() => {
+																	setAlertDialogDetails({
+																		isOpen: true,
+																		title: "Delete Appointment",
+																		message:
+																			"Are you sure you want to delete this appointment?",
+																		type: "danger",
+																		dialogType: "confirm",
+																		confirmCallback: () => {
+																			deleteAppointmentMutation.mutate(
+																				{
+																					ID: item.ID,
+																				}
+																			);
+																		},
+																	});
+																}}
 															>
 																<Trash
 																	size={20}
 																	className="text-red-500"
 																/>
 															</Button>
-															<Button
+
+															{/* <Button
 																isIconOnly
 																variant="light"
 																className="border"
@@ -466,26 +729,131 @@ const AccordionSchedule = ({setRefetchTodayAppointments}) => {
 																	size={20}
 																	className="text-[#2F80ED]"
 																/>
-															</Button>
-															<Button
-																isIconOnly
-																variant="light"
-																className="border"
-																size={zoomedDevices ? "sm" : "md"}
-															>
-																<Pencil
-																	size={20}
-																	className="text-[#2F80ED]"
-																/>
-															</Button>
+															</Button> */}
+
+															<Dropdown>
+																<DropdownTrigger>
+																	<Button
+																		isIconOnly
+																		variant="light"
+																		className="border"
+																		size={
+																			zoomedDevices
+																				? "sm"
+																				: "md"
+																		}
+																	>
+																		<Pencil
+																			size={20}
+																			className="text-[#2F80ED]"
+																		/>
+																	</Button>
+																</DropdownTrigger>
+																<DropdownMenu
+																	variant="faded"
+																	onAction={(key) =>
+																		handleAction(key, item)
+																	}
+																>
+																	<DropdownItem
+																		key={"pending"}
+																		startContent={
+																			<Clock size={20} />
+																		}
+																	>
+																		Pending
+																	</DropdownItem>
+																	<DropdownItem
+																		key={"on_going"}
+																		startContent={
+																			<Clock size={20} />
+																		}
+																	>
+																		On-going
+																	</DropdownItem>
+																	<DropdownItem
+																		key={"done"}
+																		startContent={
+																			<CheckCheck size={20} />
+																		}
+																	>
+																		Done
+																	</DropdownItem>
+																	<DropdownItem
+																		key={"reschedule"}
+																		startContent={
+																			<CalendarDays
+																				size={20}
+																			/>
+																		}
+																	>
+																		Reschedule
+																	</DropdownItem>
+																	<DropdownItem
+																		key={"cancel"}
+																		startContent={
+																			<Trash2 size={20} />
+																		}
+																		className="text-danger"
+																		color="danger"
+																	>
+																		Cancel
+																	</DropdownItem>
+																</DropdownMenu>
+															</Dropdown>
 														</div>
 														<div>
-															<Button
-																color="primary"
-																size={zoomedDevices ? "sm" : "md"}
-															>
-																Begin Appointment
-															</Button>
+															{realTimeAppointments.upcomingActiveIndex ===
+																index && (
+																<Button
+																	color="primary"
+																	size={
+																		zoomedDevices ? "sm" : "md"
+																	}
+																	onClick={() => {
+																		setAlertDialogDetails({
+																			isOpen: true,
+																			title: "Begin Appointment",
+																			message:
+																				"Are you sure you want to begin this appointment? You will not be able to revert this action.",
+																			type: "warning",
+																			dialogType: "confirm",
+																			confirmCallback: () => {
+																				setRealTimeAppointments(
+																					{
+																						selectedChapter: `item-${
+																							appointmentsArr[
+																								index +
+																									1
+																							]
+																								?.appointments[0]
+																								?.FULLNAME
+																						}`,
+																						upcomingActiveIndex:
+																							index +
+																							1,
+																					}
+																				);
+																				// setUpcomingActiveIndex(
+																				// 	index + 1
+																				// );
+																				// setSelectedChapter(
+																				// 	`item-${
+																				// 		appointmentsArr[
+																				// 			index +
+																				// 				1
+																				// 		]
+																				// 			?.appointments[0]
+																				// 			?.FULLNAME
+																				// 	}`
+																				// );
+																			},
+																		});
+																	}}
+																>
+																	Begin Appointment
+																</Button>
+															)}
 														</div>
 													</div>
 												</div>
@@ -506,6 +874,3 @@ const AccordionSchedule = ({setRefetchTodayAppointments}) => {
 		</>
 	);
 };
-AccordionSchedule.propTypes = {
-	setRefetchTodayAppointments:PropTypes.any
-}

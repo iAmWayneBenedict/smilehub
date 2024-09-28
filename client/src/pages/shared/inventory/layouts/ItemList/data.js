@@ -1,9 +1,9 @@
 import React from "react";
 const columns = [
-	{ name: "Item Name", uid: "item_name", sortable: true },
-	{ name: "Item ID", uid: "item_id", sortable: true },
-	{ name: "Group", uid: "group", sortable: true },
-	{ name: "Stock in Qty", uid: "stock_in_qty", sortable: true },
+	{ name: "Item Name", uid: "NAME", sortable: true },
+	{ name: "Item ID", uid: "ID", sortable: true },
+	{ name: "Group", uid: "ITEM_GROUP", sortable: true },
+	{ name: "Stock in Qty", uid: "QUANTITY", sortable: true },
 	{ name: "Actions", uid: "actions" },
 ];
 

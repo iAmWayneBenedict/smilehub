@@ -20,6 +20,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import AppontmentsAPIManager from "@/services/api/managers/appointments/AppointmentsAPIManager.js";
 import { useAppStore } from "@/store/zustand.js";
 import AppointmentsAPIManager from "@/services/api/managers/appointments/AppointmentsAPIManager.js";
+import { useEffect } from "react";
 
 const INITIAL_VISIBLE_COLUMNS = [
 	"APPOINTMENT_TIME",
@@ -39,7 +40,9 @@ export default function TableDashboard({ type }) {
 		column: "APPOINTMENT_TIME",
 		direction: "ascending",
 	});
-	const { setNewScheduleModal, setAlertDialogDetails } = useAppStore();
+	const { setNewScheduleModal, setAlertDialogDetails, setRefetchArr, refetchArr } = useAppStore();
+
+	const queryClient = useQueryClient();
 
 	// handle header columns
 	const headerColumns = React.useMemo(() => {
@@ -48,10 +51,17 @@ export default function TableDashboard({ type }) {
 		return columns.filter((column) => Array.from(visibleColumns).includes(column.uid));
 	}, [visibleColumns]);
 
-	const { data, isSuccess, isLoading, refetch } = useQuery({
+	const { data, isSuccess, isLoading, isError, refetch } = useQuery({
 		queryKey: ["dashboardAppointments"],
 		queryFn: AppontmentsAPIManager.getPatientAppointments,
+		retry: false,
 	});
+
+	useEffect(() => {
+		const isExist = refetchArr.find((item) => item.queryKey === "dashboardAppointments");
+		if (isExist) return;
+		setRefetchArr([...refetchArr, { queryKey: "dashboardAppointments", refetch }]);
+	}, [refetch, refetchArr]);
 
 	const changeStatusMutation = useMutation({
 		mutationFn: AppointmentsAPIManager.postChangeStatusAppointment,
@@ -62,7 +72,10 @@ export default function TableDashboard({ type }) {
 				title: "Success!",
 				message: "Appointment status changed successfully!",
 			});
-			refetch();
+			if (refetchArr.length) {
+				refetchArr.map((item) => item.refetch());
+				setRefetchArr([]);
+			}
 		},
 		onError: (error) => {
 			setAlertDialogDetails({
@@ -84,7 +97,10 @@ export default function TableDashboard({ type }) {
 				title: "Success!",
 				message: "Appointment status deleted successfully!",
 			});
-			refetch();
+			if (refetchArr.length) {
+				refetchArr.map((item) => item.refetch());
+				setRefetchArr([]);
+			}
 		},
 		onError: (error) => {
 			setAlertDialogDetails({
@@ -99,6 +115,7 @@ export default function TableDashboard({ type }) {
 	// filter appointments
 	const filteredItems = React.useMemo(() => {
 		if (isLoading) return [];
+		if (isError) return [];
 		let filteredAppointments = [];
 		if (type === "completed") {
 			filteredAppointments = data?.filter((item) => item.STATUS === "Completed");
@@ -107,7 +124,7 @@ export default function TableDashboard({ type }) {
 		}
 		//	limit to 5 items only
 		return filteredAppointments.slice(0, 5);
-	}, [type, data, isLoading, isSuccess]);
+	}, [type, data, isLoading, isSuccess, isError]);
 
 	// paginate appointments
 	const items = React.useMemo(() => {

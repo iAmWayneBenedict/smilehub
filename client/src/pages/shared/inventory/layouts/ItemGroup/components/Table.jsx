@@ -20,9 +20,11 @@ import { Search, Plus, ChevronsRight } from "lucide-react";
 import { useAppStore } from "@/store/zustand";
 import { cn } from "@/lib/utils";
 import { useLocation } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import InventoryAPIManager from "@/services/api/managers/inventory/InventoryAPIManager";
 
 //! change this based on the columns in the db
-const INITIAL_VISIBLE_COLUMNS = ["group_name", "no_of_items", "actions"];
+const INITIAL_VISIBLE_COLUMNS = ["GROUP_NAME", "QUANTITY", "actions"];
 
 export default function TableAppointments() {
 	const [filterValue, setFilterValue] = React.useState("");
@@ -31,12 +33,20 @@ export default function TableAppointments() {
 	const [statusFilter, setStatusFilter] = React.useState("all");
 	const [rowsPerPage, setRowsPerPage] = React.useState(10);
 	const [sortDescriptor, setSortDescriptor] = React.useState({
-		column: "group_name", //! update this based on the column in the db
+		column: "GROUP_NAME",
 		direction: "ascending",
 	});
 	const location = useLocation();
 	const currentUser = location.pathname.includes("admin") ? "admin" : "staff";
-	const { setAlertDialogDetails, setNewAppointmentModal, setNewScheduleModal } = useAppStore();
+	const { setAlertDialogDetails, setNewAppointmentModal, setNewScheduleModal, setAddGroupModal } =
+		useAppStore();
+
+	const { data, isSuccess, isLoading, refetch } = useQuery({
+		queryKey: ["group-items"],
+		queryFn: InventoryAPIManager.getInventoryGroupsWithQuantity,
+	});
+
+	console.log(data);
 
 	const [page, setPage] = React.useState(1);
 
@@ -51,16 +61,17 @@ export default function TableAppointments() {
 
 	// filters the itemsData based on the search value
 	const filteredItems = React.useMemo(() => {
-		let filteredItemsData = [...itemsData];
+		if (isLoading || !isSuccess) return [];
+		let filteredItemsData = [...data];
 
 		if (hasSearchFilter) {
 			filteredItemsData = filteredItemsData.filter((item) => {
-				return item.group_name.toLowerCase().includes(filterValue?.toLowerCase());
+				return item.GROUP_NAME.toLowerCase().includes(filterValue?.toLowerCase());
 			});
 		}
 
 		return filteredItemsData;
-	}, [itemsData, filterValue, statusFilter]);
+	}, [data, isLoading, isSuccess, filterValue, statusFilter]);
 
 	// paginates the filtered items
 	const items = React.useMemo(() => {
@@ -85,13 +96,13 @@ export default function TableAppointments() {
 	const renderCell = React.useCallback((item, columnKey) => {
 		const cellValue = item[columnKey];
 		switch (columnKey) {
-			case "group_name":
+			case "GROUP_NAME":
 				return (
 					<div className="flex flex-col">
 						<p className="text-base capitalize text-bold">{cellValue}</p>
 					</div>
 				);
-			case "no_of_items":
+			case "QUANTITY":
 				return (
 					<div className="flex flex-col">
 						<p className="text-base capitalize text-bold">{cellValue}</p>
@@ -104,7 +115,7 @@ export default function TableAppointments() {
 						<Button
 							variant="light"
 							as={Link}
-							href={`/${currentUser}/inventory/item-group/${item.group_name}`}
+							href={`/${currentUser}/inventory/item-group/${item.GROUP_NAME}`}
 							className="data-[hover=true]:bg-transparent p-0 text-base"
 							endContent={<ChevronsRight />}
 						>
@@ -190,7 +201,13 @@ export default function TableAppointments() {
 						<Button
 							aria-label="New Appointment"
 							color="primary"
-							onClick={() => {}}
+							onClick={() => {
+								setAddGroupModal({
+									title: "Add Group",
+									isOpen: true,
+									refetch,
+								});
+							}}
 							startContent={<Plus />}
 						>
 							Add new item
@@ -299,7 +316,7 @@ export default function TableAppointments() {
 			</TableHeader>
 			<TableBody emptyContent={"No itemsData found"} items={sortedItems}>
 				{(item) => (
-					<TableRow key={item.id}>
+					<TableRow key={item.ID}>
 						{(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
 					</TableRow>
 				)}

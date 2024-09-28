@@ -18,9 +18,15 @@ import { columns, itemsData } from "../data";
 import { Search, Plus, Trash } from "lucide-react";
 import { useAppStore } from "@/store/zustand";
 import { cn } from "@/lib/utils";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import InventoryAPIManager from "@/services/api/managers/inventory/InventoryAPIManager";
+import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { Pencil } from "lucide-react";
 
 //! change this based on the columns in the db
-const INITIAL_VISIBLE_COLUMNS = ["group_name", "no_of_items", "actions"];
+const INITIAL_VISIBLE_COLUMNS = ["NAME", "QUANTITY", "actions"];
 
 export default function TableAppointments() {
 	const [filterValue, setFilterValue] = React.useState("");
@@ -28,16 +34,84 @@ export default function TableAppointments() {
 	const [visibleColumns, setVisibleColumns] = React.useState(new Set(INITIAL_VISIBLE_COLUMNS));
 	const [statusFilter, setStatusFilter] = React.useState("all");
 	const [rowsPerPage, setRowsPerPage] = React.useState(10);
+	const [groupDetail, setGroupDetail] = React.useState();
 	const [sortDescriptor, setSortDescriptor] = React.useState({
-		column: "group_name", //! update this based on the column in the db
+		column: "NAME", //! update this based on the column in the db
 		direction: "ascending",
 	});
+	const currentUser = location.pathname.includes("admin") ? "admin" : "staff";
+	const navigate = useNavigate();
+	const params = useParams();
 	const {
 		setAddGroupItemModal,
 		setAlertDialogDetails,
 		setNewAppointmentModal,
 		setNewScheduleModal,
 	} = useAppStore();
+	const { data, isSuccess, isLoading, refetch } = useQuery({
+		queryKey: ["group-items"],
+		queryFn: InventoryAPIManager.getInventoryItems,
+	});
+
+	const { data: groupsData, isSuccess: isSuccessGroupData } = useQuery({
+		queryKey: ["groups"],
+		queryFn: InventoryAPIManager.getInventoryGroups,
+	});
+	useEffect(() => {
+		if (!isSuccessGroupData) return;
+
+		const filteredData = groupsData.find((item) => item.NAME === params.group);
+
+		setGroupDetail(filteredData);
+	}, [isSuccessGroupData, groupsData]);
+	const deleteGroupMutation = useMutation({
+		mutationFn: InventoryAPIManager.postDeleteGroup,
+		onSuccess: () => {
+			setAlertDialogDetails({
+				type: "success",
+				title: "Success!",
+				message: "Deleted group successfully?",
+				isOpen: true,
+
+				confirmCallback: () => {
+					navigate(`/admin/inventory/item-group`);
+				},
+			});
+		},
+		onError: (error) => {
+			console.log(error);
+			setAlertDialogDetails({
+				isOpen: true,
+				type: "danger",
+				title: "Error!",
+				message: error.message,
+			});
+		},
+	});
+	const deleteItemMutation = useMutation({
+		mutationFn: InventoryAPIManager.postDeleteItem,
+		onSuccess: () => {
+			setAlertDialogDetails({
+				type: "success",
+				title: "Success!",
+				message: "Deleted group successfully?",
+				isOpen: true,
+
+				confirmCallback: () => {
+					refetch();
+				},
+			});
+		},
+		onError: (error) => {
+			console.log(error);
+			setAlertDialogDetails({
+				isOpen: true,
+				type: "danger",
+				title: "Error!",
+				message: error.message,
+			});
+		},
+	});
 
 	const [page, setPage] = React.useState(1);
 
@@ -52,16 +126,18 @@ export default function TableAppointments() {
 
 	// filters the itemsData based on the search value
 	const filteredItems = React.useMemo(() => {
-		let filteredItemsData = [...itemsData];
+		if (isLoading || !isSuccess || !groupDetail) return [];
+		const items = data.all_items.filter((item) => item.ITEM_GROUP === groupDetail.NAME);
+		let filteredItemsData = [...items];
 
 		if (hasSearchFilter) {
 			filteredItemsData = filteredItemsData.filter((item) => {
-				return item.group_name.toLowerCase().includes(filterValue?.toLowerCase());
+				return item.GROUP_NAME.toLowerCase().includes(filterValue?.toLowerCase());
 			});
 		}
 
 		return filteredItemsData;
-	}, [itemsData, filterValue, statusFilter]);
+	}, [data, isSuccess, isLoading, filterValue, statusFilter, groupDetail]);
 
 	// paginates the filtered items
 	const items = React.useMemo(() => {
@@ -86,13 +162,13 @@ export default function TableAppointments() {
 	const renderCell = React.useCallback((item, columnKey) => {
 		const cellValue = item[columnKey];
 		switch (columnKey) {
-			case "group_name":
+			case "NAME":
 				return (
 					<div className="flex flex-col">
 						<p className="text-base capitalize text-bold">{cellValue}</p>
 					</div>
 				);
-			case "no_of_items":
+			case "QUANTITY":
 				return (
 					<div className="flex flex-col">
 						<p className="text-base capitalize text-bold">{cellValue}</p>
@@ -104,6 +180,18 @@ export default function TableAppointments() {
 					<div className="relative flex items-center justify-start gap-2">
 						<Button
 							variant="light"
+							className="data-[hover=true]:bg-transparent p-0 text-base"
+							startContent={<Pencil />}
+							onClick={() => {
+								navigate(
+									`/${currentUser}/inventory/item-group/${item.ITEM_GROUP}/edit/${item.ID}`
+								);
+							}}
+						>
+							Edit
+						</Button>
+						<Button
+							variant="light"
 							color="danger"
 							className="data-[hover=true]:bg-transparent p-0 text-base"
 							startContent={<Trash />}
@@ -113,10 +201,15 @@ export default function TableAppointments() {
 									message: "Are you sure you want to delete this item?",
 									isOpen: true,
 									dialogType: "confirm",
+									confirmCallback: () => {
+										deleteItemMutation.mutate({
+											ID: item.ID,
+										});
+									},
 								});
 							}}
 						>
-							Remove from Group
+							Remove
 						</Button>
 					</div>
 				);
@@ -199,10 +292,9 @@ export default function TableAppointments() {
 							aria-label="New Appointment"
 							color="primary"
 							onClick={() => {
-								setAddGroupItemModal({
-									isOpen: true,
-									title: "Add Item",
-								});
+								navigate(
+									`/${currentUser}/inventory/item-group/${params.group}/add`
+								);
 							}}
 							startContent={<Plus />}
 						>
@@ -292,6 +384,12 @@ export default function TableAppointments() {
 								message: "Are you sure you want to delete this group?",
 								isOpen: true,
 								dialogType: "confirm",
+
+								confirmCallback: () => {
+									deleteGroupMutation.mutate({
+										ID: groupDetail.ID,
+									});
+								},
 							});
 						}}
 					>
@@ -333,7 +431,7 @@ export default function TableAppointments() {
 			</TableHeader>
 			<TableBody emptyContent={"No itemsData found"} items={sortedItems}>
 				{(item) => (
-					<TableRow key={item.id}>
+					<TableRow key={item.ID}>
 						{(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
 					</TableRow>
 				)}

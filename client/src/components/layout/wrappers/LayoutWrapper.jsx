@@ -4,7 +4,6 @@ import PropTypes from "prop-types";
 import NavigationBar from "../navbar/NavigationBar";
 import SharedNavBar from "../shared/navbar";
 import SideNav from "../shared/sideNav";
-
 const LayoutWrapper = ({ child }) => {
 	const location = useLocation();
 
@@ -13,6 +12,7 @@ const LayoutWrapper = ({ child }) => {
 		location?.pathname?.includes("admin") ||
 		location?.pathname?.includes("staff") ||
 		location?.pathname?.includes("shared");
+
 	return (
 		<div>
 			{/* if admin show the shared nav bar else show the regular nav */}

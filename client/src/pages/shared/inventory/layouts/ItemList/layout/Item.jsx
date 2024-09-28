@@ -1,13 +1,60 @@
+import InventoryAPIManager from "@/services/api/managers/inventory/InventoryAPIManager";
+import { useAppStore } from "@/store/zustand";
 import { Breadcrumbs, BreadcrumbItem, Button, Tabs, Tab } from "@nextui-org/react";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Pencil, Trash } from "lucide-react";
+import { useEffect } from "react";
 import { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 
 const Item = () => {
 	// controlled tabs
 	const [selected, setSelected] = useState("list-of-items");
 	const location = useLocation();
 	const currentUser = location.pathname.includes("admin") ? "admin" : "staff";
+	const [data, setData] = useState({});
+	const { setAlertDialogDetails } = useAppStore();
+	const params = useParams();
+	const navigate = useNavigate();
+
+	const getMutation = useMutation({
+		mutationFn: InventoryAPIManager.getInventoryItem,
+		onSuccess: (data) => {
+			setData(data);
+		},
+		onError: (error) => {
+			console.log(error);
+		},
+	});
+
+	const deleteMutation = useMutation({
+		mutationFn: InventoryAPIManager.postDeleteItem,
+		onSuccess: (data) => {
+			setAlertDialogDetails({
+				isOpen: true,
+				title: "Success",
+				message: "Item deleted successfully",
+				type: "success",
+				confirmCallback: () => {
+					navigate(`/${currentUser}/inventory/item-list`);
+				},
+			});
+		},
+		onError: (error) => {
+			setAlertDialogDetails({
+				isOpen: true,
+				title: "Error",
+				message: error?.response?.data?.message || "An error occurred",
+				type: "danger",
+			});
+		},
+	});
+
+	useEffect(() => {
+		getMutation.mutate({
+			ID: params.item,
+		});
+	}, []);
 	return (
 		<div style={{ flex: 1 }} className="">
 			<div style={{ flex: 1 }} className="relative p-4 bg-white">
@@ -20,7 +67,7 @@ const Item = () => {
 							Item List
 						</BreadcrumbItem>
 						<BreadcrumbItem href={`/${currentUser}/inventory/item-list`}>
-							Fluoride Varnish
+							{data?.NAME}
 						</BreadcrumbItem>
 					</Breadcrumbs>
 				</div>
@@ -43,7 +90,11 @@ const Item = () => {
 										<Button
 											aria-label="New Appointment"
 											color="primary"
-											onClick={() => {}}
+											onClick={() => {
+												navigate(
+													`/${currentUser}/inventory/item-list/edit/${params.item}`
+												);
+											}}
 											startContent={<Pencil size={20} />}
 										>
 											Edit Details
@@ -61,15 +112,17 @@ const Item = () => {
 											</div>
 											<div className="flex flex-row p-6">
 												<div style={{ flex: 1 }} className="flex flex-col">
-													<h4 className="~text-2xl/4xl font-bold">
-														DENT-003
+													<h4 className="~text-lg/3xl font-bold">
+														{data?.ID}
 													</h4>
 													<p className="~text-lg/xl font-medium">
 														Item ID
 													</p>
 												</div>
-												<div style={{ flex: 1 }} className="flex flex-col">
-													<h4 className="~text-2xl/4xl font-bold">02</h4>
+												<div style={{ flex: 3 }} className="flex flex-col">
+													<h4 className="~text-lg/3xl font-bold">
+														{data?.ITEM_GROUP}
+													</h4>
 													<p className="~text-lg/xl font-medium">
 														Item Group
 													</p>
@@ -86,7 +139,9 @@ const Item = () => {
 											</div>
 											<div className="flex flex-row p-6">
 												<div style={{ flex: 1 }} className="flex flex-col">
-													<h4 className="~text-2xl/4xl font-bold">08</h4>
+													<h4 className="~text-lg/3xl font-bold">
+														{data?.QUANTITY}
+													</h4>
 													<p className="~text-lg/xl font-medium">
 														Stocks Left
 													</p>
@@ -103,7 +158,7 @@ const Item = () => {
 										</div>
 										<div className="flex flex-row p-6">
 											<p className="~text-lg/xl font-medium">
-												Dental Cabinet B
+												{data.LOCATION}
 											</p>
 										</div>
 									</div>
@@ -115,6 +170,21 @@ const Item = () => {
 										radius="sm"
 										className="mt-10 text-base"
 										startContent={<Trash />}
+										onClick={() => {
+											setAlertDialogDetails({
+												isOpen: true,
+												title: "Delete Item",
+												message:
+													"Are you sure you want to delete this item?",
+												type: "danger",
+												dialogType: "confirm",
+												confirmCallback: () => {
+													deleteMutation.mutate({
+														ID: data.ID,
+													});
+												},
+											});
+										}}
 									>
 										Delete Item
 									</Button>

@@ -83,6 +83,18 @@ export const useAppStore = create((set) => {
 		 */
 		addGroupItemModal: {},
 		setAddGroupItemModal: (value) => set({ addGroupItemModal: value }),
+		/**
+			* The details of the Add group.
+
+			* @typedef {Object} AddGroupModal
+			* @property {string} title - The title of the teeth diagram.
+			* @property {object} data - The data of the teeth diagram.
+			* @property {boolean} isOpen - Whether the teeth diagram is open.
+			* @property {string} actionLink - The link to redirect to when the action button is clicked.
+			* @property {function} refetch - The function to refetch the data.
+		 */
+		addGroupModal: {},
+		setAddGroupModal: (value) => set({ addGroupModal: value }),
 
 		/**
 			* The details of the Progressnote modal.
@@ -109,6 +121,9 @@ export const useAppStore = create((set) => {
 		 */
 		taskModal: {},
 		setTaskModal: (value) => set({ taskModal: value }),
+
+		refetchArr: [],
+		setRefetchArr: (value) => set({ refetchArr: value }),
 	};
 });
 
@@ -120,6 +135,22 @@ export const useAuthTokenPersisted = create(
 		}),
 		{
 			name: "authToken",
+			storage: createJSONStorage(() => localStorage),
+		}
+	)
+);
+
+export const useRealTimeAppointmentsPersisted = create(
+	persist(
+		(set) => ({
+			realTimeAppointments: {
+				selectedChapter: "",
+				upcomingActiveIndex: undefined,
+			},
+			setRealTimeAppointments: (value) => set({ realTimeAppointments: value }),
+		}),
+		{
+			name: "realTimeAppointments",
 			storage: createJSONStorage(() => localStorage),
 		}
 	)

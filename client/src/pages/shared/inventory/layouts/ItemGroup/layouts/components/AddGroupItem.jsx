@@ -11,14 +11,16 @@ import {
 } from "@nextui-org/react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
+import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 
-const AddItem = () => {
+const AddGroupItem = () => {
 	const location = useLocation();
 	const currentUser = location.pathname.includes("admin") ? "admin" : "staff";
 	const { alertDialogDetails, setAlertDialogDetails } = useAppStore();
 	const navigate = useNavigate();
+	const params = useParams();
 
 	const { data: itemGroups } = useQuery({
 		queryKey: ["itemGroups"],
@@ -34,7 +36,7 @@ const AddItem = () => {
 				message: "Item added successfully",
 				type: "success",
 				confirmCallback: () => {
-					navigate(`/${currentUser}/inventory/item-list`);
+					navigate(`/${currentUser}/inventory/item-group/${params.group}`);
 				},
 			});
 		},
@@ -63,8 +65,10 @@ const AddItem = () => {
 		},
 	});
 	const onSubmit = (data) => {
+		data.ITEM_GROUP = params.group;
 		mutation.mutate(data);
 	};
+	console.log(params);
 	return (
 		<div style={{ flex: 1 }} className="">
 			<div style={{ flex: 1 }} className="relative p-4 bg-white">
@@ -73,10 +77,10 @@ const AddItem = () => {
 						<BreadcrumbItem href={`/${currentUser}/inventory`}>
 							Inventory
 						</BreadcrumbItem>
-						<BreadcrumbItem href={`/${currentUser}/inventory/item-list`}>
-							Item List
+						<BreadcrumbItem href={`/${currentUser}/inventory/item-group`}>
+							Item Group
 						</BreadcrumbItem>
-						<BreadcrumbItem href={`/${currentUser}/inventory/item-list`}>
+						<BreadcrumbItem href={`/${currentUser}/inventory/item-group`}>
 							Add new Item
 						</BreadcrumbItem>
 					</Breadcrumbs>
@@ -111,11 +115,10 @@ const AddItem = () => {
 								<Controller
 									name="ITEM_GROUP"
 									control={control}
-									rules={{ required: "Time is required" }}
 									render={({ field, formState: { errors } }) => (
 										<Select
 											{...field}
-											selectedKeys={[field.value]}
+											selectedKeys={[params.group]}
 											onChange={(selectedKeys) => {
 												field.onChange(selectedKeys);
 											}}
@@ -130,6 +133,7 @@ const AddItem = () => {
 											radius="sm"
 											className="w-full "
 											disabledKeys={[""]}
+											isDisabled
 											classNames={{
 												label: "text-darkText font-semibold ",
 												inputWrapper: "rounded-lg h-full ",
@@ -137,13 +141,16 @@ const AddItem = () => {
 													"h-[4rem] border-1 border-[#1D242E] bg-[#e3ebf3]",
 											}}
 										>
-											{itemGroups?.map((item) => (
-												<SelectItem key={item.NAME} value={item.NAME}>
-													{item.NAME === ""
-														? "- Select Group -"
-														: item.NAME}
-												</SelectItem>
-											))}
+											{itemGroups?.map((item) => {
+												if (item.NAME !== params.group) return;
+												return (
+													<SelectItem key={item.NAME} value={item.NAME}>
+														{item.NAME === ""
+															? "- Select Group -"
+															: item.NAME}
+													</SelectItem>
+												);
+											})}
 										</Select>
 									)}
 								/>
@@ -203,4 +210,4 @@ const AddItem = () => {
 	);
 };
 
-export default AddItem;
+export default AddGroupItem;

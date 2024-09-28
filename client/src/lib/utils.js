@@ -128,10 +128,26 @@ export function formatDate(date) {
 	const dateParts = formattedDate.split(" ");
 	return `${dateParts[1]} ${dateParts[0]} ${dateParts[2]}`;
 }
+
+export function isTodayDate(date) {
+	const today = new Date();
+	return (
+		date.getDate() === today.getDate() &&
+		date.getMonth() === today.getMonth() &&
+		date.getFullYear() === today.getFullYear()
+	);
+}
+
+export const formatDateByDayAndShortMonth = (date) => {
+	const day = date.getDate();
+	const month = date.toLocaleString("en-US", { month: "short" });
+	return `${day} ${month}`;
+};
+
 export const getISODateString = (dateString) => {
 	const dateObject = new Date(dateString);
-	return dateObject.toISOString()
-}
+	return dateObject.toISOString();
+};
 
 export const months = [
 	"January",

@@ -19,11 +19,35 @@ import { useEffect, useState } from "react";
 import { getLocalTimeZone, today } from "@internationalized/date";
 import { Controller, useForm } from "react-hook-form";
 import AssessmentSample from "../../../assets/images/assessment-sample.png";
+import { useMutation } from "@tanstack/react-query";
+import PatientsAPIManager from "@/services/api/managers/patients/PatientsAPIManager";
 
 export default function AssessmentPatient() {
 	const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+	const [assessmentData, setAssessmentData] = useState({});
 	const { assessmentPatientModal, setAssessmentPatientModal, setAlertDialogDetails } =
 		useAppStore();
+
+	// Form hook
+	const {
+		register,
+		handleSubmit,
+		control,
+		watch,
+		formState: { errors },
+	} = useForm({
+		defaultValues: {
+			TOOTH_NO: "",
+			COLOR: "",
+			TEXTURE: "",
+			GUM_HEALTH: "",
+			PRESENCE_OF_DECAY: "",
+			CAVITIES: "",
+			SENSITIVITY: "",
+			MOBILITY: "",
+			PREVIOUS_TREATMENT: "",
+		},
+	});
 
 	const [timeDropdownList, setTimeDropdownList] = useState([]);
 	useEffect(() => {
@@ -38,25 +62,50 @@ export default function AssessmentPatient() {
 		return [value[value.length - 1]];
 	};
 
-	// Form hook
-	const {
-		register,
-		handleSubmit,
-		control,
-		formState: { errors },
-	} = useForm({
-		defaultValues: {
-			APPOINTMENT_DATE: today(getLocalTimeZone()), // default date (today)
-			APPOINTMENT_TIME: "",
-			TEXTURE: [],
-			PRESENCE_OF_DECAY: false,
-			CAVITIES: false,
-			SENSITIVITY: false,
-			GUM_HEALTH: [],
-			MOBILITY: [],
-			PREVIOUS_TREATMENT: [],
+	const toothNum = watch("TOOTH_NO");
+	useEffect(() => {
+		if (!assessmentPatientModal.isOpen) return;
+		getMutation.mutate({
+			PATIENT_ID: assessmentPatientModal.data?.id,
+			TOOTH_NO: toothNum || 1,
+		});
+	}, [toothNum, assessmentPatientModal]);
+
+	const getMutation = useMutation({
+		mutationFn: PatientsAPIManager.getAssessment,
+		onSuccess: (data) => {
+			setAssessmentData(data);
 		},
 	});
+
+	const addMutation = useMutation({
+		mutationFn: PatientsAPIManager.postAddAssessment,
+		onSuccess: (data) => {
+			setAlertDialogDetails({
+				isOpen: true,
+				type: "success",
+				title: "Success",
+				message: "Assessment added successfully",
+			});
+		},
+		onError: (error) => {
+			console.log(error);
+			setAlertDialogDetails({
+				isOpen: true,
+				type: "danger",
+				title: "Error",
+				message: error.message,
+			});
+		},
+	});
+
+	const onSubmit = (data) => {
+		data.PRESENCE_OF_DECAY = data.PRESENCE_OF_DECAY ? "yes" : "no";
+		data.CAVITIES = data.CAVITIES ? "yes" : "no";
+		data.SENSITIVITY = data.SENSITIVITY ? "yes" : "no";
+		data.DATE_TIME = new Date().toISOString();
+		console.log(data);
+	};
 	return (
 		<>
 			<Modal
@@ -72,7 +121,7 @@ export default function AssessmentPatient() {
 			>
 				<ModalContent>
 					{(onClose) => (
-						<>
+						<form onSubmit={handleSubmit(onSubmit)}>
 							<ModalHeader className="flex flex-col gap-1">
 								{assessmentPatientModal.title || "Assessment"}
 							</ModalHeader>
@@ -80,7 +129,7 @@ export default function AssessmentPatient() {
 								<div className="flex flex-row gap-24 ~mx-4/10">
 									<div style={{ flex: 1 }} className="flex flex-col gap-6">
 										<Controller
-											name="TOOTH_NUMBER"
+											name="TOOTH_NO"
 											control={control}
 											rules={{ required: "Tooth number is required" }}
 											render={({ field, formState: { errors } }) => (
@@ -91,9 +140,9 @@ export default function AssessmentPatient() {
 													onChange={(selectedKeys) => {
 														field.onChange(selectedKeys);
 													}}
-													isDisabled={!toothNumbers?.length}
-													isInvalid={!!errors.TOOTH_NUMBER}
-													errorMessage={errors.TOOTH_NUMBER?.message}
+													textValue="tooth number"
+													isInvalid={!!errors.TOOTH_NO}
+													errorMessage={errors.TOOTH_NO?.message}
 													labelPlacement={"outside"}
 													placeholder="Select Tooth number"
 													label="Tooth number"
@@ -107,9 +156,13 @@ export default function AssessmentPatient() {
 														inputWrapper: "h-full",
 													}}
 												>
-													{toothNumbers.map((number) => (
-														<SelectItem key={number} value={number}>
-															{number}
+													{Array.from({ length: 32 }).map((_, number) => (
+														<SelectItem
+															key={number + 1}
+															value={number + 1}
+															textValue={"#" + (number + 1)}
+														>
+															#{number + 1}
 														</SelectItem>
 													))}
 												</Select>
@@ -127,7 +180,8 @@ export default function AssessmentPatient() {
 													onChange={(selectedKeys) => {
 														field.onChange(selectedKeys);
 													}}
-													isDisabled={!toothNumbers?.length}
+													textValue="color"
+													isDisabled={!colors?.length}
 													isInvalid={!!errors.COLOR}
 													errorMessage={errors.COLOR?.message}
 													labelPlacement={"outside"}
@@ -143,9 +197,13 @@ export default function AssessmentPatient() {
 														inputWrapper: "h-full",
 													}}
 												>
-													{toothNumbers.map((number) => (
-														<SelectItem key={number} value={number}>
-															{number}
+													{colors.map((color) => (
+														<SelectItem
+															key={color}
+															value={color}
+															textValue={color}
+														>
+															{color}
 														</SelectItem>
 													))}
 												</Select>
@@ -331,44 +389,43 @@ export default function AssessmentPatient() {
 										</div>
 									</div>
 									<div style={{ flex: 1 }} className="flex flex-col gap-16">
-										<div>
-											<Image
-												src={AssessmentSample}
-												aria-label="image-assessmnet"
+										<div style={{ flex: 1 }}></div>
+										<div style={{ flex: 2 }}>
+											<Controller
+												name="PREVIOUS_TREATMENT"
+												control={control}
+												rules={{
+													required: "Previous treatment is required",
+												}}
+												render={({ field, formState: { errors } }) => (
+													<CheckboxGroup
+														aria-label="Previous treatment Checkboxes"
+														label="Previous treatment"
+														color="primary"
+														value={field.value}
+														onValueChange={(value) =>
+															field.onChange(
+																checkboxSetterSingleItem(value)
+															)
+														}
+														isInvalid={!!errors.PREVIOUS_TREATMENT}
+														errorMessage={
+															errors.PREVIOUS_TREATMENT?.message
+														}
+													>
+														<Checkbox value="None">None</Checkbox>
+														<Checkbox value="Filing">Filing</Checkbox>
+														<Checkbox value="Crown">Crown</Checkbox>
+														<Checkbox value="Root Canal">
+															Root Canal
+														</Checkbox>
+														<Checkbox value="Extraction">
+															Extraction
+														</Checkbox>
+													</CheckboxGroup>
+												)}
 											/>
 										</div>
-										<Controller
-											name="PREVIOUS_TREATMENT"
-											control={control}
-											rules={{ required: "Previous treatment is required" }}
-											render={({ field, formState: { errors } }) => (
-												<CheckboxGroup
-													aria-label="Previous treatment Checkboxes"
-													label="Previous treatment"
-													color="primary"
-													value={field.value}
-													onValueChange={(value) =>
-														field.onChange(
-															checkboxSetterSingleItem(value)
-														)
-													}
-													isInvalid={!!errors.PREVIOUS_TREATMENT}
-													errorMessage={
-														errors.PREVIOUS_TREATMENT?.message
-													}
-												>
-													<Checkbox value="None">None</Checkbox>
-													<Checkbox value="Filing">Filing</Checkbox>
-													<Checkbox value="Crown">Crown</Checkbox>
-													<Checkbox value="Root Canal">
-														Root Canal
-													</Checkbox>
-													<Checkbox value="Extraction">
-														Extraction
-													</Checkbox>
-												</CheckboxGroup>
-											)}
-										/>
 									</div>
 								</div>
 							</ModalBody>
@@ -376,51 +433,16 @@ export default function AssessmentPatient() {
 								<Button color="light" variant="flat" onPress={onClose}>
 									Close
 								</Button>
-								<Button color="primary" onPress={onClose}>
-									Change
+								<Button color="primary" type="submit">
+									Save
 								</Button>
 							</ModalFooter>
-						</>
+						</form>
 					)}
 				</ModalContent>
 			</Modal>
 		</>
 	);
 }
-
-const toothNumbers = [
-	"#1",
-	"#2",
-	"#3",
-	"#4",
-	"#5",
-	"#6",
-	"#7",
-	"#8",
-	"#9",
-	"#10",
-	"#11",
-	"#12",
-	"#13",
-	"#14",
-	"#15",
-	"#16",
-	"#17",
-	"#18",
-	"#19",
-	"#20",
-	"#21",
-	"#22",
-	"#23",
-	"#24",
-	"#25",
-	"#26",
-	"#27",
-	"#28",
-	"#29",
-	"#30",
-	"#31",
-	"#32",
-];
 
 const colors = ["Yellow", "Brown", "Black", "White"];

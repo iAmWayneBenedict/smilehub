@@ -17,6 +17,8 @@ import { useState } from "react";
 import { useRef } from "react";
 import { CircleX, Undo2, Redo2 } from "lucide-react";
 import { useEffect } from "react";
+import { useMutation } from "@tanstack/react-query";
+import PatientsAPIManager from "@/services/api/managers/patients/PatientsAPIManager";
 
 const TeethDiagram = () => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
@@ -25,7 +27,45 @@ const TeethDiagram = () => {
 	const [alpha, setAlpha] = useState(10);
 	const [initialImage, setInitialImage] = useState(teethDiagramImg);
 	const [showDownload, setShowDownload] = useState(false);
-	const { teethDiagramModalDetails, setTeethDiagramModalDetails } = useAppStore();
+	const { teethDiagramModalDetails, setTeethDiagramModalDetails, setAlertDialogDetails } =
+		useAppStore();
+
+	const addDiagramMutation = useMutation({
+		mutationFn: PatientsAPIManager.postAddDiagram,
+		onSuccess: () => {
+			setAlertDialogDetails({
+				isOpen: true,
+				type: "success",
+				title: "Success!",
+				message: "The diagram has been added successfully.",
+			});
+			setTeethDiagramModalDetails({});
+		},
+		onError: (error) => {
+			console.log(error);
+			setAlertDialogDetails({
+				isOpen: true,
+				type: "danger",
+				title: "Error!",
+				message: error.message,
+			});
+		},
+	});
+
+	const getMutation = useMutation({
+		mutationFn: PatientsAPIManager.getDiagram,
+		onSuccess: (data) => {
+			console.log(data);
+			// setInitialImage(data?.data?.image);
+		},
+	});
+
+	useEffect(() => {
+		if (!teethDiagramModalDetails.isOpen) return;
+		getMutation.mutate({
+			PATIENT_ID: teethDiagramModalDetails?.data?.id,
+		});
+	}, [teethDiagramModalDetails]);
 
 	const [history, setHistory] = useState([]);
 	const [redoStack, setRedoStack] = useState([]);
@@ -114,6 +154,13 @@ const TeethDiagram = () => {
 			ctx.drawImage(image, 0, 0);
 		};
 	};
+	const handleSaveDB = (blob) => {
+		const file = new File([blob], "teeth-diagram.png", { type: "image/png" });
+		console.log(teethDiagramModalDetails?.data?.id, file);
+		const formData = new FormData();
+		formData.append("file1", file);
+		formData.append("PATIENT_ID", teethDiagramModalDetails?.data?.id);
+	};
 	return (
 		<Modal
 			size={"5xl"}
@@ -135,7 +182,7 @@ const TeethDiagram = () => {
 								image={initialImage}
 								initialLineWidth={brushSize}
 								initialColor={color + alphaValues[alpha]}
-								onSave={(blob) => console.log(blob)}
+								onSave={(blob) => handleSaveDB(blob)}
 								render={({
 									triggerSave,
 									getCanvasProps,

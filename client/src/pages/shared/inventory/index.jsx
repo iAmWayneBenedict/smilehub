@@ -3,10 +3,33 @@ import { PlusIcon } from "lucide-react";
 import MedicalIcon from "@/components/icons/MedicalIcon";
 import { ChevronsRight } from "lucide-react";
 import { useLocation } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import InventoryAPIManager from "@/services/api/managers/inventory/InventoryAPIManager";
+import { useState } from "react";
+import { useEffect } from "react";
 
 const Inventory = () => {
 	const location = useLocation();
 	const currentUser = location.pathname.includes("admin") ? "admin" : "staff";
+	const [itemsInventory, setItemsInventory] = useState(null);
+	const [groupInventory, setGroupInventory] = useState(null);
+	const [shortageInventory, setShortageInventory] = useState(null);
+
+	const getInventoryData = async () => {
+		const inventory = await InventoryAPIManager.getInventoryItems();
+		const group = await InventoryAPIManager.getInventoryGroups();
+
+		return Promise.all([inventory, group]);
+	};
+
+	useEffect(() => {
+		getInventoryData().then((data) => {
+			setItemsInventory(data[0].all_items);
+			setItemsInventory(data[0].items_shortage);
+			setGroupInventory(data[1]);
+		});
+	}, []);
+
 	return (
 		<div style={{ flex: 1 }} className="">
 			<div style={{ flex: 1 }} className="relative p-10 bg-white">
@@ -27,7 +50,9 @@ const Inventory = () => {
 							<div className="flex flex-col items-center mt-5">
 								<MedicalIcon color="#03A9F5" width={57} height={57} />
 								<div className="flex flex-col items-center mt-2">
-									<h3 className="text-3xl font-bold">298</h3>
+									<h3 className="text-3xl font-bold">
+										{itemsInventory?.length || 0}
+									</h3>
 									<h6 className="text-lg font-semibold">Item List</h6>
 								</div>
 							</div>
@@ -48,7 +73,9 @@ const Inventory = () => {
 							<div className="flex flex-col items-center mt-5">
 								<MedicalIcon color="#01A768" width={57} height={57} />
 								<div className="flex flex-col items-center mt-2">
-									<h3 className="text-3xl font-bold">02</h3>
+									<h3 className="text-3xl font-bold">
+										{groupInventory?.length || 0}
+									</h3>
 									<h6 className="text-lg font-semibold">Items Group</h6>
 								</div>
 							</div>
@@ -69,7 +96,9 @@ const Inventory = () => {
 							<div className="flex flex-col items-center mt-5">
 								<MedicalIcon color="#F0483E" width={57} height={57} />
 								<div className="flex flex-col items-center mt-2">
-									<h3 className="text-3xl font-bold">01</h3>
+									<h3 className="text-3xl font-bold">
+										{shortageInventory?.length || 0}
+									</h3>
 									<h6 className="text-lg font-semibold">Items Shortage</h6>
 								</div>
 							</div>
