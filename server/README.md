@@ -2532,7 +2532,7 @@ Error (500 Internal Server Error):
 }
 ```
 
-### 48. Updating a File for Teeth Assessment
+### 48. Update a File for Teeth Assessment
 
 - **Endpoints:**
   - `POST /EDIT/DENTIST/teethAssessment.php`  
@@ -2609,6 +2609,196 @@ Error (400 Bad Request):
 Error (404 Not Found):
 {
     "message": "No assessments found for the provided Patient ID."
+}
+```
+
+### 50. Add New Patient Form
+
+- **Endpoints:**
+  - `POST /POST/SHARED/patientForm.php`  
+    - **Description:** Add a new assessment record to the system.
+
+#### Request Body
+
+The request should be sent as JSON with the following structure:
+
+```json
+{
+    "PATIENT_ID": "1",
+    "TITLE": "Mr.",
+    "FIRST_NAME": "John",
+    "LAST_NAME": "Doe",
+    "OCCUPATION": "Engineer",
+    "BIRTHDAY": "1990-01-15",
+    "HOME_ADDRESS": "123 Main St, Anytown, USA",
+    "CONTACT_NUMBER": "555-1234",
+    "EMAIL_ADDRESS": "john.doe@example.com",
+    "HEALTH_FUND": "Health Fund A",
+    "MEMBER_NUMBER": "HF123456",
+    "EMERGENCY_CONTACT_NAME": "Jane Doe",
+    "EMERGENCY_CONTACT_NUMBER": "555-5678",
+    "EMERGENCY_CONTACT_RELATIONSHIP": "Spouse",
+    "FAMILY_DOCTOR": "Dr. Smith",
+    "DOCTOR_CONTACT": "555-8765",
+    "SUFFERING": "['Diabetes', 'Cancer', 'Epilepsy']",
+    "PREGNANT_DURATION": "N/A",
+    "HOSPITAL_PAST_2_DURATION": "Yes, Because of car accident.",
+    "MEDICATION": "Yes, Alaxan for my body",
+    "SMOKE_PER_DAY": "N/A",
+    "DENTAL_CONCERN_PROBLEMS": "['Bad breath', 'Bleeding gums', 'Head/Neck ache']",
+    "VISIT_PURPOSE": "Routine Checkup",
+    "LAST_DENTAL": "2023-05-20",
+    "MAKE_YOU_NERVOUS": "Yes",
+    "DENTAL_TREATMENT_REQUIREMENT": "['Gas', 'General Anesthesia']",
+    "REFFERAL": "Internet/Website"
+}
+```
+
+#### Response
+
+```json
+Success (200 OK):
+{
+    "message": "Patient form added successfully."
+}
+```
+
+```json
+Error (400 Bad Request):
+{
+    "errors": {
+        "PATIENT_ID": "Patient ID is required.",
+        "TITLE": "Title is required.",
+        "FIRST_NAME": "First name is required.",
+        "LAST_NAME": "Last name is required.",
+        "OCCUPATION": "Occupation is required.",
+        "BIRTHDAY": "Birthday is required.",
+        "HOME_ADDRESS": "Home address is required.",
+        "CONTACT_NUMBER": "Contact number is required.",
+        "EMAIL_ADDRESS": "Email address is required.",
+        "HEALTH_FUND": "Health fund is required.",
+        "MEMBER_NUMBER": "Member number is required.",
+        "EMERGENCY_CONTACT_NAME": "Emergency contact name is required.",
+        "EMERGENCY_CONTACT_NUMBER": "Emergency contact number is required.",
+        "EMERGENCY_CONTACT_RELATIONSHIP": "Emergency contact relationship is required.",
+        "FAMILY_DOCTOR": "Family doctor is required.",
+        "DOCTOR_CONTACT": "Doctor contact is required.",
+        "SUFFERING": "Suffering information is required.",
+        "PREGNANT_DURATION": "Pregnant duration is required.",
+        "HOSPITAL_PAST_2_DURATION": "Hospital past 2 duration is required.",
+        "MEDICATION": "Medication information is required.",
+        "SMOKE_PER_DAY": "Smoke per day information is required.",
+        "DENTAL_CONCERN_PROBLEMS": "Dental concern problems are required.",
+        "VISIT_PURPOSE": "Visit purpose is required.",
+        "LAST_DENTAL": "Last dental visit is required.",
+        "MAKE_YOU_NERVOUS": "Make you nervous information is required.",
+        "DENTAL_TREATMENT_REQUIREMENT": "Dental treatment requirement is required.",
+        "REFFERAL": "Referral information is required."
+    }
+}
+Note: The exact error messages depend on which validations fail.
+```
+
+```json
+Error (500 Internal Server Error):
+{
+    "message": "Failed to add patient form record."
+}
+```
+
+### 51. Update Patient Form
+
+- **Endpoints:**
+  - `POST /EDIT/SHARED/PATIENT/patientForm.php`  
+    - **Description:** Update an existing patient form based on the ID and PATIENT_ID.
+
+#### Request Body
+
+The request should be sent as JSON with the following structure:
+
+```json
+{
+    "ID": 1,
+    "PATIENT_ID": 1,
+    "TITLE": "Mr.",
+    "FIRST_NAME": "John",
+    "LAST_NAME": "Doe",
+    "OCCUPATION": "Engineer",
+    "BIRTHDAY": "1990-01-15",
+    "HOME_ADDRESS": "123 Main St, Anytown, USA",
+    "CONTACT_NUMBER": "555-1234",
+    "EMAIL_ADDRESS": "john.doe@example.com",
+    "HEALTH_FUND": "Health Fund A",
+    "MEMBER_NUMBER": "HF123456",
+    "EMERGENCY_CONTACT_NAME": "Jane Doe",
+    "EMERGENCY_CONTACT_NUMBER": "555-5678",
+    "EMERGENCY_CONTACT_RELATIONSHIP": "Spouse",
+    "FAMILY_DOCTOR": "Dr. Smith",
+    "DOCTOR_CONTACT": "555-8765",
+    "SUFFERING": ["Diabetes", "Cancer", "Epilepsy"],
+    "PREGNANT_DURATION": "N/A",
+    "HOSPITAL_PAST_2_DURATION": "Yes, Because of car accident.",
+    "MEDICATION": "Yes, Alaxan for my body",
+    "SMOKE_PER_DAY": "N/A",
+    "DENTAL_CONCERN_PROBLEMS": ["Bad breath", "Bleeding gums", "Head/Neck ache"],
+    "VISIT_PURPOSE": "Routine Checkup",
+    "LAST_DENTAL": "2023-05-20",
+    "MAKE_YOU_NERVOUS": "Yes",
+    "DENTAL_TREATMENT_REQUIREMENT": ["Gas", "General Anesthesia"],
+    "REFFERAL": "Internet/Website"
+}
+```
+
+#### Response
+
+```json
+Success (200 OK):
+{
+    "message": "Patient form updated successfully."
+}
+```
+
+```json
+Error (400 Bad Request):
+{
+    "errors": {
+        "ID": "ID is required.",
+        "PATIENT_ID": "Patient ID is required.",
+        "TITLE": "Title is required.",
+        "FIRST_NAME": "First name is required.",
+        "LAST_NAME": "Last name is required.",
+        "OCCUPATION": "Occupation is required.",
+        "BIRTHDAY": "Birthday is required.",
+        "HOME_ADDRESS": "Home address is required.",
+        "CONTACT_NUMBER": "Contact number is required.",
+        "EMAIL_ADDRESS": "Email address is required.",
+        "HEALTH_FUND": "Health fund is required.",
+        "MEMBER_NUMBER": "Member number is required.",
+        "EMERGENCY_CONTACT_NAME": "Emergency contact name is required.",
+        "EMERGENCY_CONTACT_NUMBER": "Emergency contact number is required.",
+        "EMERGENCY_CONTACT_RELATIONSHIP": "Emergency contact relationship is required.",
+        "FAMILY_DOCTOR": "Family doctor is required.",
+        "DOCTOR_CONTACT": "Doctor contact is required.",
+        "SUFFERING": "Suffering information is required.",
+        "PREGNANT_DURATION": "Pregnant duration is required.",
+        "HOSPITAL_PAST_2_DURATION": "Hospital past 2 duration is required.",
+        "MEDICATION": "Medication information is required.",
+        "SMOKE_PER_DAY": "Smoke per day information is required.",
+        "DENTAL_CONCERN_PROBLEMS": "Dental concern problems are required.",
+        "VISIT_PURPOSE": "Visit purpose is required.",
+        "LAST_DENTAL": "Last dental visit is required.",
+        "MAKE_YOU_NERVOUS": "Make you nervous information is required.",
+        "DENTAL_TREATMENT_REQUIREMENT": "Dental treatment requirement is required.",
+        "REFFERAL": "Referral information is required."
+    }
+}
+Note: The exact error messages depend on which validations fail.
+```
+
+```json
+Error (500 Internal Server Error):
+{
+    "message": "Failed to update patient form."
 }
 ```
 
