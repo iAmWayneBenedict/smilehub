@@ -2348,17 +2348,19 @@ Error (500 Internal Server Error):
 }
 ```
 
-### 46. Uploading a File
+### 46. Uploading a File for Teeth Assessment
 
 - **Endpoints:**
-  - `POST /POST/uploadFile.php`  
-    - **Description:** Upload files associated with patient records.
+  - `POST /POST/DENTIST/teethAssessment.php`  
+    - **Description:** Upload files associated with patient teeth assessment.
 
 #### Request Body
 
-The request should be sent as form-data with the file included:
-##### Key: file1
-##### Value: (Select file to upload)
+The request should be sent as form-data with the following fields:
+- **Key: PATIENT_ID**
+  - `Value: (Provide the patient ID)` 
+- **Key: file1**
+  - `Value: (Select file to upload)` 
 
 #### Response
 
@@ -2371,9 +2373,98 @@ Success (200 OK):
 ```
 
 ```json
+Error (400 Bad Request):
+{
+    "errors": {
+        "PATIENT_ID": "Patient ID is required."
+    }
+}
+```
+
+```json
 Error (500 Internal Server Error):
 {
     "message": "No file uploaded or file upload error occurred"
+}
+```
+
+### 47. Updating a File for Teeth Assessment
+
+- **Endpoints:**
+  - `POST /EDIT/DENTIST/teethAssessment.php`  
+    - **Description:** Update an existing file associated with patient teeth assessment.
+
+#### Request Body
+
+The request should be sent as form-data with the following fields:
+- **Key: PATIENT_ID**
+  - `Value: (Provide the patient ID)` 
+- **Key: file1**
+  - `Value: (Select file to upload)` 
+
+#### Response
+
+```json
+Success (200 OK):
+{
+    "message": "File updated successfully.",
+    "fileName": "unique_filename.ext"
+}
+```
+
+```json
+Error (400 Bad Request):
+{
+    "message": "No file uploaded or file upload error occurred."
+}
+```
+
+```json
+Error (500 Internal Server Error):
+{
+    "message": "Failed to upload the new file."
+}
+```
+
+### 48. Fetching a filename for Teeth Assessment
+
+- **Endpoints:**
+  - `GET /GET/DENTIST/teethAssessment.php`  
+    - **Description:** Fetch assessment records associated with a specific patient.
+
+#### Request Body
+
+The request should be sent as JSON with the following structure:
+
+```json
+{
+    "PATIENT_ID": 1
+}
+```
+
+#### Response
+
+```json
+Success (200 OK):
+{
+    "PATIENT_ID": "1",
+    "FILENAME": "8060c1484e941897f994c8ce67134f8f.jpg"
+}
+```
+
+```json
+Error (400 Bad Request):
+{
+    "errors": {
+        "PATIENT_ID": "Patient ID is required."
+    }
+}
+```
+
+```json
+Error (404 Not Found):
+{
+    "message": "No assessments found for the provided Patient ID."
 }
 ```
 
