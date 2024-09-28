@@ -8,6 +8,7 @@ services:
     volumes:
       - ./:/var/www/html
       - ./apache.conf:/etc/apache2/sites-available/000-default.conf
+      - ./php.ini:/usr/local/etc/php/conf.d/custom.ini
     depends_on:
       - mysql
 
