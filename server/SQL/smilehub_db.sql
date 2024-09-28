@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: mysql
--- Generation Time: Sep 24, 2024 at 02:06 PM
+-- Generation Time: Sep 28, 2024 at 12:14 PM
 -- Server version: 8.0.39
 -- PHP Version: 8.2.8
 
@@ -29,13 +29,13 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `appointment_table` (
   `ID` int NOT NULL,
-  `FULLNAME` varchar(70) COLLATE utf8mb4_general_ci NOT NULL,
-  `EMAIL` varchar(70) COLLATE utf8mb4_general_ci NOT NULL,
-  `PHONE` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
-  `APPOINTMENT_DATE` varchar(30) COLLATE utf8mb4_general_ci NOT NULL,
-  `APPOINTMENT_TIME` varchar(30) COLLATE utf8mb4_general_ci NOT NULL,
-  `PURPOSE` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
-  `STATUS` varchar(30) COLLATE utf8mb4_general_ci NOT NULL
+  `FULLNAME` varchar(70) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `EMAIL` varchar(70) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `PHONE` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `APPOINTMENT_DATE` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `APPOINTMENT_TIME` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `PURPOSE` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `STATUS` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -55,7 +55,7 @@ INSERT INTO `appointment_table` (`ID`, `FULLNAME`, `EMAIL`, `PHONE`, `APPOINTMEN
 
 CREATE TABLE `appointment_time_table` (
   `ID` int NOT NULL,
-  `TIME` varchar(30) COLLATE utf8mb4_general_ci NOT NULL
+  `TIME` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -95,15 +95,6 @@ CREATE TABLE `assessment_table` (
   `DATETIME` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `assessment_table`
---
-
-INSERT INTO `assessment_table` (`ID`, `PATIENT_ID`, `TOOTH_NO`, `COLOR`, `TEXTURE`, `GUM_HEALTH`, `PRESENCE_OF_DECAY`, `CAVITIES`, `SENSITIVITY`, `MOBILITY`, `PREVIOUS_TREATMENT`, `DATETIME`) VALUES
-(1, '1', '18', '1', '1', '1', 'yes', 'no', 'no', '1', '1', '2024-09-24 13:08:50'),
-(7, '1', '19', '2', '2', '2', 'yes', 'no', 'no', '2', '2', '2024-09-24 21:43:47'),
-(8, '2', '19', '2', '2', '2', 'yes', 'no', 'no', '2', '2', '2024-09-24 21:43:47');
-
 -- --------------------------------------------------------
 
 --
@@ -112,14 +103,14 @@ INSERT INTO `assessment_table` (`ID`, `PATIENT_ID`, `TOOTH_NO`, `COLOR`, `TEXTUR
 
 CREATE TABLE `employee_table` (
   `ID` int NOT NULL,
-  `FULLNAME` varchar(70) COLLATE utf8mb4_general_ci NOT NULL,
-  `EMAIL` varchar(70) COLLATE utf8mb4_general_ci NOT NULL,
-  `BIRTHDAY` varchar(30) COLLATE utf8mb4_general_ci NOT NULL,
-  `GENDER` varchar(10) COLLATE utf8mb4_general_ci NOT NULL,
-  `PASSWORD` varchar(300) COLLATE utf8mb4_general_ci NOT NULL,
-  `ROLE` varchar(15) COLLATE utf8mb4_general_ci NOT NULL,
+  `FULLNAME` varchar(70) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `EMAIL` varchar(70) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `BIRTHDAY` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `GENDER` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `PASSWORD` varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `ROLE` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `DATETIME` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `STATUS` varchar(10) COLLATE utf8mb4_general_ci NOT NULL
+  `STATUS` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -135,21 +126,53 @@ INSERT INTO `employee_table` (`ID`, `FULLNAME`, `EMAIL`, `BIRTHDAY`, `GENDER`, `
 -- --------------------------------------------------------
 
 --
--- Table structure for table `file_table`
+-- Table structure for table `file_assessment_table`
 --
 
-CREATE TABLE `file_table` (
+CREATE TABLE `file_assessment_table` (
   `ID` int NOT NULL,
-  `FILENAME` longtext NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `PATIENT_ID` varchar(100) NOT NULL,
+  `FILENAME` longtext NOT NULL,
+  `DATETIME` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;;
+
+-- --------------------------------------------------------
 
 --
--- Dumping data for table `file_table`
+-- Table structure for table `form_table`
 --
 
-INSERT INTO `file_table` (`ID`, `FILENAME`) VALUES
-(1, '6fda123b4886165889775740c0208499_1.png'),
-(2, '65cb11cca46ba4b29b72b444dc9d18ab_1.png');
+CREATE TABLE `form_table` (
+  `ID` int NOT NULL,
+  `PATIENT_ID` varchar(100) NOT NULL,
+  `TITLE` varchar(30) NOT NULL,
+  `FIRST_NAME` varchar(75) NOT NULL,
+  `LAST_NAME` varchar(75) NOT NULL,
+  `OCCUPATION` varchar(100) NOT NULL,
+  `BIRTHDAY` varchar(100) NOT NULL,
+  `HOME_ADDRESS` varchar(250) NOT NULL,
+  `CONTACT_NUMBER` varchar(50) NOT NULL,
+  `EMAIL_ADDRESS` varchar(100) NOT NULL,
+  `HEALTH_FUND` varchar(250) NOT NULL,
+  `MEMBER_NUMBER` varchar(50) NOT NULL,
+  `EMERGENCY_CONTACT_NAME` varchar(75) NOT NULL,
+  `EMERGENCY_CONTACT_NUMBER` varchar(50) NOT NULL,
+  `EMERGENCY_CONTACT_RELATIONSHIP` varchar(50) NOT NULL,
+  `FAMILY_DOCTOR` varchar(75) NOT NULL,
+  `DOCTOR_CONTACT` varchar(50) NOT NULL,
+  `SUFFERING` longtext NOT NULL,
+  `PREGNANT_DURATION` longtext NOT NULL,
+  `HOSPITAL_PAST_2_DURATION` longtext NOT NULL,
+  `MEDICATION` longtext NOT NULL,
+  `SMOKE_PER_DAY` longtext NOT NULL,
+  `DENTAL_CONCERN_PROBLEMS` longtext NOT NULL,
+  `VISIT_PURPOSE` longtext NOT NULL,
+  `LAST_DENTAL` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `MAKE_YOU_NERVOUS` longtext NOT NULL,
+  `DENTAL_TREATMENT_REQUIREMENT` longtext NOT NULL,
+  `REFFERAL` varchar(50) NOT NULL,
+  `DATETIME` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -159,7 +182,7 @@ INSERT INTO `file_table` (`ID`, `FILENAME`) VALUES
 
 CREATE TABLE `inventory_group_table` (
   `ID` int NOT NULL,
-  `NAME` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `NAME` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `DATETIME` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -179,10 +202,10 @@ INSERT INTO `inventory_group_table` (`ID`, `NAME`, `DATETIME`) VALUES
 
 CREATE TABLE `inventory_item_table` (
   `ID` int NOT NULL,
-  `NAME` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `ITEM_GROUP` varchar(70) COLLATE utf8mb4_general_ci NOT NULL,
-  `LOCATION` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `QUANTITY` varchar(70) COLLATE utf8mb4_general_ci NOT NULL,
+  `NAME` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `ITEM_GROUP` varchar(70) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `LOCATION` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `QUANTITY` varchar(70) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `DATETIME` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -204,14 +227,14 @@ INSERT INTO `inventory_item_table` (`ID`, `NAME`, `ITEM_GROUP`, `LOCATION`, `QUA
 
 CREATE TABLE `patient_table` (
   `ID` int NOT NULL,
-  `FIRSTNAME` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
-  `LASTNAME` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
-  `BIRTHDATE` varchar(30) COLLATE utf8mb4_general_ci NOT NULL,
-  `GENDER` varchar(10) COLLATE utf8mb4_general_ci NOT NULL,
-  `PHONE` varchar(15) COLLATE utf8mb4_general_ci NOT NULL,
-  `EMAIL` varchar(70) COLLATE utf8mb4_general_ci NOT NULL,
-  `PASSWORD` varchar(300) COLLATE utf8mb4_general_ci NOT NULL,
-  `ROLE` varchar(15) COLLATE utf8mb4_general_ci NOT NULL,
+  `FIRSTNAME` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `LASTNAME` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `BIRTHDATE` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `GENDER` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `PHONE` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `EMAIL` varchar(70) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `PASSWORD` varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `ROLE` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `DATETIME` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -232,17 +255,18 @@ INSERT INTO `patient_table` (`ID`, `FIRSTNAME`, `LASTNAME`, `BIRTHDATE`, `GENDER
 CREATE TABLE `progress_table` (
   `ID` int NOT NULL,
   `PATIENT_ID` varchar(100) NOT NULL,
-  `NOTES` longtext NOT NULL,
-  `DATE` date NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `progress_table`
---
-
-INSERT INTO `progress_table` (`ID`, `PATIENT_ID`, `NOTES`, `DATE`) VALUES
-(5, '1', '1', '2024-09-24'),
-(6, '1', '1', '2024-09-24');
+  `COMPLAINT` longtext NOT NULL,
+  `HISTORY_UPDATE` longtext NOT NULL,
+  `X_RAY_FILE` varchar(100) NOT NULL,
+  `DIAGNOSIS` longtext NOT NULL,
+  `TREATMENT_PLAN` longtext NOT NULL,
+  `PROCEDURES` longtext NOT NULL,
+  `MATERIALS_USED` longtext NOT NULL,
+  `INSTRUCTION` longtext NOT NULL,
+  `RESPONSE` longtext NOT NULL,
+  `SIGNATURE` varchar(100) NOT NULL,
+  `DATE` datetime DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;;
 
 -- --------------------------------------------------------
 
@@ -252,23 +276,13 @@ INSERT INTO `progress_table` (`ID`, `PATIENT_ID`, `NOTES`, `DATE`) VALUES
 
 CREATE TABLE `task_table` (
   `ID` int NOT NULL,
-  `TITLE` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `DESCRIPTION` longtext COLLATE utf8mb4_general_ci NOT NULL,
-  `STATUS` varchar(15) COLLATE utf8mb4_general_ci NOT NULL,
-  `CREATOR` varchar(70) COLLATE utf8mb4_general_ci NOT NULL,
-  `CREATOR_EMAIL` varchar(70) COLLATE utf8mb4_general_ci NOT NULL,
+  `TITLE` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `DESCRIPTION` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `STATUS` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `CREATOR` varchar(70) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `CREATOR_EMAIL` varchar(70) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `DATETIME` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `task_table`
---
-
-INSERT INTO `task_table` (`ID`, `TITLE`, `DESCRIPTION`, `STATUS`, `CREATOR`, `CREATOR_EMAIL`, `DATETIME`) VALUES
-(2, 'Task Title 4', 'Task Description', 'Pending', 'sample name', 'sample@gmail.com', '2024-09-22 12:17:00'),
-(3, 'Task Title 1', 'Task Description', 'Completed', 'sample name', 'sample@gmail.com', '2024-09-22 12:17:03'),
-(4, 'Task Title 2', 'Task Description', 'On-going', 'sample name', 'sample@gmail.com', '2024-09-22 12:17:06'),
-(5, 'Task Title 3', 'Task Description', 'Pending', 'sample name', 'sample@gmail.com', '2024-09-22 12:17:10');
 
 --
 -- Indexes for dumped tables
@@ -299,9 +313,15 @@ ALTER TABLE `employee_table`
   ADD PRIMARY KEY (`ID`);
 
 --
--- Indexes for table `file_table`
+-- Indexes for table `file_assessment_table`
 --
-ALTER TABLE `file_table`
+ALTER TABLE `file_assessment_table`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- Indexes for table `form_table`
+--
+ALTER TABLE `form_table`
   ADD PRIMARY KEY (`ID`);
 
 --
@@ -363,9 +383,15 @@ ALTER TABLE `employee_table`
   MODIFY `ID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
--- AUTO_INCREMENT for table `file_table`
+-- AUTO_INCREMENT for table `file_assessment_table`
 --
-ALTER TABLE `file_table`
+ALTER TABLE `file_assessment_table`
+  MODIFY `ID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
+--
+-- AUTO_INCREMENT for table `form_table`
+--
+ALTER TABLE `form_table`
   MODIFY `ID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
@@ -390,7 +416,7 @@ ALTER TABLE `patient_table`
 -- AUTO_INCREMENT for table `progress_table`
 --
 ALTER TABLE `progress_table`
-  MODIFY `ID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `ID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- AUTO_INCREMENT for table `task_table`
