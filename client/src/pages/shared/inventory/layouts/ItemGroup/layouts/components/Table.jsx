@@ -74,7 +74,7 @@ export default function TableAppointments() {
 				isOpen: true,
 
 				confirmCallback: () => {
-					navigate(`/admin/inventory/item-group`);
+					navigate(`/${currentUser}/inventory/item-group`);
 				},
 			});
 		},
@@ -177,24 +177,26 @@ export default function TableAppointments() {
 
 			case "actions":
 				return (
-					<div className="relative flex items-center justify-start gap-2">
+					<div className="relative flex items-center justify-start gap-1">
 						<Button
 							variant="light"
-							className="data-[hover=true]:bg-transparent p-0 text-base"
-							startContent={<Pencil />}
+							className="text-base"
+							size="sm"
 							onClick={() => {
 								navigate(
 									`/${currentUser}/inventory/item-group/${item.ITEM_GROUP}/edit/${item.ID}`
 								);
 							}}
+							isIconOnly
 						>
-							Edit
+							<Pencil size={20} />
 						</Button>
 						<Button
 							variant="light"
 							color="danger"
-							className="data-[hover=true]:bg-transparent p-0 text-base"
-							startContent={<Trash />}
+							className="text-base"
+							isIconOnly
+							size="sm"
 							onClick={() => {
 								setAlertDialogDetails({
 									type: "danger",
@@ -209,7 +211,7 @@ export default function TableAppointments() {
 								});
 							}}
 						>
-							Remove
+							<Trash size={20} />
 						</Button>
 					</div>
 				);
@@ -304,7 +306,7 @@ export default function TableAppointments() {
 				</div>
 				<div className="flex items-center justify-between">
 					<span className="text-default-400 text-small">
-						Total {itemsData.length} itemsData
+						Total {filteredItems.length} item(s)
 					</span>
 					<label className="flex items-center text-default-400 text-small">
 						Rows per page:

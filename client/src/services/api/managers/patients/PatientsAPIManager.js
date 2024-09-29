@@ -36,6 +36,18 @@ class PatientsAPIManager {
 	static async postAddAssessment(body = {}) {
 		return await APIMethods.post(END_POINTS.POST_ADD_ASSESSMENT(), body);
 	}
+	static async postAddProgressNote(body = {}) {
+		return await APIMethods.post(END_POINTS.POST_ADD_PROGRESS_NOTE(), body);
+	}
+	static async getProgressNotes(body = {}) {
+		return await APIMethods.post(END_POINTS.GET_PROGRESS_NOTES(), body);
+	}
+	static async postUpdateProgressNotes(body = {}) {
+		return await APIMethods.post(END_POINTS.POST_UPDATE_PROGRESS_NOTES(), body);
+	}
+	static async postDeleteProgressNotes(body = {}) {
+		return await APIMethods.post(END_POINTS.POST_DELETE_PROGRESS_NOTES(), body);
+	}
 }
 
 export default PatientsAPIManager;

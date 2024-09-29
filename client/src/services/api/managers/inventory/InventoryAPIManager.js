@@ -23,6 +23,9 @@ class InventoryAPIManager {
 	static async postEditItem(body = {}) {
 		return await APIMethods.post(END_POINTS.POST_UPDATE_ITEM(), body);
 	}
+	static async postEditGroup(body = {}) {
+		return await APIMethods.post(END_POINTS.POST_UPDATE_GROUP(), body);
+	}
 	static async postDeleteItem(body = {}) {
 		return await APIMethods.post(END_POINTS.POST_DELETE_ITEM(), body);
 	}

@@ -16,9 +16,9 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import {decrypt, formatDate} from "@/lib/utils";
+import { decrypt, formatDate } from "@/lib/utils";
 import { useMemo } from "react";
-import {sendEmail} from "@/services/email/index.js";
+import { sendEmail } from "@/services/email/index.js";
 
 const contactAddressCard = [
 	{
@@ -54,7 +54,7 @@ const Contact = () => {
 	const { authToken } = useAuthTokenPersisted();
 	const user = decrypt(authToken);
 	const navigate = useNavigate();
-//	const [tempData, setTempData] =
+	//	const [tempData, setTempData] =
 	// Form hook
 	const {
 		register,
@@ -63,7 +63,7 @@ const Contact = () => {
 		setError,
 		reset,
 		getValues,
-		formState: { errors, },
+		formState: { errors },
 	} = useForm(
 		useMemo(() => {
 			return {
@@ -120,14 +120,14 @@ const Contact = () => {
 				message: "Appointment booked successfully!",
 				actionLink: "/", // redirect to home page
 			});
-			console.log(data)
+			console.log(data);
 			sendEmail({
 				type: "notification",
 				name: getValues("FULLNAME"),
 				email: getValues("EMAIL"),
 				date: formatDate(new Date(convertDateYYYYMMDD(getValues("APPOINTMENT_DATE")))),
-				time: getValues("APPOINTMENT_TIME")?.split("-")[0]
-			})
+				time: getValues("APPOINTMENT_TIME")?.split("-")[0],
+			});
 		},
 		onError: (error) => {
 			setAlertDialogDetails({
@@ -281,7 +281,7 @@ const Contact = () => {
 										{...register("PHONE", {
 											required: "Phone Number is required",
 											pattern: {
-												value: /^9\d{9}$/,
+												value: /^[+069](\d{9}|\d{10}|\d{11}|\d{12})$/,
 												message: "Invalid phone number",
 											},
 										})}

@@ -21,6 +21,8 @@ import { Controller, useForm } from "react-hook-form";
 import AssessmentSample from "../../../assets/images/assessment-sample.png";
 import { useMutation } from "@tanstack/react-query";
 import PatientsAPIManager from "@/services/api/managers/patients/PatientsAPIManager";
+import { useMemo } from "react";
+import { checkboxSetterSingleItem } from "@/lib/utils";
 
 export default function AssessmentPatient() {
 	const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
@@ -30,23 +32,37 @@ export default function AssessmentPatient() {
 
 	// Form hook
 	const {
-		register,
 		handleSubmit,
 		control,
 		watch,
+		reset,
 		formState: { errors },
 	} = useForm({
-		defaultValues: {
-			TOOTH_NO: "",
-			COLOR: "",
-			TEXTURE: "",
-			GUM_HEALTH: "",
-			PRESENCE_OF_DECAY: "",
-			CAVITIES: "",
-			SENSITIVITY: "",
-			MOBILITY: "",
-			PREVIOUS_TREATMENT: "",
-		},
+		defaultValues: useMemo(() => {
+			if (assessmentData?.message) {
+				return {
+					TOOTH_NO: "1",
+					COLOR: "",
+					TEXTURE: [],
+					GUM_HEALTH: [],
+					PRESENCE_OF_DECAY: "",
+					CAVITIES: "",
+					SENSITIVITY: "",
+					MOBILITY: [],
+					PREVIOUS_TREATMENT: [],
+				};
+			}
+
+			assessmentData.PRESENCE_OF_DECAY =
+				assessmentData.PRESENCE_OF_DECAY === "yes" ? true : false;
+			assessmentData.CAVITIES = assessmentData.CAVITIES === "yes" ? true : false;
+			assessmentData.SENSITIVITY = assessmentData.SENSITIVITY === "yes" ? true : false;
+			assessmentData.GUM_HEALTH = [assessmentData.GUM_HEALTH];
+			assessmentData.PREVIOUS_TREATMENT = [assessmentData.PREVIOUS_TREATMENT];
+			assessmentData.TEXTURE = [assessmentData.TEXTURE];
+			assessmentData.MOBILITY = [assessmentData.MOBILITY];
+			return assessmentData;
+		}, [assessmentData]),
 	});
 
 	const [timeDropdownList, setTimeDropdownList] = useState([]);
@@ -57,10 +73,6 @@ export default function AssessmentPatient() {
 			onClose();
 		}
 	}, [assessmentPatientModal]);
-
-	const checkboxSetterSingleItem = (value) => {
-		return [value[value.length - 1]];
-	};
 
 	const toothNum = watch("TOOTH_NO");
 	useEffect(() => {
@@ -75,6 +87,30 @@ export default function AssessmentPatient() {
 		mutationFn: PatientsAPIManager.getAssessment,
 		onSuccess: (data) => {
 			setAssessmentData(data);
+
+			data.PRESENCE_OF_DECAY = data.PRESENCE_OF_DECAY === "yes" ? true : false;
+			data.CAVITIES = data.CAVITIES === "yes" ? true : false;
+			data.SENSITIVITY = data.SENSITIVITY === "yes" ? true : false;
+			data.GUM_HEALTH = [data.GUM_HEALTH];
+			data.PREVIOUS_TREATMENT = [data.PREVIOUS_TREATMENT];
+			data.TEXTURE = [data.TEXTURE];
+			data.MOBILITY = [data.MOBILITY];
+
+			reset(data);
+		},
+
+		onError: (error) => {
+			reset({
+				TOOTH_NO: toothNum || 1,
+				COLOR: "",
+				TEXTURE: [],
+				GUM_HEALTH: [],
+				PRESENCE_OF_DECAY: "",
+				CAVITIES: "",
+				SENSITIVITY: "",
+				MOBILITY: [],
+				PREVIOUS_TREATMENT: [],
+			});
 		},
 	});
 
@@ -87,6 +123,9 @@ export default function AssessmentPatient() {
 				title: "Success",
 				message: "Assessment added successfully",
 			});
+
+			setAssessmentPatientModal({});
+			reset();
 		},
 		onError: (error) => {
 			console.log(error);
@@ -100,11 +139,20 @@ export default function AssessmentPatient() {
 	});
 
 	const onSubmit = (data) => {
+		data.PATIENT_ID = assessmentPatientModal.data?.id;
+
 		data.PRESENCE_OF_DECAY = data.PRESENCE_OF_DECAY ? "yes" : "no";
 		data.CAVITIES = data.CAVITIES ? "yes" : "no";
 		data.SENSITIVITY = data.SENSITIVITY ? "yes" : "no";
-		data.DATE_TIME = new Date().toISOString();
-		console.log(data);
+		data.DATETIME = new Date().toISOString();
+		data.GUM_HEALTH = data.GUM_HEALTH[0];
+		data.PREVIOUS_TREATMENT = data.PREVIOUS_TREATMENT[0];
+		data.TEXTURE = data.TEXTURE[0];
+		data.MOBILITY = data.MOBILITY[0];
+
+		if (!assessmentPatientModal?.data?.TOOTH_NO) {
+			addMutation.mutate(data);
+		}
 	};
 	return (
 		<>
@@ -140,6 +188,7 @@ export default function AssessmentPatient() {
 													onChange={(selectedKeys) => {
 														field.onChange(selectedKeys);
 													}}
+													disallowEmptySelection
 													textValue="tooth number"
 													isInvalid={!!errors.TOOTH_NO}
 													errorMessage={errors.TOOTH_NO?.message}
@@ -257,7 +306,6 @@ export default function AssessmentPatient() {
 													<Controller
 														name="PRESENCE_OF_DECAY"
 														control={control}
-														rules={{ required: "Color is required" }}
 														render={({
 															field,
 															formState: { errors },
@@ -278,7 +326,6 @@ export default function AssessmentPatient() {
 													<Controller
 														name="CAVITIES"
 														control={control}
-														rules={{ required: "Color is required" }}
 														render={({
 															field,
 															formState: { errors },
@@ -299,7 +346,6 @@ export default function AssessmentPatient() {
 													<Controller
 														name="SENSITIVITY"
 														control={control}
-														rules={{ required: "Color is required" }}
 														render={({
 															field,
 															formState: { errors },
@@ -433,7 +479,7 @@ export default function AssessmentPatient() {
 								<Button color="light" variant="flat" onPress={onClose}>
 									Close
 								</Button>
-								<Button color="primary" type="submit">
+								<Button type="submit" color="primary">
 									Save
 								</Button>
 							</ModalFooter>

@@ -167,12 +167,12 @@ CREATE TABLE `form_table` (
   `SMOKE_PER_DAY` longtext NOT NULL,
   `DENTAL_CONCERN_PROBLEMS` longtext NOT NULL,
   `VISIT_PURPOSE` longtext NOT NULL,
-  `LAST_DENTAL` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `LAST_DENTAL` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `MAKE_YOU_NERVOUS` longtext NOT NULL,
   `DENTAL_TREATMENT_REQUIREMENT` longtext NOT NULL,
   `REFFERAL` varchar(50) NOT NULL,
   `DATETIME` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -266,7 +266,7 @@ CREATE TABLE `progress_table` (
   `RESPONSE` longtext NOT NULL,
   `SIGNATURE` varchar(100) NOT NULL,
   `DATE` datetime DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 

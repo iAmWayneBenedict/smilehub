@@ -80,14 +80,9 @@ const SideNav = () => {
 	// update this based on the general links
 	const generalLinks = [
 		{
-			name: "Settings",
-			icon: <Settings />,
-			href: "/" + userRole + "/settings",
-		},
-		{
-			name: "Support",
+			name: "Terms and Conditions",
 			icon: <MessageCircleQuestion />,
-			href: "/" + userRole + "/support",
+			href: "/terms-and-privacy-policy",
 		},
 	];
 	const activeLinkClasses =
@@ -98,10 +93,7 @@ const SideNav = () => {
 				<small className="px-4 text-lightText">MENU</small>
 				<div className="flex flex-col gap-3 mt-4">
 					{menuLinks.map((item, index) => {
-						if (
-							(item.name === "Employees" || item.name === "Patients") &&
-							!location.pathname.includes("/admin")
-						)
+						if (item.name === "Employees" && !location.pathname.includes("/admin"))
 							return null;
 						return (
 							<React.Fragment key={index}>

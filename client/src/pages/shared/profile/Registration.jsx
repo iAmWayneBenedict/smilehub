@@ -7,11 +7,11 @@ import { today } from "@internationalized/date";
 import { Input, Select, SelectItem, Button } from "@nextui-org/react";
 import { useMutation } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
-import {sendEmail} from "@/services/email/index.js";
+import { sendEmail } from "@/services/email/index.js";
 
 const Registration = () => {
 	const { setAlertDialogDetails } = useAppStore();
-
+	const currentUser = location.pathname.includes("admin") ? "admin" : "staff";
 	// Form hook
 	const {
 		register,
@@ -37,14 +37,14 @@ const Registration = () => {
 				type: "credentials",
 				name: getValues("FULLNAME"),
 				email: getValues("EMAIL"),
-				password: getValues("PASSWORD")
-			})
+				password: getValues("PASSWORD"),
+			});
 			setAlertDialogDetails({
 				isOpen: true,
 				type: "success",
 				title: "Success!",
 				message: "Employee added successfully!",
-				actionLink: "/admin/employees"
+				actionLink: `/${currentUser}/employees`,
 			});
 		},
 		onError: (error) => {

@@ -263,7 +263,6 @@ const Register = () => {
 											value={field.value}
 											showTimeSelect={false}
 											label={""}
-
 											aria-label="select-date"
 											isInvalid={!!errors.BIRTHDATE}
 											errorMessage={errors.BIRTHDATE?.message}
@@ -298,7 +297,6 @@ const Register = () => {
 											color="primary"
 											radius="none"
 											className="w-full bg-white"
-
 											aria-label="select-gender"
 											classNames={{
 												label: "text-lightText font-semibold ",
@@ -345,7 +343,7 @@ const Register = () => {
 								{...register("PHONE", {
 									required: "Phone Number is required",
 									pattern: {
-										value: /^9\d{9}$/,
+										value: /^[+069](\d{9}|\d{10}|\d{11}|\d{12})$/,
 										message: "Invalid phone number",
 									},
 								})}
@@ -407,15 +405,20 @@ const Register = () => {
 									</button>
 								}
 							/>
-							<div className="flex flex-row justify-between">
+							<div className="flex flex-row items-center gap-2">
 								<Checkbox
-									onChange={(e) => setAgreedTerms(e.target.checked)}
 									classNames={{
 										label: "text-darkText font-semibold",
 									}}
+									onChange={(e) => setAgreedTerms(e.target.checked)}
+								/>
+								<Link
+									href="/terms-and-privacy-policy"
+									className="font-medium text-darkText-secondary"
+									target="_blank"
 								>
 									I agree with Terms and Privacy
-								</Checkbox>
+								</Link>
 							</div>
 							<Button
 								type="submit"

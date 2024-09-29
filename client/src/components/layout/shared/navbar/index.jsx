@@ -56,8 +56,8 @@ const SharedNavBar = () => {
 				<div style={{ flex: 1 }} className="flex justify-evenly max-w-[40rem]">
 					<div>
 						{/* TODO: make this dynamic */}
-						<h5>{userDetails?.fullname}</h5>
-						<h6 className="text-sm font-bold">Admin</h6>
+						<h5>{currentUser?.FULLNAME}</h5>
+						<h6 className="text-sm font-bold">{currentUser?.ROLE}</h6>
 					</div>
 					<div>
 						<Input

@@ -40,6 +40,11 @@ import TermsAndPrivacyPolicy from "@/pages/TermsAndPrivacyPolicy/index.jsx";
 import EditItem from "./pages/shared/inventory/layouts/ItemList/layout/EditItem";
 import AddGroupItem from "./pages/shared/inventory/layouts/ItemGroup/layouts/components/AddGroupItem";
 import EditGroupItem from "./pages/shared/inventory/layouts/ItemGroup/layouts/components/EditGroupItem";
+import AddItemShortage from "./pages/shared/inventory/layouts/ItemShortageList/layout/AddItem";
+import EditItemShortage from "./pages/shared/inventory/layouts/ItemShortageList/layout/EditItem";
+import ItemListShortage from "./pages/shared/inventory/layouts/ItemShortageList";
+import ItemShortage from "./pages/shared/inventory/layouts/ItemShortageList/layout/Item";
+import PatientDetails from "./pages/shared/patients/components/PatientDetails";
 
 function App() {
 	const navigate = useNavigate();
@@ -86,6 +91,10 @@ function App() {
 							/>
 							<Route path="patients">
 								<Route index element={<LayoutWrapper child={<Patients />} />} />
+								<Route
+									path="details/:id"
+									element={<LayoutWrapper child={<PatientDetails />} />}
+								/>
 								<Route
 									path="add"
 									element={<LayoutWrapper child={<AddPatient />} />}
@@ -161,6 +170,24 @@ function App() {
 									path="item-list/:item"
 									element={<LayoutWrapper child={<Item />} />}
 								/>
+								<Route
+									path="item-list-shortage"
+									element={<LayoutWrapper child={<ItemListShortage />} />}
+								/>
+								<Route
+									exact
+									path="item-list-shortage/add"
+									element={<LayoutWrapper child={<AddItemShortage />} />}
+								/>
+								<Route
+									exact
+									path="item-list-shortage/edit/:id"
+									element={<LayoutWrapper child={<EditItemShortage />} />}
+								/>
+								<Route
+									path="item-list-shortage/:item"
+									element={<LayoutWrapper child={<ItemShortage />} />}
+								/>
 							</Route>
 							<Route path="tasks" element={<LayoutWrapper child={<Tasks />} />} />
 						</Route>
@@ -188,8 +215,16 @@ function App() {
 									element={<LayoutWrapper child={<AddPatient />} />}
 								/>
 								<Route
-									path="info"
+									path="info/:id"
 									element={<LayoutWrapper child={<PatientInfo />} />}
+								/>
+								<Route
+									path="edit/:id"
+									element={<LayoutWrapper child={<PatientInfo />} />}
+								/>
+								<Route
+									path="progress-notes/:id"
+									element={<LayoutWrapper child={<ProgressNotes />} />}
 								/>
 							</Route>
 							<Route
@@ -220,7 +255,10 @@ function App() {
 									element={<LayoutWrapper child={<Item />} />}
 								/>
 							</Route>
-							<Route path="profile" element={<LayoutWrapper child={<Profile />} />} />
+							<Route
+								path="profile/:id"
+								element={<LayoutWrapper child={<Profile />} />}
+							/>
 							<Route path="tasks" element={<LayoutWrapper child={<Tasks />} />} />
 						</Route>
 					</Route>

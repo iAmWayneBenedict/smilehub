@@ -1,13 +1,16 @@
 import {
-    Modal,
-    ModalContent,
-    ModalHeader,
-    ModalBody,
-    ModalFooter,
-    Button,
-    useDisclosure,
-    Select,
-    SelectItem, Textarea,
+	Modal,
+	ModalContent,
+	ModalHeader,
+	ModalBody,
+	ModalFooter,
+	Button,
+	useDisclosure,
+	Select,
+	SelectItem,
+	Textarea,
+	Divider,
+	Link,
 } from "@nextui-org/react";
 import { useAppStore } from "@/store/zustand.js";
 import { useEffect, useState } from "react";
@@ -20,61 +23,122 @@ import CustomDatePicker from "@/components/ui/DatePicker";
 import { useMemo } from "react";
 import { parseDate } from "@internationalized/date";
 import { sortTime } from "@/lib/utils";
+import { Input } from "@/components/ui/input";
+import { Label } from "@radix-ui/react-label";
+import { Separator } from "@/components/ui/separator";
+import PatientsAPIManager from "@/services/api/managers/patients/PatientsAPIManager";
 
 export default function ProgressNoteModal() {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const { addProgressNoteModal, setAddProgressNoteModal, setAlertDialogDetails } = useAppStore();
 	const [timeDropdownList, setTimeDropdownList] = useState([]);
+	const [file, setFile] = useState(null);
+	const [signatureFile, setSignatureFile] = useState(null);
 	useEffect(() => {
 		if (addProgressNoteModal.isOpen) {
 			onOpen();
 
-			if (addProgressNoteModal.data) {
-				handleGetSelectedTimes();
+			if (addProgressNoteModal.data && addProgressNoteModal.data.DATE) {
+				// handleGetSelectedTimes();
+				reset({
+					...addProgressNoteModal.data,
+					SIGNATURE: "",
+					X_RAY_FILE: "",
+					DATE:
+						parseDate(convertDateYYYYMMDD(addProgressNoteModal.data.DATE)) ||
+						today(getLocalTimeZone()),
+				});
+				setFile(
+					new File(
+						[
+							convertToBlob(
+								`${import.meta.env.VITE_SERVER_URL}/uploads/${
+									addProgressNoteModal.data.X_RAY_FILE
+								}`
+							),
+						],
+						addProgressNoteModal.data.X_RAY_FILE,
+						{
+							type: "image/png",
+						}
+					)
+				);
+
+				setSignatureFile(
+					new File(
+						[
+							convertToBlob(
+								`${import.meta.env.VITE_SERVER_URL}/uploads/${
+									addProgressNoteModal.data.SIGNATURE
+								}`
+							),
+						],
+						addProgressNoteModal.data.SIGNATURE,
+						{
+							type: "image/png",
+						}
+					)
+				);
 			}
 		} else {
 			onClose();
 		}
-
-		async function handleGetSelectedTimes() {
-			(await handleGetDate(
-				parseDate(convertDateYYYYMMDD(addProgressNoteModal.data.PROGRESS_DATE))
-			)) || today(getLocalTimeZone(), false);
-			setTimeDropdownList((prev) => {
-				sortTime(prev, addProgressNoteModal.data.PROGRESS_DETAILS);
-				return sortTime(prev, addProgressNoteModal.data.PROGRESS_DETAILS);
-			});
-			reset({
-				PROGRESS_DATE:
-					parseDate(convertDateYYYYMMDD(addProgressNoteModal.data.PROGRESS_DATE)) ||
-					today(getLocalTimeZone()),
-				PROGRESS_DETAILS: addProgressNoteModal.data.PROGRESS_DETAILS,
-			});
-		}
 	}, [addProgressNoteModal]);
 
+	const convertToBlob = async (url) => {
+		// Fetch the file from the server
+		const response = await fetch(url);
+		const blob = await response.blob(); // Convert the response to a Blob
+
+		return blob;
+	};
 	// Form hook
-	const { handleSubmit, control, reset } = useForm({
+	const {
+		handleSubmit,
+		control,
+		reset,
+		formState: { errors },
+	} = useForm({
 		defaultValues: useMemo(() => {
-			if (addProgressNoteModal.data) {
+			if (addProgressNoteModal?.data?.COMPLAINT) {
 				return {
-					PROGRESS_DATE:
-						parseDate(convertDateYYYYMMDD(addProgressNoteModal.data.PROGRESS_DATE)) ||
+					...addProgressNoteModal.data,
+					SIGNATURE: "",
+					X_RAY_FILE: "",
+					DATE:
+						parseDate(convertDateYYYYMMDD(addProgressNoteModal.data.DATE)) ||
 						today(getLocalTimeZone()),
-					PROGRESS_DETAILS: "",
+				};
+			} else {
+				return {
+					DATE: today(getLocalTimeZone()),
+					PATIENT_ID: "",
+					COMPLAINT: "",
+					HISTORY_UPDATE: "",
+					DIAGNOSIS: "",
+					TREATMENT_PLAN: "",
+					X_RAY_FILE: "",
+					PROCEDURES: "",
+					MATERIALS_USED: "",
+					INSTRUCTION: "",
+					RESPONSE: "",
+					SIGNATURE: "",
 				};
 			}
 		}, [addProgressNoteModal.isOpen]),
 	});
-	// useEffect(() => {
-	// 	handleGetDate(today(getLocalTimeZone()), false);
-	// }, []);
+	useEffect(() => {
+		// handleGetDate(today(getLocalTimeZone()), false);
+		return () => {
+			reset();
+		};
+	}, [addProgressNoteModal]);
 
 	const handleGetDate = async (date, isForm = true) => {
 		if (isWeekEndDate(date)) return;
 		try {
 			const response = await AppointmentsAPIManager.getAppointmentDates({
-				PROGRESS_DATE: convertDateYYYYMMDD(date),
+				DATE: convertDateYYYYMMDD(date),
 			});
 			setTimeDropdownList(response.available_times || []);
 		} catch (error) {
@@ -88,15 +152,38 @@ export default function ProgressNoteModal() {
 		}
 	};
 	const mutation = useMutation({
-		mutationFn: AppointmentsAPIManager.postRescheduleAppointment,
+		mutationFn: PatientsAPIManager.postAddProgressNote,
 		onSuccess: () => {
-			addProgressNoteModal.refetch();
+			// addProgressNoteModal.refetch();
 
 			setAlertDialogDetails({
 				isOpen: true,
 				type: "success",
 				title: "Success!",
-				message: "Appointment schedule changed successfully!",
+				message: "Progress Note added successfully!",
+			});
+
+			onClose();
+		},
+		onError: (error) => {
+			setAlertDialogDetails({
+				isOpen: true,
+				type: "danger",
+				title: "Error!",
+				message: error.message,
+			});
+		},
+	});
+	const updateMutation = useMutation({
+		mutationFn: PatientsAPIManager.postUpdateProgressNotes,
+		onSuccess: () => {
+			// addProgressNoteModal.refetch();
+
+			setAlertDialogDetails({
+				isOpen: true,
+				type: "success",
+				title: "Success!",
+				message: "Progress Note updated successfully!",
 			});
 
 			onClose();
@@ -111,10 +198,31 @@ export default function ProgressNoteModal() {
 		},
 	});
 	const onSubmit = (data) => {
-//		data.PROGRESS_DATE = convertDateYYYYMMDD(data.PROGRESS_DATE);
-//		data.ID = addProgressNoteModal?.data?.ID;
-//		mutation.mutate(data);
+		if (!addProgressNoteModal?.data?.ID) {
+			data.DATE = convertDateYYYYMMDD(data.DATE);
+			data.PATIENT_ID = addProgressNoteModal?.data?.PATIENT_ID;
+			data.X_RAY_FILE = file;
+			data.SIGNATURE = signatureFile;
+
+			const formData = new FormData();
+			for (const key in data) {
+				formData.append(key, data[key]);
+			}
+			mutation.mutate(formData);
+		} else {
+			data.DATE = convertDateYYYYMMDD(data.DATE);
+			data.PATIENT_ID = addProgressNoteModal?.data?.PATIENT_ID;
+			data.X_RAY_FILE = file;
+			data.SIGNATURE = signatureFile;
+
+			const formData = new FormData();
+			for (const key in data) {
+				formData.append(key, data[key]);
+			}
+			updateMutation.mutate(formData);
+		}
 	};
+	console.log(errors);
 	return (
 		<>
 			<Modal
@@ -122,75 +230,408 @@ export default function ProgressNoteModal() {
 				onClose={() => {
 					onClose();
 					setAddProgressNoteModal({ isOpen: false });
-					reset()
+					reset();
 				}}
 				placement="top-center"
 				backdrop="blur"
+				size="5xl"
 			>
 				<ModalContent>
 					{(onClose) => (
-						<form onSubmit={handleSubmit(onSubmit)}>
+						<form encType="multipart/form-data" onSubmit={handleSubmit(onSubmit)}>
 							<ModalHeader className="flex flex-col gap-1">
 								{addProgressNoteModal.title}
 							</ModalHeader>
 							<ModalBody>
-								<Controller
-									name="PROGRESS_DATE"
-									control={control}
-									rules={{ required: "Date is required" }}
-									render={({ field, formState: { errors } }) => (
-										<CustomDatePicker
-											value={field.value}
-											isInvalid={!!errors.PROGRESS_DATE}
-											errorMessage={errors.PROGRESS_DATE?.message}
-											setValue={(value) => {
-												field.onChange(value);
-											}}
-											classNames={{
-												innerWrapper: "h-12",
-											}}
-											isDateUnavailable={isWeekEndDate}
-											onChange={handleGetDate}
+								<div className="flex flex-row gap-5">
+									<div style={{ flex: 1 }} className="flex flex-col gap-2">
+										<Controller
+											name="DATE"
+											control={control}
+											rules={{ required: "Date is required" }}
+											render={({ field, formState: { errors } }) => (
+												<CustomDatePicker
+													value={field.value}
+													isInvalid={!!errors.DATE}
+													errorMessage={errors.DATE?.message}
+													label="Date of Visit"
+													setValue={(value) => {
+														field.onChange(value);
+													}}
+													classNames={{
+														innerWrapper: "h-12",
+														label: "text-darkText font-semibold text-base",
+													}}
+													isDateUnavailable={isWeekEndDate}
+													onChange={handleGetDate}
+												/>
+											)}
 										/>
-									)}
-								/>
-								<Controller
-									name="PROGRESS_DETAILS"
-									control={control}
-									rules={{ required: "Progress details is required" }}
-									render={({ field, formState: { errors } }) => (
-										<Textarea
-											value={field.value}
-											onValueChange={(value) => {
-												field.onChange(value);
+										<Controller
+											name="COMPLAINT"
+											control={control}
+											rules={{
+												required:
+													"Patient’s Chief Complaint (CC) is required",
 											}}
-											isInvalid={!!errors.PROGRESS_DETAILS}
-											errorMessage={errors.PROGRESS_DETAILS?.message}
-											variant={"bordered"}
-											label="Progress Details"
-											radius="sm"
-											size="lg"
-											color="primary"
-											labelPlacement="outside"
-											classNames={{
-												label: "text-darkText font-semibold text-base",
-												inputWrapper:
-													"rounded-lg h-full bg-white",
-												// mainWrapper: "h-[4rem]",
-											}}
-											minRows={6}
-											placeholder=" "
-											className="col-span-12 mb-6 md:col-span-6 md:mb-0"
+											render={({ field, formState: { errors } }) => (
+												<Textarea
+													value={field.value}
+													onValueChange={(value) => {
+														field.onChange(value);
+													}}
+													isInvalid={!!errors.COMPLAINT}
+													errorMessage={errors.COMPLAINT?.message}
+													variant={"bordered"}
+													label="Patient’s Chief Complaint (CC)"
+													radius="sm"
+													size="lg"
+													color="primary"
+													labelPlacement="outside"
+													classNames={{
+														label: "text-darkText font-semibold text-base",
+														inputWrapper: "rounded-lg h-full bg-white",
+														// mainWrapper: "h-[4rem]",
+													}}
+													placeholder=" "
+													className="col-span-12 mb-6 md:col-span-6 md:mb-0"
+												/>
+											)}
 										/>
-									)}
-								/>
+										<Controller
+											name="HISTORY_UPDATE"
+											control={control}
+											rules={{
+												required: "Medical History Update is required",
+											}}
+											render={({ field, formState: { errors } }) => (
+												<Textarea
+													value={field.value}
+													onValueChange={(value) => {
+														field.onChange(value);
+													}}
+													isInvalid={!!errors.HISTORY_UPDATE}
+													errorMessage={errors.HISTORY_UPDATE?.message}
+													variant={"bordered"}
+													label="Medical History Update"
+													radius="sm"
+													size="lg"
+													color="primary"
+													labelPlacement="outside"
+													classNames={{
+														label: "text-darkText font-semibold text-base",
+														inputWrapper: "rounded-lg h-full bg-white",
+														// mainWrapper: "h-[4rem]",
+													}}
+													placeholder=" "
+													className="col-span-12 mb-6 md:col-span-6 md:mb-0"
+												/>
+											)}
+										/>
+
+										<Controller
+											name="DIAGNOSIS"
+											control={control}
+											rules={{
+												required: "Diagnosis is required",
+											}}
+											render={({ field, formState: { errors } }) => (
+												<Textarea
+													value={field.value}
+													onValueChange={(value) => {
+														field.onChange(value);
+													}}
+													isInvalid={!!errors.DIAGNOSIS}
+													errorMessage={errors.DIAGNOSIS?.message}
+													variant={"bordered"}
+													label="Diagnosis"
+													radius="sm"
+													size="lg"
+													color="primary"
+													labelPlacement="outside"
+													classNames={{
+														label: "text-darkText font-semibold text-base",
+														inputWrapper: "rounded-lg h-full bg-white",
+														// mainWrapper: "h-[4rem]",
+													}}
+													placeholder=" "
+													className="col-span-12 mb-6 md:col-span-6 md:mb-0"
+												/>
+											)}
+										/>
+										<Controller
+											name="TREATMENT_PLAN"
+											control={control}
+											rules={{
+												required: "Treatment Plan is required",
+											}}
+											render={({ field, formState: { errors } }) => (
+												<Textarea
+													value={field.value}
+													onValueChange={(value) => {
+														field.onChange(value);
+													}}
+													isInvalid={!!errors.TREATMENT_PLAN}
+													errorMessage={errors.TREATMENT_PLAN?.message}
+													variant={"bordered"}
+													label="Treatment Plan"
+													radius="sm"
+													size="lg"
+													color="primary"
+													labelPlacement="outside"
+													classNames={{
+														label: "text-darkText font-semibold text-base",
+														inputWrapper: "rounded-lg h-full bg-white",
+														// mainWrapper: "h-[4rem]",
+													}}
+													placeholder=" "
+													className="col-span-12 mb-6 md:col-span-6 md:mb-0"
+												/>
+											)}
+										/>
+									</div>
+									<div style={{ flex: 1 }} className="flex flex-col gap-2">
+										<div>
+											<Controller
+												name="X_RAY_FILE"
+												control={control}
+												rules={{
+													required: addProgressNoteModal?.data?.X_RAY_FILE
+														? false
+														: "Radiographs (X-rays) is required",
+												}}
+												render={({ field, formState: { errors } }) => (
+													<div className="grid items-center w-full gap-1">
+														<Label
+															htmlFor="picture"
+															className="font-bold"
+														>
+															Radiographs (X-rays)
+														</Label>
+														<Input
+															value={field.value}
+															onChange={(e) => {
+																setFile(e.target.files[0]);
+																field.onChange(e.target.value);
+															}}
+															id="picture"
+															type="file"
+															accept="image/*"
+															className="h-12 shadow-sm border-default-200 border-medium"
+														/>
+														{errors.X_RAY_FILE && (
+															<small className="text-red-500">
+																{errors.TREATMENT_PLAN?.message}
+															</small>
+														)}
+													</div>
+												)}
+											/>
+											{addProgressNoteModal?.data?.X_RAY_FILE && (
+												<small>
+													Current file:{" "}
+													{addProgressNoteModal?.data?.X_RAY_FILE}{" "}
+													<Link
+														href={
+															import.meta.env.VITE_SERVER_URL +
+															"/uploads/" +
+															addProgressNoteModal?.data?.X_RAY_FILE
+														}
+														className="text-sm underline"
+														target="_blank"
+													>
+														View
+													</Link>
+												</small>
+											)}
+										</div>
+										<Controller
+											name="PROCEDURES"
+											control={control}
+											rules={{
+												required: "Procedures Performed is required",
+											}}
+											render={({ field, formState: { errors } }) => (
+												<Textarea
+													value={field.value}
+													onValueChange={(value) => {
+														field.onChange(value);
+													}}
+													isInvalid={!!errors.PROCEDURES}
+													errorMessage={errors.PROCEDURES?.message}
+													variant={"bordered"}
+													label="Procedures Performed"
+													radius="sm"
+													size="lg"
+													color="primary"
+													labelPlacement="outside"
+													classNames={{
+														label: "text-darkText font-semibold text-base",
+														inputWrapper: "rounded-lg h-full bg-white",
+														// mainWrapper: "h-[4rem]",
+													}}
+													placeholder=" "
+													className="col-span-12 mb-6 md:col-span-6 md:mb-0"
+												/>
+											)}
+										/>
+										<Controller
+											name="MATERIALS_USED"
+											control={control}
+											rules={{
+												required: "Materials Used is required",
+											}}
+											render={({ field, formState: { errors } }) => (
+												<Textarea
+													value={field.value}
+													onValueChange={(value) => {
+														field.onChange(value);
+													}}
+													isInvalid={!!errors.MATERIALS_USED}
+													errorMessage={errors.MATERIALS_USED?.message}
+													variant={"bordered"}
+													label="Materials Used"
+													radius="sm"
+													size="lg"
+													color="primary"
+													labelPlacement="outside"
+													classNames={{
+														label: "text-darkText font-semibold text-base",
+														inputWrapper: "rounded-lg h-full bg-white",
+														// mainWrapper: "h-[4rem]",
+													}}
+													placeholder=" "
+													className="col-span-12 mb-6 md:col-span-6 md:mb-0"
+												/>
+											)}
+										/>
+										<Controller
+											name="INSTRUCTION"
+											control={control}
+											rules={{
+												required: "Post-Op Instruction is required",
+											}}
+											render={({ field, formState: { errors } }) => (
+												<Textarea
+													value={field.value}
+													onValueChange={(value) => {
+														field.onChange(value);
+													}}
+													isInvalid={!!errors.INSTRUCTION}
+													errorMessage={errors.INSTRUCTION?.message}
+													variant={"bordered"}
+													label="Post-Op Instruction"
+													radius="sm"
+													size="lg"
+													color="primary"
+													labelPlacement="outside"
+													classNames={{
+														label: "text-darkText font-semibold text-base",
+														inputWrapper: "rounded-lg h-full bg-white",
+														// mainWrapper: "h-[4rem]",
+													}}
+													placeholder=" "
+													className="col-span-12 mb-6 md:col-span-6 md:mb-0"
+												/>
+											)}
+										/>
+										<Controller
+											name="RESPONSE"
+											control={control}
+											rules={{
+												required: "Patient’s Response is required",
+											}}
+											render={({ field, formState: { errors } }) => (
+												<Textarea
+													value={field.value}
+													onValueChange={(value) => {
+														field.onChange(value);
+													}}
+													isInvalid={!!errors.RESPONSE}
+													errorMessage={errors.RESPONSE?.message}
+													variant={"bordered"}
+													label="Patient’s Response"
+													radius="sm"
+													size="lg"
+													color="primary"
+													labelPlacement="outside"
+													classNames={{
+														label: "text-darkText font-semibold text-base",
+														inputWrapper: "rounded-lg h-full bg-white",
+														// mainWrapper: "h-[4rem]",
+													}}
+													placeholder=" "
+													className="col-span-12 mb-6 md:col-span-6 md:mb-0"
+												/>
+											)}
+										/>
+										<div>
+											<Controller
+												name="SIGNATURE"
+												control={control}
+												rules={{
+													required: addProgressNoteModal?.data?.X_RAY_FILE
+														? false
+														: "Signature is required",
+												}}
+												render={({ field, formState: { errors } }) => (
+													<div className="grid items-center w-full gap-1">
+														<Label
+															htmlFor="picture"
+															className="font-bold"
+														>
+															Signature
+														</Label>
+														<Input
+															value={field.value}
+															onChange={(e) => {
+																setSignatureFile(e.target.files[0]);
+																field.onChange(e.target.value);
+															}}
+															id="picture"
+															type="file"
+															accept="image/*"
+															className="h-12 shadow-sm border-default-200 border-medium"
+														/>
+														{errors.SIGNATURE && (
+															<small className="text-red-500">
+																{errors.TREATMENT_PLAN?.message}
+															</small>
+														)}
+													</div>
+												)}
+											/>
+											{addProgressNoteModal?.data?.SIGNATURE && (
+												<small>
+													Current file:{" "}
+													{addProgressNoteModal?.data?.SIGNATURE}{" "}
+													<Link
+														href={
+															import.meta.env.VITE_SERVER_URL +
+															"/uploads/" +
+															addProgressNoteModal?.data?.SIGNATURE
+														}
+														className="text-sm underline"
+														target="_blank"
+													>
+														View
+													</Link>
+												</small>
+											)}
+										</div>
+									</div>
+								</div>
 							</ModalBody>
 							<ModalFooter>
-								<Button color="light" variant="flat" onPress={() => {
-									onClose()
-									reset()
-									setAddProgressNoteModal({})
-								}}>
+								<Button
+									color="light"
+									variant="flat"
+									onPress={() => {
+										onClose();
+										reset();
+										setAddProgressNoteModal({});
+									}}
+								>
 									Close
 								</Button>
 								<Button

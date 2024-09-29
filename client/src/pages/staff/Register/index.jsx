@@ -274,15 +274,20 @@ const StaffRegister = () => {
 									</button>
 								}
 							/>
-							<div className="flex flex-row justify-between">
+							<div className="flex flex-row items-center gap-2">
 								<Checkbox
 									classNames={{
 										label: "text-darkText font-semibold",
 									}}
 									onChange={(e) => setAgreedTerms(e.target.checked)}
+								/>
+								<Link
+									href="/terms-and-privacy-policy"
+									className="font-medium text-darkText-secondary"
+									target="_blank"
 								>
 									I agree with Terms and Privacy
-								</Checkbox>
+								</Link>
 							</div>
 							<Button
 								type="submit"

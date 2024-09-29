@@ -245,7 +245,7 @@ export default function TableAppointments() {
 				</div>
 				<div className="flex items-center justify-between">
 					<span className="text-default-400 text-small">
-						Total {itemsData.length} itemsData
+						Total {filteredItems.length} item(s)
 					</span>
 					<label className="flex items-center text-default-400 text-small">
 						Rows per page:

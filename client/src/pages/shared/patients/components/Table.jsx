@@ -48,6 +48,7 @@ export default function TablePatients({
 	const [statusFilter, setStatusFilter] = React.useState(statusFilterProp);
 	const [rowsPerPage, setRowsPerPage] = React.useState(10);
 	const navigate = useNavigate();
+	const currentUser = location.pathname.includes("admin") ? "admin" : "staff";
 	const [sortDescriptor, setSortDescriptor] = React.useState({
 		column: "name",
 		direction: "ascending",
@@ -64,7 +65,12 @@ export default function TablePatients({
 		queryKey: ["patients-appointments"],
 		queryFn: PatientsAPIManager.getAppointmentPatient,
 	});
-	const { data:patientsData, isLoading:isLoadingPatientData, isSuccess:isSuccessPatientData, refetch:refetchPatientData } = useQuery({
+	const {
+		data: patientsData,
+		isLoading: isLoadingPatientData,
+		isSuccess: isSuccessPatientData,
+		refetch: refetchPatientData,
+	} = useQuery({
 		queryKey: ["all-patients"],
 		queryFn: PatientsAPIManager.getAllPatients,
 	});
@@ -78,8 +84,8 @@ export default function TablePatients({
 				title: "Success!",
 				message: "Patient archived successfully",
 			});
-			refetchPatientData()
-			refetch()
+			refetchPatientData();
+			refetch();
 		},
 		onError: (error) => {
 			console.error(error);
@@ -104,9 +110,14 @@ export default function TablePatients({
 
 	const filteredItems = React.useMemo(() => {
 		if (!isSuccess || !isSuccessPatientData) return [];
-		const archivedPatients = patientsData.filter(patient => patient.ROLE === "ARCHIVE").map(patient => parseInt(patient.ID))
-		let filteredPatients = data.patients.filter(patient => type === "archived" ? archivedPatients.includes(patient.ID) : !archivedPatients.includes(patient.ID));
-		console.log(archivedPatients)
+		const archivedPatients = patientsData
+			.filter((patient) => patient.ROLE === "ARCHIVE")
+			.map((patient) => parseInt(patient.ID));
+		let filteredPatients = data.patients.filter((patient) =>
+			type === "archived"
+				? archivedPatients.includes(patient.ID)
+				: !archivedPatients.includes(patient.ID)
+		);
 		if (hasSearchFilter) {
 			filteredPatients = filteredPatients.filter((patient) => {
 				return patient.FULLNAME.toLowerCase().includes(filterValue?.toLowerCase());
@@ -148,9 +159,11 @@ export default function TablePatients({
 		const cellValue = appointment[columnKey];
 		const handleAction = (key) => {
 			if (key === "view") {
-				navigate("/admin/patients/info/" + appointment.ID);
+				navigate(`/${currentUser}/patients/info/` + appointment.ID);
 			} else if (key === "edit") {
-				navigate("/admin/patients/edit/" + appointment.ID);
+				navigate(`/${currentUser}/patients/edit/` + appointment.ID);
+			} else if (key === "details") {
+				navigate(`/${currentUser}/patients/details/` + appointment.ID);
 			} else if (key === "archive") {
 				setAlertDialogDetails({
 					isOpen: true,
@@ -261,7 +274,10 @@ export default function TablePatients({
 								<DropdownItem key={"edit"} aria-label="edit">
 									Edit
 								</DropdownItem>
-								{type === "regular" && (
+								<DropdownItem key={"details"} aria-label="details">
+									Details
+								</DropdownItem>
+								{type === "regular" && currentUser === "admin" && (
 									<DropdownItem
 										key={"archive"}
 										className="text-warning"

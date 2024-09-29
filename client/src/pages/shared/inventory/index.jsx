@@ -25,7 +25,7 @@ const Inventory = () => {
 	useEffect(() => {
 		getInventoryData().then((data) => {
 			setItemsInventory(data[0].all_items);
-			setItemsInventory(data[0].items_shortage);
+			setShortageInventory(data[0].items_shortage);
 			setGroupInventory(data[1]);
 		});
 	}, []);
@@ -40,7 +40,12 @@ const Inventory = () => {
 							<p className="text-lightText">List of items available.</p>
 						</div>
 						<div>
-							<Button color="primary" startContent={<PlusIcon />}>
+							<Button
+								color="primary"
+								startContent={<PlusIcon />}
+								as={Link}
+								href={`/${currentUser}/inventory/item-list/add`}
+							>
 								Add new item
 							</Button>
 						</div>
@@ -104,9 +109,11 @@ const Inventory = () => {
 							</div>
 							<div className="w-full bg-[#F0483E]/30 flex flex-col items-center mt-5 border-t-2 border-[#F0483E]">
 								<Button
+									as={Link}
 									variant="flat"
 									disableRipple
 									className="bg-transparent"
+									href={`/${currentUser}/inventory/item-list-shortage`}
 									endContent={<ChevronsRight size={20} />}
 								>
 									Resolve Now

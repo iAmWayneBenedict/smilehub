@@ -18,15 +18,12 @@ import {
 import { columns, itemsData } from "../data";
 import { Search, Plus, ChevronsRight } from "lucide-react";
 import { useAppStore } from "@/store/zustand";
-import { cn } from "@/lib/utils";
 import { useLocation } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import InventoryAPIManager from "@/services/api/managers/inventory/InventoryAPIManager";
-import { Pencil } from "lucide-react";
-import { Eye } from "lucide-react";
 
 //! change this based on the columns in the db
-const INITIAL_VISIBLE_COLUMNS = ["GROUP_NAME", "QUANTITY", "actions"];
+const INITIAL_VISIBLE_COLUMNS = ["NAME", "ID", "ITEM_GROUP", "QUANTITY", "actions"];
 
 export default function TableAppointments() {
 	const [filterValue, setFilterValue] = React.useState("");
@@ -35,20 +32,17 @@ export default function TableAppointments() {
 	const [statusFilter, setStatusFilter] = React.useState("all");
 	const [rowsPerPage, setRowsPerPage] = React.useState(10);
 	const [sortDescriptor, setSortDescriptor] = React.useState({
-		column: "GROUP_NAME",
+		column: "NAME", //! update this based on the column in the db
 		direction: "ascending",
 	});
 	const location = useLocation();
 	const currentUser = location.pathname.includes("admin") ? "admin" : "staff";
-	const { setAlertDialogDetails, setNewAppointmentModal, setNewScheduleModal, setAddGroupModal } =
-		useAppStore();
+	const { setAlertDialogDetails, setNewAppointmentModal, setNewScheduleModal } = useAppStore();
 
-	const { data, isSuccess, isLoading, refetch } = useQuery({
-		queryKey: ["group-items"],
-		queryFn: InventoryAPIManager.getInventoryGroupsWithQuantity,
+	const { data, isLoading, isSuccess, refetch } = useQuery({
+		queryKey: ["inventoryItems"],
+		queryFn: InventoryAPIManager.getInventoryItems,
 	});
-
-	console.log(data);
 
 	const [page, setPage] = React.useState(1);
 
@@ -64,16 +58,16 @@ export default function TableAppointments() {
 	// filters the itemsData based on the search value
 	const filteredItems = React.useMemo(() => {
 		if (isLoading || !isSuccess) return [];
-		let filteredItemsData = [...data];
+		let filteredItemsData = [...data.items_shortage];
 
 		if (hasSearchFilter) {
 			filteredItemsData = filteredItemsData.filter((item) => {
-				return item.GROUP_NAME.toLowerCase().includes(filterValue?.toLowerCase());
+				return item.NAME.toLowerCase().includes(filterValue?.toLowerCase());
 			});
 		}
 
 		return filteredItemsData;
-	}, [data, isLoading, isSuccess, filterValue, statusFilter]);
+	}, [data, filterValue, statusFilter, isLoading, isSuccess]);
 
 	// paginates the filtered items
 	const items = React.useMemo(() => {
@@ -97,48 +91,69 @@ export default function TableAppointments() {
 	// renders the cell based on the column
 	const renderCell = React.useCallback((item, columnKey) => {
 		const cellValue = item[columnKey];
+		const handleAction = (key) => {
+			if (key === "reschedule") {
+				setNewScheduleModal({
+					isOpen: true,
+					title: "Change Status",
+					data: null,
+				});
+			} else if (key === "delete") {
+				// display the alert dialog
+				setAlertDialogDetails({
+					isOpen: true,
+					title: "Delete Appointment",
+					message: "Are you sure you want to delete this item?",
+					type: "danger",
+					dialogType: "confirm",
+				});
+			} else if (key === "cancel") {
+				// display the alert dialog
+				setAlertDialogDetails({
+					isOpen: true,
+					title: "Cancel Appointment",
+					message: "Are you sure you want to cancel this item?",
+					type: "warning",
+					dialogType: "confirm",
+				});
+			}
+		};
 		switch (columnKey) {
-			case "GROUP_NAME":
+			case "NAME":
 				return (
 					<div className="flex flex-col">
-						<p className="text-base capitalize text-bold">{cellValue}</p>
+						<p className="capitalize text-bold text-small">{cellValue}</p>
+					</div>
+				);
+			case "ID":
+				return (
+					<div className="flex flex-col">
+						<p className="capitalize text-bold text-small">{cellValue}</p>
+					</div>
+				);
+			case "ITEM_GROUP":
+				return (
+					<div className="flex flex-col">
+						<p className="capitalize text-bold text-small">{cellValue}</p>
 					</div>
 				);
 			case "QUANTITY":
 				return (
 					<div className="flex flex-col">
-						<p className="text-base capitalize text-bold">{cellValue}</p>
+						<p className="capitalize text-bold text-small">{cellValue}</p>
 					</div>
 				);
-
 			case "actions":
 				return (
 					<div className="relative flex items-center justify-start gap-2">
 						<Button
-							variant="light"
-							className="text-base"
-							size="sm"
-							startContent={<Pencil size={20} />}
-							onClick={() => {
-								setAddGroupModal({
-									title: "Edit Group",
-									isOpen: true,
-									refetch,
-									data: { ...item, type: "edit" },
-								});
-							}}
-						>
-							Edit
-						</Button>
-						<Button
-							variant="light"
-							className="text-base text-blue-500"
-							size="sm"
 							as={Link}
-							href={`/${currentUser}/inventory/item-group/${item.GROUP_NAME}`}
-							startContent={<Eye size={20} />}
+							href={`/${currentUser}/inventory/item-list-shortage/${item.ID}`}
+							variant="light"
+							className="data-[hover=true]:bg-transparent"
+							endContent={<ChevronsRight />}
 						>
-							View
+							View Full Detail
 						</Button>
 					</div>
 				);
@@ -220,13 +235,8 @@ export default function TableAppointments() {
 						<Button
 							aria-label="New Appointment"
 							color="primary"
-							onClick={() => {
-								setAddGroupModal({
-									title: "Add Group",
-									isOpen: true,
-									refetch,
-								});
-							}}
+							as={Link}
+							href={`/${currentUser}/inventory/item-list-shortage/add`}
 							startContent={<Plus />}
 						>
 							Add new item
@@ -235,7 +245,7 @@ export default function TableAppointments() {
 				</div>
 				<div className="flex items-center justify-between">
 					<span className="text-default-400 text-small">
-						Total {filteredItems.length} group(s)
+						Total {filteredItems.length} item(s) shortage
 					</span>
 					<label className="flex items-center text-default-400 text-small">
 						Rows per page:
@@ -253,6 +263,7 @@ export default function TableAppointments() {
 			</div>
 		);
 	}, [
+		filteredItems,
 		filterValue,
 		onSearchChange,
 		visibleColumns,
@@ -325,9 +336,9 @@ export default function TableAppointments() {
 				{(column) => (
 					<TableColumn
 						key={column.uid}
-						align={"start"}
+						align={column.uid === "actions" ? "center" : "start"}
 						allowsSorting={column.sortable}
-						className={cn(column.uid === "actions" ? "w-48" : "", "~text-sm/base")}
+						className={column.uid === "actions" ? "w-24" : ""}
 					>
 						{column.name}
 					</TableColumn>

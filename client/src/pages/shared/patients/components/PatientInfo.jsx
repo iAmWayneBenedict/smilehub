@@ -36,13 +36,15 @@ const PatientInfo = () => {
 		queryKey: ["patients", "info", params?.id],
 		queryFn: () => PatientsAPIManager.getDetailPatient({ ID: params?.id }),
 	});
+
+	const currentUser = location.pathname.includes("admin") ? "admin" : "staff";
 	return (
 		<div style={{ flex: 1 }} className="bg-[#f9f9f9]">
 			<div className="w-full h-full">
 				<h3 className="p-5 text-lg font-darkText">
 					<Breadcrumbs>
-						<BreadcrumbItem href="/admin/patients">Patients</BreadcrumbItem>
-						<BreadcrumbItem href="/admin/patients/info">
+						<BreadcrumbItem href={`/${currentUser}/patients`}>Patients</BreadcrumbItem>
+						<BreadcrumbItem href={`/${currentUser}/patients/info`}>
 							Patient Information
 						</BreadcrumbItem>
 					</Breadcrumbs>
@@ -130,7 +132,7 @@ const PatientInfo = () => {
 							>
 								<Button
 									as={Link}
-									href={"/admin/patients/progress-notes/" + params?.id}
+									href={`/${currentUser}/patients/progress-notes/` + params?.id}
 									variant="bordered"
 									className="~w-32/56 py-2 pr-6 text-base font-bold text-primary h-fit"
 									startContent={<Image src={noteImg} removeWrapper alt="notes" />}
@@ -509,7 +511,7 @@ const Form = ({ data, params, refetch }) => {
 						rules={{
 							required: "Phone is required",
 							pattern: {
-								value: /^9\d{9}$/,
+								value: /^[+069](\d{9}|\d{10}|\d{11}|\d{12})$/,
 								message: "Invalid phone number",
 							},
 						}}

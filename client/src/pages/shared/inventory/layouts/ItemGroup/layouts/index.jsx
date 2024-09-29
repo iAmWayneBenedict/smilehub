@@ -1,11 +1,12 @@
 import { Breadcrumbs, BreadcrumbItem } from "@nextui-org/react";
 import TableAppointments from "./components/Table";
 import AddGroupItem from "@/components/layout/Modals/AddGroupItem";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 
 const ItemGroupProduct = () => {
 	const location = useLocation();
 	const currentUser = location.pathname.includes("admin") ? "admin" : "staff";
+	const params = useParams()
 	return (
 		<div style={{ flex: 1 }} className="">
 			<div style={{ flex: 1 }} className="relative p-4 bg-white">
@@ -18,7 +19,7 @@ const ItemGroupProduct = () => {
 							Item Group
 						</BreadcrumbItem>
 						<BreadcrumbItem href={`/${currentUser}/inventory/item-group`}>
-							Dental Care Product
+							{params.group}
 						</BreadcrumbItem>
 					</Breadcrumbs>
 					<p className="mt-2 text-secondaryText">Detailed view of an item group.</p>

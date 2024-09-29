@@ -2,7 +2,7 @@ import { Tabs, Tab, Breadcrumbs, BreadcrumbItem } from "@nextui-org/react";
 import { useState } from "react";
 import TableAppointments from "./components/Table";
 
-const ItemList = () => {
+const ItemListShortage = () => {
 	// controlled tabs
 	const [selected, setSelected] = useState("list-of-items");
 	const currentUser = location.pathname.includes("admin") ? "admin" : "staff";
@@ -14,8 +14,8 @@ const ItemList = () => {
 						<BreadcrumbItem href={`/${currentUser}/inventory`}>
 							Inventory
 						</BreadcrumbItem>
-						<BreadcrumbItem href={`/${currentUser}/inventory/item-list`}>
-							Item List
+						<BreadcrumbItem href={`/${currentUser}/inventory/item-list-shortage`}>
+							Item Shortage List
 						</BreadcrumbItem>
 					</Breadcrumbs>
 				</h3>
@@ -41,4 +41,4 @@ const ItemList = () => {
 	);
 };
 
-export default ItemList;
+export default ItemListShortage;

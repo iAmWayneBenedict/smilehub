@@ -15,8 +15,8 @@ import { useMutation } from "@tanstack/react-query";
 import PatientsAPIManager from "@/services/api/managers/patients/PatientsAPIManager";
 import { convertDateYYYYMMDD } from "@/services/api/utils";
 import { useAppStore, useAuthTokenPersisted } from "@/store/zustand";
-import {decrypt, formatDate} from "@/lib/utils";
-import {sendEmail} from "@/services/email/index.js";
+import { decrypt, formatDate } from "@/lib/utils";
+import { sendEmail } from "@/services/email/index.js";
 
 const AddPatient = () => {
 	const { setAlertDialogDetails } = useAppStore();
@@ -45,13 +45,13 @@ const AddPatient = () => {
 	const mutation = useMutation({
 		mutationFn: PatientsAPIManager.postAddPatient,
 		onSuccess: () => {
-//			sendEmail({
-//				type: "credentials",
-//				name: `${getValues("FIRSTNAME")} ${getValues("LASTNAME")}`,
-//				email: getValues("EMAIL"),
-//				date: formatDate(new Date(convertDateYYYYMMDD(getValues("APPOINTMENT_DATE")))),
-//				time: getValues("APPOINTMENT_TIME")?.split("-")[0]
-//			})
+			//			sendEmail({
+			//				type: "credentials",
+			//				name: `${getValues("FIRSTNAME")} ${getValues("LASTNAME")}`,
+			//				email: getValues("EMAIL"),
+			//				date: formatDate(new Date(convertDateYYYYMMDD(getValues("APPOINTMENT_DATE")))),
+			//				time: getValues("APPOINTMENT_TIME")?.split("-")[0]
+			//			})
 			reset();
 			setAlertDialogDetails({
 				isOpen: true,
@@ -81,13 +81,16 @@ const AddPatient = () => {
 		data["BIRTHDATE"] = convertDateYYYYMMDD(data["BIRTHDATE"]);
 		mutation.mutate(data);
 	};
+	const currentUser = location.pathname.includes("admin") ? "admin" : "staff";
 	return (
 		<div style={{ flex: 1 }} className="bg-[#f9f9f9]">
 			<div className="w-full h-full p-5">
 				<h3 className="text-lg font-darkText">
 					<Breadcrumbs>
-						<BreadcrumbItem href="/admin/patients">Patients</BreadcrumbItem>
-						<BreadcrumbItem href="/admin/patients/add">Add Patient</BreadcrumbItem>
+						<BreadcrumbItem href={`/${currentUser}/patients`}>Patients</BreadcrumbItem>
+						<BreadcrumbItem href={`/${currentUser}/patients/add`}>
+							Add Patient
+						</BreadcrumbItem>
 					</Breadcrumbs>
 				</h3>
 				<form onSubmit={handleSubmit(onSubmit)}>
@@ -103,7 +106,7 @@ const AddPatient = () => {
 								<Button
 									color="primary"
 									as={Link}
-									href="/admin/patients"
+									href={`/${currentUser}/patients`}
 									variant="bordered"
 								>
 									Cancel
@@ -303,7 +306,7 @@ const Form = ({ register, control, errors }) => {
 						{...register("PHONE", {
 							required: "Phone Number is required",
 							pattern: {
-								value: /^9\d{9}$/,
+								value: /^[+069](\d{9}|\d{10}|\d{11}|\d{12})$/,
 								message: "Invalid phone number",
 							},
 						})}

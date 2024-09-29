@@ -55,7 +55,7 @@ if (!empty($validationErrors)) {
 
 // Fetch the file assessment records
 $assessments = fetchFileAssessmentByPatientId($conn, $data->PATIENT_ID);
-
+header("Access-Control-Allow-Origin: *");
 // Return the assessment details as a JSON response
 if (!empty($assessments)) {
     http_response_code(200);

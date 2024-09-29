@@ -8,6 +8,8 @@ import {
 	useDisclosure,
 	Textarea,
 	Input,
+	SelectItem,
+	Select,
 } from "@nextui-org/react";
 import { useAppStore, useAuthTokenPersisted } from "@/store/zustand.js";
 import { useEffect, useState } from "react";
@@ -47,6 +49,12 @@ export default function TasksModal() {
 		defaultValues: useMemo(() => {
 			if (taskModal.data) {
 				return taskModal.data;
+			} else {
+				return {
+					TITLE: "",
+					STATUS: "Pending",
+					DESCRIPTION: "",
+				};
 			}
 		}, [taskModal.isOpen]),
 	});
@@ -90,7 +98,6 @@ export default function TasksModal() {
 		else
 			mutation.mutate({
 				...data,
-				STATUS: "Pending",
 				CREATOR: user?.fullname,
 				CREATOR_EMAIL: user?.email,
 			});
@@ -142,6 +149,47 @@ export default function TasksModal() {
 											}}
 											labelPlacement={"outside"}
 										/>
+									)}
+								/>
+								<Controller
+									name="STATUS"
+									control={control}
+									rules={{ required: "Status is required" }}
+									render={({ field, formState: { errors } }) => (
+										<Select
+											{...field}
+											aria-label="Status Select"
+											selectedKeys={[field.value]}
+											onChange={(selectedKeys) => {
+												field.onChange(selectedKeys);
+											}}
+											disallowEmptySelection
+											textValue="Status"
+											isInvalid={!!errors.STATUS}
+											errorMessage={errors.STATUS?.message}
+											labelPlacement={"outside"}
+											placeholder="Select Status"
+											label="Status"
+											size="lg"
+											variant="bordered"
+											color="primary"
+											className="w-full bg-white"
+											radius="sm"
+											classNames={{
+												label: "text-darkText font-semibold text-sm pb-1",
+												inputWrapper: "h-full",
+											}}
+										>
+											{statusItems.map((item) => (
+												<SelectItem
+													key={item}
+													value={item}
+													textValue={item}
+												>
+													{item}
+												</SelectItem>
+											))}
+										</Select>
 									)}
 								/>
 								<Controller
@@ -201,3 +249,13 @@ export default function TasksModal() {
 		</>
 	);
 }
+
+const statusItems = [
+	"Pending",
+	"On-going",
+	"Completed",
+	"Cancelled",
+	"On Hold",
+	"Urgent",
+	"Overdue",
+];

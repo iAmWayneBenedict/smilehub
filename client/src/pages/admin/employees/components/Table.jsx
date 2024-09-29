@@ -1,37 +1,53 @@
 /* eslint-disable no-unused-vars */
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import {
-    Table,
-    TableHeader,
-    TableColumn,
-    TableBody,
-    TableRow,
-    TableCell,
-    Button,
-    Pagination,
-    User,
-    Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Checkbox, Select, SelectItem,Switch 
+	Table,
+	TableHeader,
+	TableColumn,
+	TableBody,
+	TableRow,
+	TableCell,
+	Button,
+	Pagination,
+	User,
+	Dropdown,
+	DropdownTrigger,
+	DropdownMenu,
+	DropdownItem,
+	Checkbox,
+	Select,
+	SelectItem,
+	Switch,
 } from "@nextui-org/react";
 import { columns, employeeData } from "../data";
-import {EllipsisVertical, Plus, UserRoundPlus} from "lucide-react";
+import { EllipsisVertical, Plus, UserRoundPlus } from "lucide-react";
 import { useAppStore } from "@/store/zustand";
 import RightArrow from "../../../../assets/icons/Right-2.svg";
 import { useNavigate } from "react-router-dom";
-import {useMutation, useQuery} from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import EmployeesAPIManager from "@/services/api/managers/employees/EmployeesAPIManager.js";
-import {extractDateTime, getDateTime} from "@/pages/shared/dashboard/utils.js";
-import {employeeRoles} from "@/services/api/utils.js";
+import { extractDateTime, getDateTime } from "@/pages/shared/dashboard/utils.js";
+import { employeeRoles } from "@/services/api/utils.js";
+import PropTypes from "prop-types";
 
 //! change this based on the columns in the db
-const INITIAL_VISIBLE_COLUMNS = ["FULLNAME", "ID", "EMAIL", "GENDER", "ROLE", "DATETIME", "options"];
+const INITIAL_VISIBLE_COLUMNS = [
+	"FULLNAME",
+	"ID",
+	"EMAIL",
+	"GENDER",
+	"ROLE",
+	"DATETIME",
+	"options",
+];
 
-export default function TableEmployees() {
+export default function TableEmployees({ type }) {
 	const [filterValue, setFilterValue] = React.useState("");
 	const [selectedKeys, setSelectedKeys] = React.useState(new Set([]));
 	const [visibleColumns, setVisibleColumns] = React.useState(new Set(INITIAL_VISIBLE_COLUMNS));
 	const [statusFilter, setStatusFilter] = React.useState("all");
 	const [rowsPerPage, setRowsPerPage] = React.useState(10);
-	const [isViewArchive, setIsViewArchive] = React.useState(false)
+	const [isViewArchive, setIsViewArchive] = React.useState(false);
 	const navigate = useNavigate();
 	const [sortDescriptor, setSortDescriptor] = React.useState({
 		column: "FULLNAME", //! update this based on the column in the db
@@ -48,13 +64,13 @@ export default function TableEmployees() {
 
 		return columns.filter((column) => Array.from(visibleColumns).includes(column.uid));
 	}, [visibleColumns]);
-	
-	const {data, isSuccess, refetch} = useQuery({
-		queryKey: ['all-employees'],
-		queryFn: EmployeesAPIManager.getAllEmployee
-	})
-	
-	const mutationArchive = useMutation({
+
+	const { data, isSuccess, refetch } = useQuery({
+		queryKey: ["all-employees"],
+		queryFn: EmployeesAPIManager.getAllEmployee,
+	});
+
+	const mutationStatus = useMutation({
 		mutationFn: EmployeesAPIManager.postChangeEmployeeStatus,
 		onSuccess: () => {
 			setAlertDialogDetails({
@@ -63,7 +79,7 @@ export default function TableEmployees() {
 				title: "Success!",
 				message: "Employee archived successfully",
 			});
-			refetch()
+			refetch();
 		},
 		onError: (error) => {
 			console.error(error);
@@ -78,22 +94,23 @@ export default function TableEmployees() {
 
 	// filters the employee based on the search value
 	const filteredItems = React.useMemo(() => {
-		if(!isSuccess) return []
-		let filteredEmployee = [...data];
+		if (!isSuccess) return [];
+		let filteredEmployee = [];
+		if (type === "archived") {
+			filteredEmployee = data.filter((employee) => employee.STATUS === "ARCHIVE");
+		} else {
+			filteredEmployee = data.filter((employee) => employee.STATUS !== "ARCHIVE");
+		}
 		if (hasSearchFilter && statusFilter === "all") {
 			filteredEmployee = filteredEmployee.filter((employee) => {
 				return employee.name?.toLowerCase()?.includes(filterValue?.toLowerCase());
 			});
-		} else if(statusFilter === "archive") {
+		} else if (statusFilter === "role") {
+			const selectedValues = [...filterValue];
+			if (!selectedValues.length) return filteredEmployee;
 			filteredEmployee = filteredEmployee.filter((employee) => {
-				return employee.STATUS === "ARCHIVE"
-			})
-		} else if(statusFilter === "role") {
-			const selectedValues = [...filterValue]
-			if(!selectedValues.length) return filteredEmployee
-			filteredEmployee = filteredEmployee.filter((employee) => {
-				return selectedValues.includes(employee.ROLE)
-			})
+				return selectedValues.includes(employee.ROLE);
+			});
 		}
 		return filteredEmployee;
 	}, [data, filterValue, statusFilter]);
@@ -116,14 +133,15 @@ export default function TableEmployees() {
 		});
 	}, [sortDescriptor, items]);
 	const pages = Math.ceil(filteredItems.length / rowsPerPage);
-
+	const currentUser = location.pathname.includes("admin") ? "admin" : "staff";
 	// renders the cell based on the column
 	const renderCell = React.useCallback((employee, columnKey) => {
 		const cellValue = employee[columnKey];
 		const handleAction = (key) => {
-			if(key === "view") {
-				navigate("/admin/employees/profile/"+employee?.ID)
-			} if(key === "archive") {
+			if (key === "view") {
+				navigate(`/${currentUser}/employees/profile/` + employee?.ID);
+			}
+			if (key === "archive") {
 				setAlertDialogDetails({
 					isOpen: true,
 					type: "warning",
@@ -131,33 +149,47 @@ export default function TableEmployees() {
 					message: "Are you sure you want to archive this employee?",
 					dialogType: "confirm",
 					confirmCallback: () => {
-						mutationArchive.mutate({ ID: employee.ID, STATUS: "ARCHIVE" });
-					},
-				});
-			} if(key === "admin") {
-				setAlertDialogDetails({
-					isOpen: true,
-					type: "warning",
-					title: "Archive Patient",
-					message: "Are you sure you want to change the status of this employee?",
-					dialogType: "confirm",
-					confirmCallback: () => {
-						mutationArchive.mutate({ ID: employee.ID, STATUS: "ADMIN" });
-					},
-				});
-			} if(key === "staff") {
-				setAlertDialogDetails({
-					isOpen: true,
-					type: "warning",
-					title: "Archive Patient",
-					message: "Are you sure you want to change the status of this employee?",
-					dialogType: "confirm",
-					confirmCallback: () => {
-						mutationArchive.mutate({ ID: employee.ID, STATUS: "STAFF" });
+						mutationStatus.mutate({ ID: employee.ID, STATUS: "ARCHIVE" });
 					},
 				});
 			}
-		}
+			if (key === "activate") {
+				setAlertDialogDetails({
+					isOpen: true,
+					type: "warning",
+					title: "Activate Patient",
+					message: "Are you sure you want to activate this employee?",
+					dialogType: "confirm",
+					confirmCallback: () => {
+						mutationStatus.mutate({ ID: employee.ID, STATUS: "ACTIVE" });
+					},
+				});
+			}
+			if (key === "admin") {
+				setAlertDialogDetails({
+					isOpen: true,
+					type: "warning",
+					title: "Archive Patient",
+					message: "Are you sure you want to change the status of this employee?",
+					dialogType: "confirm",
+					confirmCallback: () => {
+						mutationStatus.mutate({ ID: employee.ID, STATUS: "ADMIN" });
+					},
+				});
+			}
+			if (key === "staff") {
+				setAlertDialogDetails({
+					isOpen: true,
+					type: "warning",
+					title: "Archive Patient",
+					message: "Are you sure you want to change the status of this employee?",
+					dialogType: "confirm",
+					confirmCallback: () => {
+						mutationStatus.mutate({ ID: employee.ID, STATUS: "STAFF" });
+					},
+				});
+			}
+		};
 		switch (columnKey) {
 			case "FULLNAME":
 				return (
@@ -166,7 +198,7 @@ export default function TableEmployees() {
 							name={cellValue}
 							description={employee.role}
 							avatarProps={{
-								src: employee.image
+								src: employee.image,
 							}}
 						/>
 					</div>
@@ -198,7 +230,7 @@ export default function TableEmployees() {
 					</div>
 				);
 			case "DATETIME":
-				const {dateObject, timeObject} = extractDateTime(cellValue)
+				const { dateObject, timeObject } = extractDateTime(cellValue);
 				return (
 					<div className="flex gap-3">
 						<div>
@@ -222,14 +254,25 @@ export default function TableEmployees() {
 								<DropdownItem key={"view"} aria-label="view">
 									Profile
 								</DropdownItem>
-								<DropdownItem
-									key={"archive"}
-									className="text-warning"
-									aria-label="archive"
-									color="warning"
-								>
-									Archive
-								</DropdownItem>
+								{type === "regular" ? (
+									<DropdownItem
+										key={"archive"}
+										className="text-warning"
+										aria-label="archive"
+										color="warning"
+									>
+										Archive
+									</DropdownItem>
+								) : (
+									<DropdownItem
+										key={"activate"}
+										className="text-warning"
+										aria-label="archive"
+										color="warning"
+									>
+										Activate
+									</DropdownItem>
+								)}
 							</DropdownMenu>
 						</Dropdown>
 					</div>
@@ -284,7 +327,7 @@ export default function TableEmployees() {
 					<div className="flex gap-3">
 						<Button
 							color="primary"
-							onClick={() => navigate("/admin/employees/registration")}
+							onClick={() => navigate(`/${currentUser}/employees/registration`)}
 							startContent={<UserRoundPlus size={20} />}
 						>
 							Add new employee
@@ -292,17 +335,11 @@ export default function TableEmployees() {
 					</div>
 				</div>
 				<div className="flex items-center justify-between mt-3">
-					<span className="text-default-400 text-small" style={{flex:1}}>
-						{data?.length || 0} available employee(s)
+					<span className="text-default-400 text-small" style={{ flex: 1 }}>
+						{filteredItems?.length || 0} available employee(s)
 					</span>
-					<div className="flex gap-4 justify-end" style={{flex:1}}>
-						<Switch  onValueChange={checked => {
-							setIsViewArchive(checked)
-							setStatusFilter(checked ? "archive" : "all")
-						}} size={"sm"}>
-							Show Archived
-						</Switch>
-						<div className="flex w-full max-w-xs flex-col gap-2">
+					<div className="flex justify-end gap-4" style={{ flex: 1 }}>
+						<div className="flex flex-col w-full max-w-xs gap-2">
 							<Select
 								label="Filter by role"
 								size="sm"
@@ -310,14 +347,12 @@ export default function TableEmployees() {
 								className="max-w-xs"
 								selectionMode="multiple"
 								onSelectionChange={(e) => {
-									setFilterValue(e)
-									setStatusFilter("role")
+									setFilterValue(e);
+									setStatusFilter("role");
 								}}
 							>
 								{employeeRoles.map((employee) => (
-									<SelectItem key={employee.name}>
-										{employee.name}
-									</SelectItem>
+									<SelectItem key={employee.name}>{employee.name}</SelectItem>
 								))}
 							</Select>
 						</div>
@@ -325,7 +360,7 @@ export default function TableEmployees() {
 				</div>
 			</div>
 		);
-	}, [visibleColumns, setNewAppointmentModal, data]);
+	}, [visibleColumns, setNewAppointmentModal, data, filteredItems]);
 
 	// table bottom content with pagination
 	const bottomContent = React.useMemo(() => {
@@ -406,3 +441,6 @@ export default function TableEmployees() {
 		</Table>
 	);
 }
+TableEmployees.propTypes = {
+	type: PropTypes.string,
+};

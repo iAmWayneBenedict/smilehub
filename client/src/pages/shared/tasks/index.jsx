@@ -83,14 +83,14 @@ const Tasks = () => {
 	useEffect(() => {
 		// console.log(selectedKeys);
 	}, [selectedKeys]);
-
+	const currentUser = location.pathname.includes("admin") ? "admin" : "staff";
 	return (
 		<div style={{ flex: 1 }} className="bg-[#f9f9f9]">
 			<div className="w-full h-full p-5">
 				<h3 className="p-5 text-lg font-darkText">
 					<Breadcrumbs size="lg">
-						<BreadcrumbItem href="/admin/tasks">Tasks</BreadcrumbItem>
-						<BreadcrumbItem href="/admin/tasks">Task</BreadcrumbItem>
+						<BreadcrumbItem href={`/${currentUser}/tasks`}>Tasks</BreadcrumbItem>
+						<BreadcrumbItem href={`/${currentUser}/tasks`}>Task</BreadcrumbItem>
 					</Breadcrumbs>
 				</h3>
 				<div className="flex flex-col xl:flex-row gap-7">
@@ -339,10 +339,10 @@ const Tasks = () => {
 										</span>
 									</div>
 									<Divider />
-									{/* <div className="flex flex-row items-center gap-3 px-7">
+									<div className="flex flex-row items-center gap-3 px-7">
 										<Tag color="#EB5757" />
-										<span>Urgent</span>
-									</div> */}
+										<span>{selectedTask?.STATUS}</span>
+									</div>
 									<div className="flex gap-5 mt-2 mb-7 px-7">
 										<span>{selectedTask?.CREATOR} created a task.</span>{" "}
 										<span className="text-lightText">

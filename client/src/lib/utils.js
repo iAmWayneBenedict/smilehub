@@ -149,6 +149,12 @@ export const getISODateString = (dateString) => {
 	return dateObject.toISOString();
 };
 
+export const checkboxSetterSingleItem = (value) => {
+	if (typeof value === "string") return [value];
+	if (value.at(-1) === undefined) return "";
+	return [value.at(-1)];
+};
+
 export const months = [
 	"January",
 	"February",

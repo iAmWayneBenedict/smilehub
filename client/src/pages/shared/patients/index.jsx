@@ -8,7 +8,7 @@ import {
 	Select,
 	SelectItem,
 	Tabs,
-	Tab
+	Tab,
 } from "@nextui-org/react";
 import { Plus, Search, Filter, CircleHelp } from "lucide-react";
 import TablePatients from "./components/Table";
@@ -23,7 +23,7 @@ const Patients = () => {
 
 	// controlled tabs
 	const [selected, setSelected] = useState("patients");
-
+	const currentUser = location.pathname.includes("admin") ? "admin" : "staff";
 
 	return (
 		<div style={{ flex: 1 }} className="bg-[#f9f9f9]">
@@ -42,7 +42,7 @@ const Patients = () => {
 								isIconOnly
 								variant="bordered"
 								as={Link}
-								href="/admin/patients/add"
+								href={`/${currentUser}/patients/add`}
 								size="lg"
 							>
 								<Plus />
@@ -137,13 +137,22 @@ const Patients = () => {
 							}}
 						>
 							<Tab key="patients" title="PATIENTS">
-								<TablePatients type={"regular"} filterType={filterType} filterKeys={[...filterKeys]} />
+								<TablePatients
+									type={"regular"}
+									filterType={filterType}
+									filterKeys={[...filterKeys]}
+								/>
 							</Tab>
-							<Tab key="archived-patients" title="ARCHIVED PATIENTS">
-								<TablePatients type={"archived"} filterType={filterType} filterKeys={[...filterKeys]} />
-							</Tab>
+							{currentUser === "admin" && (
+								<Tab key="archived-patients" title="ARCHIVED PATIENTS">
+									<TablePatients
+										type={"archived"}
+										filterType={filterType}
+										filterKeys={[...filterKeys]}
+									/>
+								</Tab>
+							)}
 						</Tabs>
-
 					</div>
 				</div>
 			</div>

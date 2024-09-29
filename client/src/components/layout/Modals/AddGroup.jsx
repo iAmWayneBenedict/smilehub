@@ -16,6 +16,7 @@ import AppointmentsAPIManager from "@/services/api/managers/appointments/Appoint
 import { useMutation } from "@tanstack/react-query";
 import { Search, Plus } from "lucide-react";
 import InventoryAPIManager from "@/services/api/managers/inventory/InventoryAPIManager";
+import { useMemo } from "react";
 
 export default function AddGroup() {
 	const { isOpen, onOpen, onClose } = useDisclosure();
@@ -33,11 +34,27 @@ export default function AddGroup() {
 		register,
 		formState: { errors },
 		handleSubmit,
+		reset,
 	} = useForm({
-		defaultValues: {
-			NAME: "",
-		},
+		defaultValues: useMemo(() => {
+			if (addGroupModal.data) {
+				return {
+					NAME: addGroupModal.data.GROUP_NAME,
+				};
+			} else
+				return {
+					NAME: "",
+				};
+		}, [addGroupModal]),
 	});
+	useEffect(() => {
+		if (addGroupModal.data) {
+			console.log(addGroupModal.data);
+			reset({
+				NAME: addGroupModal.data.GROUP_NAME,
+			});
+		}
+	}, [addGroupModal]);
 	const mutation = useMutation({
 		mutationFn: InventoryAPIManager.postAddGroup,
 		onSuccess: () => {
@@ -60,8 +77,32 @@ export default function AddGroup() {
 			});
 		},
 	});
+	const updateMutation = useMutation({
+		mutationFn: InventoryAPIManager.postEditGroup,
+		onSuccess: () => {
+			setAlertDialogDetails({
+				isOpen: true,
+				type: "success",
+				title: "Success!",
+				message: "Group updated successfully!",
+			});
+			addGroupModal?.refetch();
+			onClose();
+			setAddGroupModal({});
+		},
+		onError: (error) => {
+			setAlertDialogDetails({
+				isOpen: true,
+				type: "danger",
+				title: "Error!",
+				message: error.message,
+			});
+		},
+	});
 	const onSubmit = (data) => {
-		mutation.mutate(data);
+		if (addGroupModal.data) {
+			updateMutation.mutate({ ...data, ID: addGroupModal.data.ID });
+		} else mutation.mutate(data);
 	};
 	return (
 		<>
@@ -104,7 +145,7 @@ export default function AddGroup() {
 							</ModalBody>
 							<ModalFooter className="justify-start">
 								<Button startContent={<Plus />} color="primary" type="submit">
-									Add Group
+									{addGroupModal?.data ? "Edit" : "Add"} Group
 								</Button>
 							</ModalFooter>
 						</form>

@@ -70,6 +70,7 @@ const END_POINTS = {
 	POST_ADD_ITEM: () => "/POST/SHARED/inventoryItem.php",
 	POST_DELETE_ITEM: () => "/DELETE/SHARED/INVENTORY/inventoryItem.php",
 	POST_UPDATE_ITEM: () => "/EDIT/SHARED/INVENTORY/inventoryItem.php",
+	POST_UPDATE_GROUP: () => "/EDIT/SHARED/INVENTORY/inventoryItemGroup.php",
 	POST_ADD_GROUP: () => "/POST/SHARED/inventoryItemGroup.php",
 	POST_DELETE_GROUP: () => "/DELETE/SHARED/INVENTORY/inventoryItemGroup.php",
 
@@ -78,6 +79,10 @@ const END_POINTS = {
 	POST_ADD_ASSESSMENT: () => "/POST/DENTIST/assessment.php",
 	GET_DIAGRAM: () => "/GET/DENTIST/teethAssessment.php",
 	GET_ASSESSMENT: () => "/GET/DENTIST/assessment.php",
+	POST_ADD_PROGRESS_NOTE: () => "/POST/DENTIST/progressNotes.php",
+	GET_PROGRESS_NOTES: () => "/GET/DENTIST/progressNotesByPatientId.php",
+	POST_UPDATE_PROGRESS_NOTES: () => "/EDIT/DENTIST/progressNotes.php",
+	POST_DELETE_PROGRESS_NOTES: () => "/DELETE/DENTIST/progressNotes.php",
 };
 
 export default END_POINTS;
