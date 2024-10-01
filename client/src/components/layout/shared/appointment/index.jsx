@@ -88,7 +88,6 @@ export default function AppointmentModal() {
 
 	const handleInvalidDate = (date) => {
 		if (isWeekEndDate(date || today(getLocalTimeZone()))) {
-			console.log(isWeekEndDate(today(getLocalTimeZone())));
 			setError("APPOINTMENT_DATE", {
 				type: "manual",
 				message: "The date must not fall on a weekend.",
@@ -155,7 +154,6 @@ export default function AppointmentModal() {
 		onSuccess: async (data) => {
 			if (newAppointmentModal?.refetch) newAppointmentModal?.refetch();
 			if (refetchArr.length) {
-				console.log(refetchArr);
 				refetchArr.map((item) => item.refetch());
 				setRefetchArr([]);
 			}

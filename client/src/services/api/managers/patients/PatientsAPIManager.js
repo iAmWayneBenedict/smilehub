@@ -48,6 +48,9 @@ class PatientsAPIManager {
 	static async postDeleteProgressNotes(body = {}) {
 		return await APIMethods.post(END_POINTS.POST_DELETE_PROGRESS_NOTES(), body);
 	}
+	static async postAddPatientForm(body = {}) {
+		return await APIMethods.post(END_POINTS.POST_ADD_PATIENT_FORM(), body);
+	}
 }
 
 export default PatientsAPIManager;

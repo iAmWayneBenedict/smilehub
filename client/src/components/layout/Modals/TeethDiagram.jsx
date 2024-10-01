@@ -26,8 +26,9 @@ const TeethDiagram = () => {
 	const [color, setColor] = useState("#000000");
 	const [alpha, setAlpha] = useState(10);
 	const [initialImage, setInitialImage] = useState(
-		"http://localhost/smilehub/server/uploads/7e2fca379179363fd76e9b6c14d810ab_1.png"
+		"https://res.cloudinary.com/dxxg9plr5/image/upload/v1727689645/eg6o2phse0cd8jttetwy.png"
 	);
+	const [loading, setLoading] = useState(false);
 	const [showDownload, setShowDownload] = useState(false);
 	const { teethDiagramModalDetails, setTeethDiagramModalDetails, setAlertDialogDetails } =
 		useAppStore();
@@ -42,6 +43,7 @@ const TeethDiagram = () => {
 				message: "The diagram has been added successfully.",
 			});
 			setTeethDiagramModalDetails({});
+			setLoading(false);
 		},
 		onError: (error) => {
 			console.log(error);
@@ -51,6 +53,7 @@ const TeethDiagram = () => {
 				title: "Error!",
 				message: error.message,
 			});
+			setLoading(false);
 		},
 	});
 	const [temp, setTemp] = useState();
@@ -63,7 +66,6 @@ const TeethDiagram = () => {
 
 			// setTemp(url);
 			// setInitialImage(file);
-			console.log(url);
 			// const canvas = document.createElement("canvas");
 			// const ctx = canvas.getContext("2d");
 			// const img = new Image();
@@ -178,13 +180,33 @@ const TeethDiagram = () => {
 			ctx.drawImage(image, 0, 0);
 		};
 	};
-	const handleSaveDB = (blob) => {
+	const handleSaveDB = async (blob) => {
 		const file = new File([blob], "teeth-diagram.png", { type: "image/png" });
-		const formData = new FormData();
-		formData.append("file1", file);
-		formData.append("PATIENT_ID", teethDiagramModalDetails?.data?.id);
 
-		addDiagramMutation.mutate(formData);
+		const cloudinaryFormData = new FormData();
+		cloudinaryFormData.append("file", file);
+		cloudinaryFormData.append("upload_preset", "smilehub");
+		cloudinaryFormData.append("cloud_name", import.meta.env.VITE_CLOUDINARY_CLOUD_NAME);
+		setLoading(true);
+		try {
+			const res = await fetch(import.meta.env.VITE_CLOUDINARY_BASE_URL, {
+				method: "POST",
+				body: cloudinaryFormData,
+			});
+
+			const data = await res.json();
+			const imageUrl = data.url;
+
+			const formData = new FormData();
+
+			formData.append("file1", file);
+			formData.append("URL", imageUrl);
+			formData.append("PATIENT_ID", teethDiagramModalDetails?.data?.id);
+
+			addDiagramMutation.mutate(formData);
+		} catch (error) {
+			console.log(error);
+		}
 	};
 	return (
 		<Modal
@@ -223,32 +245,32 @@ const TeethDiagram = () => {
 										imageCanDownload,
 									}) => (
 										<div className="flex flex-row gap-5">
-											{console.log(imageCanDownload)}
 											<div
 												style={{ flex: 3 }}
 												className="flex items-center justify-center"
 											>
-												{!imageCanDownload ? (
+												{/* {!imageCanDownload ? (
 													<p>
 														Sorry, the image that you have provided is
 														not accessible.
 													</p>
 												) : (
-													<canvas
-														onClick={() => {
-															handleSave();
-															setShowDownload(false);
-														}}
-														{...getCanvasProps({
-															ref: (ref) => (canvasRef.current = ref),
-														})}
-														// style={{
-														// 	width: "4rem",
-														// 	height: "auto",
-														// 	aspectRatio: "1/1",
-														// }}
-													/>
-												)}
+													
+												)} */}
+												<canvas
+													onClick={() => {
+														handleSave();
+														setShowDownload(false);
+													}}
+													{...getCanvasProps({
+														ref: (ref) => (canvasRef.current = ref),
+													})}
+													// style={{
+													// 	width: "4rem",
+													// 	height: "auto",
+													// 	aspectRatio: "1/1",
+													// }}
+												/>
 											</div>
 											<div
 												style={{ flex: 2 }}
@@ -319,12 +341,13 @@ const TeethDiagram = () => {
 												/>
 
 												<div className="flex flex-row w-full gap-3">
-													{!imageDownloadUrl && (
+													{(!imageDownloadUrl || loading) && (
 														<Button
 															onClick={(e) => {
 																triggerSave(e);
 																setShowDownload(true);
 															}}
+															isLoading={loading}
 															className=""
 															color="primary"
 															style={{ flex: 1 }}
@@ -332,18 +355,20 @@ const TeethDiagram = () => {
 															Save Changes
 														</Button>
 													)}
-													{imageDownloadUrl && showDownload && (
-														<Button
-															as={Link}
-															download
-															href={imageDownloadUrl}
-															style={{ flex: 1 }}
-															variant="bordered"
-															color="primary"
-														>
-															Download
-														</Button>
-													)}
+													{imageDownloadUrl &&
+														showDownload &&
+														!loading && (
+															<Button
+																as={Link}
+																download
+																href={imageDownloadUrl}
+																style={{ flex: 1 }}
+																variant="bordered"
+																color="primary"
+															>
+																Download
+															</Button>
+														)}
 												</div>
 											</div>
 										</div>

@@ -14,7 +14,6 @@ import PropTypes from "prop-types";
 import { Browser, extend, Internationalization, registerLicense } from "@syncfusion/ej2-base";
 import { useCallback, useEffect, useRef, useState } from "react";
 registerLicense(import.meta.env.VITE_CALENDAR_LICENCE_KEY);
-console.log(import.meta.env.VITE_CALENDAR_LICENCE_KEY);
 import * as dataSource from "./datasource.json";
 import { UserRound, FileText, Clock4 } from "lucide-react";
 import "./styles.css";
@@ -260,9 +259,7 @@ const Calendar = () => {
 	const onPrintClick = () => {
 		scheduleObj.current.print();
 	};
-	console.log(weeklyAppointmentsData);
 	const SchedulerElement = useCallback(() => {
-		console.log(weeklyAppointmentsData);
 		return (
 			<ScheduleComponent
 				eventSettings={{

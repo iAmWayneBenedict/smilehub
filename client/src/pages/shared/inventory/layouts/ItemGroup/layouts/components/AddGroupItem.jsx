@@ -68,7 +68,6 @@ const AddGroupItem = () => {
 		data.ITEM_GROUP = params.group;
 		mutation.mutate(data);
 	};
-	console.log(params);
 	return (
 		<div style={{ flex: 1 }} className="">
 			<div style={{ flex: 1 }} className="relative p-4 bg-white">

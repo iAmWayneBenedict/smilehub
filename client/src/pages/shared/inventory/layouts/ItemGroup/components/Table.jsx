@@ -48,8 +48,6 @@ export default function TableAppointments() {
 		queryFn: InventoryAPIManager.getInventoryGroupsWithQuantity,
 	});
 
-	console.log(data);
-
 	const [page, setPage] = React.useState(1);
 
 	const hasSearchFilter = Boolean(filterValue);

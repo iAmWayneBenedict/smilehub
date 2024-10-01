@@ -49,7 +49,6 @@ export default function AddGroup() {
 	});
 	useEffect(() => {
 		if (addGroupModal.data) {
-			console.log(addGroupModal.data);
 			reset({
 				NAME: addGroupModal.data.GROUP_NAME,
 			});

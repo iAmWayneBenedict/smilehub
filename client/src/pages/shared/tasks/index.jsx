@@ -72,7 +72,6 @@ const Tasks = () => {
 	const { data, isSuccess, isLoading, refetch } = useQuery({
 		queryKey: ["tasks", selectedKeys, hasSelectedFilter],
 		queryFn: () => {
-			console.log(selectedKeys);
 			if (selectedKeys.has("text") || !hasSelectedFilter) {
 				return TasksAPIManager.getTasks();
 			}

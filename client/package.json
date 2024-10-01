@@ -10,6 +10,8 @@
 		"preview": "vite preview"
 	},
 	"dependencies": {
+		"@cloudinary/react": "^1.13.0",
+		"@cloudinary/url-gen": "^1.21.0",
 		"@internationalized/date": "^3.5.5",
 		"@nextui-org/accordion": "^2.0.38",
 		"@nextui-org/autocomplete": "^2.1.5",

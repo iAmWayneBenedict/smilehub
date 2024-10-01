@@ -521,10 +521,7 @@ const AccordionSchedule = () => {
 									} ${startTime?.meridian}`;
 
 									const status = validateTimeStatus(item.APPOINTMENT_TIME);
-									console.log(
-										item.FULLNAME,
-										realTimeAppointments.selectedChapter
-									);
+									
 									return (
 										<AccordionItem
 											key={index}
@@ -578,10 +575,6 @@ const AccordionSchedule = () => {
 																	index && "bg-[#27ae60]"
 															)}
 														/>
-														{console.log(
-															realTimeAppointments.upcomingActiveIndex,
-															index
-														)}
 														<h6
 															className={cn(
 																"text-sm font-bold",

@@ -113,10 +113,6 @@ export default function TableAppointments({ type }) {
 		},
 	});
 
-	useEffect(() => {
-		console.log(data);
-	}, [data, isLoading, isSuccess]);
-
 	// filters the appointments based on the search value
 	const filteredItems = React.useMemo(() => {
 		if (isLoading) return [];

@@ -120,7 +120,6 @@ const Contact = () => {
 				message: "Appointment booked successfully!",
 				actionLink: "/", // redirect to home page
 			});
-			console.log(data);
 			sendEmail({
 				type: "notification",
 				name: getValues("FULLNAME"),

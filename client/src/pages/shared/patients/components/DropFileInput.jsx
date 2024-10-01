@@ -18,7 +18,6 @@ const DropFileInput = (props) => {
 	// on file drop
 	const onFileDrop = (e) => {
 		const newFiles = e.target.files;
-		console.log(e.target.files.length);
 		if (newFiles.length > 0) {
 			const updatedList = [...fileList, ...newFiles];
 			setFileList(updatedList);

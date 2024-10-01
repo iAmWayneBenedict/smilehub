@@ -30,7 +30,7 @@ const SwiperElement = ({ data, buttonTheme, type, slidesPerView = "4.5" }) => {
 
 		swiperElRef.current?.addEventListener("swiperslidechange", (e) => {
 			// * when slide changes do something here
-			console.log("slide changed");
+			// console.log("slide changed");
 		});
 
 		// initialize next button listener

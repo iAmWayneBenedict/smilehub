@@ -18,7 +18,7 @@ const StaffLogin = () => {
 			password: "",
 		},
 	});
-	const onSubmit = (data) => console.log(data);
+	const onSubmit = (data) => {};
 	return (
 		<div className="flex w-screen h-screen">
 			<div className="flex items-center justify-center" style={{ flex: 1 }}>
