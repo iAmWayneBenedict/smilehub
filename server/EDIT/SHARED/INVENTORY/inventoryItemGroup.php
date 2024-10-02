@@ -42,23 +42,50 @@ function inventoryGroupExists($conn, $id) {
 }
 
 /**
+ * Function to check if the inventory group exists and retrieve the old group name
+ *
+ * @param mysqli $conn The database connection object
+ * @param int $id The ID of the inventory group
+ * @return string|null The old group name if it exists, null otherwise
+ */
+function getOldGroupName($conn, $id) {
+    $query = "SELECT NAME FROM inventory_group_table WHERE ID = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param('i', $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    
+    return $row ? $row['NAME'] : null;
+}
+
+/**
  * Function to update an inventory group in the inventory_group_table
  *
  * @param mysqli $conn The database connection object
  * @param object $data The request data containing group details
+ * @param string $oldGroupName The old group name to update related items
  * @return bool True if the update is successful, false otherwise
  */
-function updateInventoryGroup($conn, $data) {
-    $query = "UPDATE inventory_group_table SET NAME = ?, DATETIME = NOW() WHERE ID = ?";
+function updateInventoryGroup($conn, $data, $oldGroupName) {
+    // Update inventory group name
+    $query1 = "UPDATE inventory_group_table SET NAME = ?, DATETIME = NOW() WHERE ID = ?";
     
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param('si', $data->NAME, $data->ID);
-    
-    $result = $stmt->execute();
-    $stmt->close();
+    $stmt1 = $conn->prepare($query1);
+    $stmt1->bind_param('si', $data->NAME, $data->ID);
+    $result1 = $stmt1->execute();
+    $stmt1->close();
 
-    return $result;
-}
+    // Update ITEM_GROUP in inventory_item_table if the group name changes
+    $query2 = "UPDATE inventory_item_table SET ITEM_GROUP = ?, DATETIME = NOW() WHERE ITEM_GROUP = ?";
+    
+    $stmt2 = $conn->prepare($query2);
+    $stmt2->bind_param('ss', $data->NAME, $oldGroupName); // Use the old group name
+    $result2 = $stmt2->execute();
+    $stmt2->close();
+
+    return $result1 && $result2;
+}   
 
 // Get the request data
 $data = json_decode(file_get_contents("php://input"));
@@ -71,6 +98,14 @@ if (!empty($validationErrors)) {
     exit;
 }
 
+// Fetch the old group name before updating
+$oldGroupName = getOldGroupName($conn, $data->ID);
+if ($oldGroupName === null) {
+    http_response_code(404);
+    echo json_encode(array("message" => "Inventory group not found."));
+    exit;
+}
+
 // Check if the inventory group exists
 if (!inventoryGroupExists($conn, $data->ID)) {
     http_response_code(404);
@@ -79,7 +114,7 @@ if (!inventoryGroupExists($conn, $data->ID)) {
 }
 
 // Attempt to update the inventory group
-if (updateInventoryGroup($conn, $data)) {
+if (updateInventoryGroup($conn, $data, $oldGroupName)) {
     http_response_code(200);
     echo json_encode(array(
         "message" => "Inventory group updated successfully."

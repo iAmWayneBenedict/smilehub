@@ -2806,6 +2806,80 @@ Error (500 Internal Server Error):
 }
 ```
 
+### 52. Fetch Patient Details by PATIENT_ID
+
+- **Endpoints:**
+  - `GET /GET/SHARED/PATIENT/patientForm.php`  
+    - **Description:** Fetch patient details from the system based on PATIENT_ID.
+
+#### Request Body
+
+The request should be sent as JSON with the following structure:
+
+```json
+{
+    "PATIENT_ID": "1"
+}
+```
+
+#### Response
+
+```json
+Success (200 OK):
+{
+    "PATIENT_ID": "1",
+    "TITLE": "Mr.",
+    "FIRST_NAME": "John",
+    "LAST_NAME": "Doe",
+    "OCCUPATION": "Engineer",
+    "BIRTHDAY": "1990-01-15",
+    "HOME_ADDRESS": "123 Main St, Anytown, USA",
+    "CONTACT_NUMBER": "555-1234",
+    "EMAIL_ADDRESS": "john.doe@example.com",
+    "HEALTH_FUND": "Health Fund A",
+    "MEMBER_NUMBER": "HF123456",
+    "EMERGENCY_CONTACT_NAME": "Jane Doe",
+    "EMERGENCY_CONTACT_NUMBER": "555-5678",
+    "EMERGENCY_CONTACT_RELATIONSHIP": "Spouse",
+    "FAMILY_DOCTOR": "Dr. Smith",
+    "DOCTOR_CONTACT": "555-8765",
+    "SUFFERING": "['Diabetes', 'Cancer', 'Epilepsy']",
+    "PREGNANT_DURATION": "N/A",
+    "HOSPITAL_PAST_2_DURATION": "Yes, Because of car accident.",
+    "MEDICATION": "Yes, Alaxan for my body",
+    "SMOKE_PER_DAY": "N/A",
+    "DENTAL_CONCERN_PROBLEMS": "['Bad breath', 'Bleeding gums', 'Head/Neck ache']",
+    "VISIT_PURPOSE": "Routine Checkup",
+    "LAST_DENTAL": "2023-05-20",
+    "MAKE_YOU_NERVOUS": "Yes",
+    "DENTAL_TREATMENT_REQUIREMENT": "['Gas', 'General Anesthesia']",
+    "REFFERAL": "Internet/Website"
+}
+```
+
+```json
+Error (400 Bad Request):
+{
+    "errors": {
+        "PATIENT_ID": "Patient ID is required."
+    }
+}
+```
+
+```json
+Error (404 Not Found):
+{
+    "message": "Patient not found."
+}
+```
+
+```json
+Error (500 Internal Server Error):
+{
+    "message": "Failed to fetch patient details."
+}
+```
+
 ## Development Setup
 
 To set up the development environment for the SmileHub API, follow these steps:
