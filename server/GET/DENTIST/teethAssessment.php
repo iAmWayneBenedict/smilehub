@@ -27,7 +27,7 @@ function validateFetchFileAssessmentData($data) {
  * @return array The assessment records details
  */
 function fetchFileAssessmentByPatientId($conn, $patientId) {
-    $query = "SELECT PATIENT_ID, FILENAME FROM file_assessment_table WHERE PATIENT_ID = ?";
+    $query = "SELECT PATIENT_ID, URL FROM file_assessment_table WHERE PATIENT_ID = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param('s', $patientId);
     $stmt->execute();

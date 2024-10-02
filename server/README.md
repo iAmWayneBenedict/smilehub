@@ -2500,19 +2500,21 @@ Error (500 Internal Server Error):
 
 #### Request Body
 
-The request should be sent as form-data with the following fields:
-- **Key: PATIENT_ID**
-  - `Value: (Provide the patient ID)` 
-- **Key: file1**
-  - `Value: (Select file to upload)` 
+The request should be sent as JSON with the following structure:
+
+```json
+{
+    "PATIENT_ID": "12345",
+    "URL": "https://example.com/assessment.pdf"
+}
+```
 
 #### Response
 
 ```json
 Success (200 OK):
 {
-    "message": "Files uploaded successfully.",
-    "fileName": ["unique_filename_1.ext"]
+    "message": "Assessment record added successfully.",
 }
 ```
 
@@ -2540,19 +2542,21 @@ Error (500 Internal Server Error):
 
 #### Request Body
 
-The request should be sent as form-data with the following fields:
-- **Key: PATIENT_ID**
-  - `Value: (Provide the patient ID)` 
-- **Key: file1**
-  - `Value: (Select file to upload)` 
+The request should be sent as JSON with the following structure:
+
+```json
+{
+    "PATIENT_ID": "12345",
+    "URL": "https://example.com/new-assessment.pdf"
+}
+```
 
 #### Response
 
 ```json
 Success (200 OK):
 {
-    "message": "File updated successfully.",
-    "fileName": "unique_filename.ext"
+    "message": "File updated successfully."
 }
 ```
 
@@ -2591,8 +2595,8 @@ The request should be sent as JSON with the following structure:
 ```json
 Success (200 OK):
 {
-    "PATIENT_ID": "1",
-    "FILENAME": "8060c1484e941897f994c8ce67134f8f.jpg"
+    "PATIENT_ID": "12345",
+    "URL": "https://example.com/edited-assessment.pdf"
 }
 ```
 
