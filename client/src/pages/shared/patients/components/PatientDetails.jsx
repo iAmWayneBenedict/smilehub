@@ -42,7 +42,6 @@ const PatientDetails = () => {
 		mutationFn: PatientsAPIManager.getPatientForm,
 		onSuccess: (data) => {
 			const res = handleStructureDefaultValues(data);
-			console.log(res.newFormData);
 			setFormData(res.newFormData);
 			reset(res.newData);
 			setGetRequestData(res.newData);
@@ -56,7 +55,6 @@ const PatientDetails = () => {
 	const handleStructureDefaultValues = (data) => {
 		let newData = {};
 		let newFormData = {};
-		console.log(JSON.parse(data.SUFFERING));
 		newData.SUFFERING = JSON.parse(data.SUFFERING);
 		newData.DENTAL_CONCERN_PROBLEMS = JSON.parse(data.DENTAL_CONCERN_PROBLEMS);
 		newData.DENTAL_TREATMENT_REQUIREMENT = JSON.parse(data.DENTAL_TREATMENT_REQUIREMENT);
@@ -83,7 +81,6 @@ const PatientDetails = () => {
 		} else {
 			newData.REFFERAL = data.REFFERAL;
 		}
-		console.log(conditions.includes(newData.SUFFERING));
 		if (!conditions.includes(newData.SUFFERING[0])) {
 			newFormData.OTHER_CONDITIONS = newData.SUFFERING[0];
 			newData.SUFFERING = [];
@@ -285,7 +282,6 @@ const PatientDetails = () => {
 	};
 	const onSubmit = (data) => {
 		data.PATIENT_ID = params.id;
-		console.log(data.SUFFERING);
 		if (data.ID) {
 			data.TITLE = data.TITLE.includes("Other")
 				? data.TITLE + ", " + formData.OTHER_TITLE
@@ -337,7 +333,6 @@ const PatientDetails = () => {
 				newData[key] = "N/A";
 			}
 		});
-		console.log(newData);
 		if (data?.ID) editMutation.mutate(newData);
 		else addMutation.mutate(newData);
 	};
@@ -937,7 +932,6 @@ const PatientDetails = () => {
 											orientation="vertical"
 											value={field.value}
 											onValueChange={(value) => {
-												console.log(value);
 												field.onChange(value);
 												autoOtherParent(
 													"OTHER_CONDITIONS",

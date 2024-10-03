@@ -108,11 +108,7 @@ const Calendar = () => {
 	// ! This is a temporary fix. bug in syncfusion license key
 	useEffect(() => {
 		document.querySelectorAll("[style]").forEach((el) => {
-			if (
-				el.innerText ===
-				"The included Syncfusion license key is invalid. Claim your free account"
-			)
-				el.style.display = "none";
+			if (el.innerText?.toLowerCase().includes("free account")) el.style.display = "none";
 		});
 	}, [isCompletedData]);
 
