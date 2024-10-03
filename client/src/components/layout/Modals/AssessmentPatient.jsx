@@ -27,6 +27,7 @@ import { checkboxSetterSingleItem } from "@/lib/utils";
 export default function AssessmentPatient() {
 	const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 	const [assessmentData, setAssessmentData] = useState({});
+	const currentUser = location.pathname.includes("admin") ? "admin" : "staff";
 	const { assessmentPatientModal, setAssessmentPatientModal, setAlertDialogDetails } =
 		useAppStore();
 
@@ -71,6 +72,7 @@ export default function AssessmentPatient() {
 			onOpen();
 		} else {
 			onClose();
+			reset();
 		}
 	}, [assessmentPatientModal]);
 
@@ -123,9 +125,6 @@ export default function AssessmentPatient() {
 				title: "Success",
 				message: "Assessment added successfully",
 			});
-
-			setAssessmentPatientModal({});
-			reset();
 		},
 		onError: (error) => {
 			console.log(error);
@@ -188,6 +187,7 @@ export default function AssessmentPatient() {
 													onChange={(selectedKeys) => {
 														field.onChange(selectedKeys);
 													}}
+													isDisabled={currentUser === "staff"}
 													disallowEmptySelection
 													textValue="tooth number"
 													isInvalid={!!errors.TOOTH_NO}
@@ -230,7 +230,9 @@ export default function AssessmentPatient() {
 														field.onChange(selectedKeys);
 													}}
 													textValue="color"
-													isDisabled={!colors?.length}
+													isDisabled={
+														!colors?.length || currentUser === "staff"
+													}
 													isInvalid={!!errors.COLOR}
 													errorMessage={errors.COLOR?.message}
 													labelPlacement={"outside"}
@@ -274,6 +276,7 @@ export default function AssessmentPatient() {
 																label="Texture"
 																color="primary"
 																value={field.value}
+																isDisabled={currentUser === "staff"}
 																onValueChange={(value) =>
 																	field.onChange(
 																		checkboxSetterSingleItem(
@@ -317,6 +320,9 @@ export default function AssessmentPatient() {
 																	onValueChange={(value) =>
 																		field.onChange(value)
 																	}
+																	isDisabled={
+																		currentUser === "staff"
+																	}
 																>
 																	Yes
 																</Checkbox>
@@ -336,6 +342,9 @@ export default function AssessmentPatient() {
 																	isSelected={field.value}
 																	onValueChange={(value) =>
 																		field.onChange(value)
+																	}
+																	isDisabled={
+																		currentUser === "staff"
 																	}
 																>
 																	Yes
@@ -357,6 +366,9 @@ export default function AssessmentPatient() {
 																	onValueChange={(value) =>
 																		field.onChange(value)
 																	}
+																	isDisabled={
+																		currentUser === "staff"
+																	}
 																>
 																	Yes
 																</Checkbox>
@@ -376,6 +388,7 @@ export default function AssessmentPatient() {
 															label="Gum Health"
 															color="primary"
 															value={field.value}
+															isDisabled={currentUser === "staff"}
 															onValueChange={(value) =>
 																field.onChange(
 																	checkboxSetterSingleItem(value)
@@ -411,6 +424,7 @@ export default function AssessmentPatient() {
 															label="Mobility"
 															color="primary"
 															value={field.value}
+															isDisabled={currentUser === "staff"}
 															onValueChange={(value) =>
 																field.onChange(
 																	checkboxSetterSingleItem(value)
@@ -449,6 +463,7 @@ export default function AssessmentPatient() {
 														label="Previous treatment"
 														color="primary"
 														value={field.value}
+														isDisabled={currentUser === "staff"}
 														onValueChange={(value) =>
 															field.onChange(
 																checkboxSetterSingleItem(value)
@@ -479,7 +494,11 @@ export default function AssessmentPatient() {
 								<Button color="light" variant="flat" onPress={onClose}>
 									Close
 								</Button>
-								<Button type="submit" color="primary">
+								<Button
+									type="submit"
+									color="primary"
+									isDisabled={currentUser === "staff"}
+								>
 									Save
 								</Button>
 							</ModalFooter>

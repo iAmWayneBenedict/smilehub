@@ -34,10 +34,10 @@ export default function ProgressNoteModal() {
 	const [timeDropdownList, setTimeDropdownList] = useState([]);
 	const [file, setFile] = useState(null);
 	const [signatureFile, setSignatureFile] = useState(null);
+	const currentUser = location.pathname.includes("admin") ? "admin" : "staff";
 	useEffect(() => {
 		if (addProgressNoteModal.isOpen) {
 			onOpen();
-
 			if (addProgressNoteModal.data && addProgressNoteModal.data.DATE) {
 				// handleGetSelectedTimes();
 				reset({
@@ -79,12 +79,27 @@ export default function ProgressNoteModal() {
 						}
 					)
 				);
+			} else {
+				reset({
+					DATE: today(getLocalTimeZone()),
+					PATIENT_ID: "",
+					COMPLAINT: "",
+					HISTORY_UPDATE: "",
+					DIAGNOSIS: "",
+					TREATMENT_PLAN: "",
+					X_RAY_FILE: "",
+					PROCEDURES: "",
+					MATERIALS_USED: "",
+					INSTRUCTION: "",
+					RESPONSE: "",
+					SIGNATURE: "",
+				});
 			}
 		} else {
 			onClose();
+			reset();
 		}
 	}, [addProgressNoteModal]);
-
 	const convertToBlob = async (url) => {
 		// Fetch the file from the server
 		const response = await fetch(url);
@@ -222,17 +237,16 @@ export default function ProgressNoteModal() {
 			updateMutation.mutate(formData);
 		}
 	};
-	console.log(errors);
 	return (
 		<>
 			<Modal
 				isOpen={isOpen}
 				onClose={() => {
 					onClose();
-					setAddProgressNoteModal({ isOpen: false });
+					setAddProgressNoteModal({});
 					reset();
 				}}
-				placement="top-center"
+				placement="top"
 				backdrop="blur"
 				size="5xl"
 			>
@@ -264,6 +278,7 @@ export default function ProgressNoteModal() {
 													}}
 													isDateUnavailable={isWeekEndDate}
 													onChange={handleGetDate}
+													isReadOnly={currentUser === "staff"}
 												/>
 											)}
 										/>
@@ -280,6 +295,7 @@ export default function ProgressNoteModal() {
 													onValueChange={(value) => {
 														field.onChange(value);
 													}}
+													isReadOnly={currentUser === "staff"}
 													isInvalid={!!errors.COMPLAINT}
 													errorMessage={errors.COMPLAINT?.message}
 													variant={"bordered"}
@@ -310,6 +326,7 @@ export default function ProgressNoteModal() {
 													onValueChange={(value) => {
 														field.onChange(value);
 													}}
+													isReadOnly={currentUser === "staff"}
 													isInvalid={!!errors.HISTORY_UPDATE}
 													errorMessage={errors.HISTORY_UPDATE?.message}
 													variant={"bordered"}
@@ -341,6 +358,7 @@ export default function ProgressNoteModal() {
 													onValueChange={(value) => {
 														field.onChange(value);
 													}}
+													isReadOnly={currentUser === "staff"}
 													isInvalid={!!errors.DIAGNOSIS}
 													errorMessage={errors.DIAGNOSIS?.message}
 													variant={"bordered"}
@@ -371,6 +389,7 @@ export default function ProgressNoteModal() {
 													onValueChange={(value) => {
 														field.onChange(value);
 													}}
+													isReadOnly={currentUser === "staff"}
 													isInvalid={!!errors.TREATMENT_PLAN}
 													errorMessage={errors.TREATMENT_PLAN?.message}
 													variant={"bordered"}
@@ -413,6 +432,12 @@ export default function ProgressNoteModal() {
 															onChange={(e) => {
 																setFile(e.target.files[0]);
 																field.onChange(e.target.value);
+															}}
+															isReadOnly={currentUser === "staff"}
+															onClick={(e) => {
+																if (currentUser === "staff") {
+																	e.preventDefault();
+																}
 															}}
 															id="picture"
 															type="file"
@@ -457,6 +482,7 @@ export default function ProgressNoteModal() {
 													onValueChange={(value) => {
 														field.onChange(value);
 													}}
+													isReadOnly={currentUser === "staff"}
 													isInvalid={!!errors.PROCEDURES}
 													errorMessage={errors.PROCEDURES?.message}
 													variant={"bordered"}
@@ -487,6 +513,7 @@ export default function ProgressNoteModal() {
 													onValueChange={(value) => {
 														field.onChange(value);
 													}}
+													isReadOnly={currentUser === "staff"}
 													isInvalid={!!errors.MATERIALS_USED}
 													errorMessage={errors.MATERIALS_USED?.message}
 													variant={"bordered"}
@@ -517,6 +544,7 @@ export default function ProgressNoteModal() {
 													onValueChange={(value) => {
 														field.onChange(value);
 													}}
+													isReadOnly={currentUser === "staff"}
 													isInvalid={!!errors.INSTRUCTION}
 													errorMessage={errors.INSTRUCTION?.message}
 													variant={"bordered"}
@@ -547,6 +575,7 @@ export default function ProgressNoteModal() {
 													onValueChange={(value) => {
 														field.onChange(value);
 													}}
+													isReadOnly={currentUser === "staff"}
 													isInvalid={!!errors.RESPONSE}
 													errorMessage={errors.RESPONSE?.message}
 													variant={"bordered"}
@@ -587,6 +616,12 @@ export default function ProgressNoteModal() {
 															onChange={(e) => {
 																setSignatureFile(e.target.files[0]);
 																field.onChange(e.target.value);
+															}}
+															isReadOnly={currentUser === "staff"}
+															onClick={(e) => {
+																if (currentUser === "staff") {
+																	e.preventDefault();
+																}
 															}}
 															id="picture"
 															type="file"
@@ -638,6 +673,7 @@ export default function ProgressNoteModal() {
 									color="primary"
 									type="submit"
 									isLoading={mutation.isPending}
+									isDisabled={currentUser === "staff"}
 								>
 									{mutation.isPending ? "Loading..." : "Save"}
 								</Button>

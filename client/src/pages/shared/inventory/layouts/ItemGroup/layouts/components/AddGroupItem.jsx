@@ -156,10 +156,14 @@ const AddGroupItem = () => {
 								<Input
 									{...register("QUANTITY", {
 										required: "Quantity is required",
+										pattern: {
+											value: /^\d+$/,
+											message: "Quantity must be a number",
+										},
 									})}
 									isInvalid={!!errors.QUANTITY}
 									errorMessage={errors.QUANTITY?.message}
-									type="text"
+									type="number"
 									label="Quantity in number"
 									size="lg"
 									variant="bordered"

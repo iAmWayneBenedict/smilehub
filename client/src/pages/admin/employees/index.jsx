@@ -5,7 +5,6 @@ import { useState } from "react";
 const Employees = () => {
 	// controlled tabs
 	const [selected, setSelected] = useState("employees");
-
 	return (
 		<div style={{ flex: 1 }} className="mt-10">
 			<div style={{ flex: 1 }} className="relative p-4 bg-white">

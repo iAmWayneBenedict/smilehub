@@ -41,7 +41,9 @@ const END_POINTS = {
 	POST_CHANGE_STATUS_PATIENT: () => "/EDIT/SHARED/PATIENT/changeStatus.php",
 	GET_DETAIL_PATIENT: () => "/GET/SHARED/PATIENT/patient.php",
 	GET_APPOINTMENT_PATIENT: () => "/GET/SHARED/PATIENT/patientsWithAppointment.php",
+	POST_GET_PATIENT_FORM: () => "/GET/SHARED/PATIENT/patientForm.php",
 	POST_ADD_PATIENT_FORM: () => "/POST/SHARED/patientForm.php",
+	POST_EDIT_PATIENT_FORM: () => "/EDIT/SHARED/PATIENT/patientForm.php",
 
 	// employees
 	POST_ADD_EMPLOYEE: () => "/POST/DENTIST/dentist.php",

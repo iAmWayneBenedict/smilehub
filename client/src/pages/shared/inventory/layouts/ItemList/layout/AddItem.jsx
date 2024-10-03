@@ -150,10 +150,14 @@ const AddItem = () => {
 								<Input
 									{...register("QUANTITY", {
 										required: "Quantity is required",
+										pattern: {
+											value: /^[0-9]*$/,
+											message: "Quantity must be a number",
+										},
 									})}
 									isInvalid={!!errors.QUANTITY}
 									errorMessage={errors.QUANTITY?.message}
-									type="text"
+									type="number"
 									label="Quantity in number"
 									size="lg"
 									variant="bordered"

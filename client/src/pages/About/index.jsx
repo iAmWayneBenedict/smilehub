@@ -12,6 +12,7 @@ import latestTech from "../../assets/images/Latest Tech.png";
 import ServicesCardContainer from "@/components/layout/patient/ServicesCardContainer";
 import { servicesCardData } from "../Home/data/data";
 import PlaylistSection from "@/components/layout/patient/PlaylistSection";
+import oralImg from "../../assets/images/oral.png";
 
 const About = () => {
 	return (
@@ -146,6 +147,12 @@ const About = () => {
 								filling cavities and cleaning or extracting teeth
 							</p>
 						</div>
+					</div>
+					<div className="flex flex-col items-center gap-12 mt-24">
+						<h3 className="~text-xl/3xl text-center font-medium">
+							Discover the Structure of Tooth
+						</h3>
+						<Image src={oralImg} />
 					</div>
 				</div>
 				<div className="mt-24">

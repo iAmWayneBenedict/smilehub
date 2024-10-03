@@ -215,6 +215,10 @@ function App() {
 									element={<LayoutWrapper child={<AddPatient />} />}
 								/>
 								<Route
+									path="details/:id"
+									element={<LayoutWrapper child={<PatientDetails />} />}
+								/>
+								<Route
 									path="info/:id"
 									element={<LayoutWrapper child={<PatientInfo />} />}
 								/>
@@ -242,6 +246,14 @@ function App() {
 									element={<LayoutWrapper child={<ItemGroupProduct />} />}
 								/>
 								<Route
+									path="item-group/:group/add"
+									element={<LayoutWrapper child={<AddGroupItem />} />}
+								/>
+								<Route
+									path="item-group/:group/edit/:id"
+									element={<LayoutWrapper child={<EditGroupItem />} />}
+								/>
+								<Route
 									path="item-list"
 									element={<LayoutWrapper child={<ItemList />} />}
 								/>
@@ -251,8 +263,42 @@ function App() {
 									element={<LayoutWrapper child={<AddItem />} />}
 								/>
 								<Route
+									exact
+									path="item-list/edit/:id"
+									element={<LayoutWrapper child={<EditItem />} />}
+								/>
+								<Route
 									path="item-list/:item"
 									element={<LayoutWrapper child={<Item />} />}
+								/>
+								<Route
+									path="item-list-shortage"
+									element={<LayoutWrapper child={<ItemListShortage />} />}
+								/>
+								<Route
+									exact
+									path="item-list-shortage/add"
+									element={<LayoutWrapper child={<AddItemShortage />} />}
+								/>
+								<Route
+									exact
+									path="item-list-shortage/edit/:id"
+									element={<LayoutWrapper child={<EditItemShortage />} />}
+								/>
+								<Route
+									path="item-list-shortage/:item"
+									element={<LayoutWrapper child={<ItemShortage />} />}
+								/>
+							</Route>
+							<Route path="Employees">
+								<Route index element={<LayoutWrapper child={<Employees />} />} />
+								<Route
+									path="registration"
+									element={<LayoutWrapper child={<EmployeeRegistration />} />}
+								/>
+								<Route
+									path="profile/:id"
+									element={<LayoutWrapper child={<Profile />} />}
 								/>
 							</Route>
 							<Route

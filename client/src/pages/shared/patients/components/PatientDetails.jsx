@@ -1,7 +1,8 @@
 import CustomDatePicker from "@/components/ui/DatePicker";
-import { checkboxSetterSingleItem } from "@/lib/utils";
+import { checkboxSetterSingleItem, decrypt } from "@/lib/utils";
 import PatientsAPIManager from "@/services/api/managers/patients/PatientsAPIManager";
-import { useAppStore } from "@/store/zustand";
+import { convertDateYYYYMMDD } from "@/services/api/utils";
+import { useAppStore, useAuthTokenPersisted } from "@/store/zustand";
 import { getLocalTimeZone } from "@internationalized/date";
 import { today } from "@internationalized/date";
 import { BreadcrumbItem, Breadcrumbs } from "@nextui-org/breadcrumbs";
@@ -18,6 +19,8 @@ import { useParams } from "react-router-dom";
 const PatientDetails = () => {
 	const currentUser = location.pathname.includes("admin") ? "admin" : "staff";
 	const { setAlertDialogDetails } = useAppStore();
+	const { authToken } = useAuthTokenPersisted();
+	const user = decrypt(authToken);
 	const params = useParams();
 	const navigate = useNavigate();
 	const [formData, setFormData] = useState({
@@ -32,6 +35,64 @@ const PatientDetails = () => {
 		OTHER_DENTAL_CONCERN_PROBLEMS: "",
 		FRIEND_FAMILY: "",
 	});
+
+	const getMutation = useMutation({
+		mutationFn: PatientsAPIManager.getPatientForm,
+		onSuccess: (data) => {
+			console.log(data);
+			// const res = handleStructureDefaultValues(data);
+			// setFormData(res.newFormData);
+			// reset(res.newData);
+		},
+	});
+
+	useEffect(() => {
+		getMutation.mutate({ PATIENT_ID: params.id });
+	}, []);
+
+	const handleStructureDefaultValues = (data) => {
+		let newData = {};
+		let newFormData = {};
+		if (data.TITLE.includes("Other")) {
+			const temp = data.TITLE.split(",");
+			newData.TITLE = temp[0];
+			newFormData.OTHER_TITLE = temp[1];
+		} else {
+			newData.TITLE = data.TITLE;
+		}
+
+		if (data.REFFERAL.includes("Other")) {
+			const temp = data.REFFERAL.split(",");
+			newData.REFFERAL = temp[0];
+			newFormData.OTHER_REFERRAL = temp[1];
+		} else if (
+			data.REFFERAL.includes("Friend/Family (Please provide name so we can thank them)")
+		) {
+			const temp = data.REFFERAL.split(",");
+			newFormData.FRIEND_FAMILY = temp[1];
+		} else {
+			newData.REFFERAL = data.REFFERAL;
+		}
+
+		if (!conditions.includes(data.SUFFERING[0])) {
+			newData.SUFFERING = "";
+			newFormData.OTHER_CONDITIONS = data.SUFFERING[0];
+		}
+
+		Object.entries(data).forEach(([key, value]) => {
+			if (value === "N/A") {
+				newData[key] = "";
+			}
+		});
+
+		newData.TITLE = data.TITLE.includes("Other") ? data.TITLE.split(",")[0] : data.TITLE;
+		newData.BIRTHDAY = data.BIRTHDAY ? today(getLocalTimeZone()) : data.BIRTHDAY;
+		newData.LAST_DENTAL = data.LAST_DENTAL ? today(getLocalTimeZone()) : data.LAST_DENTAL;
+		return {
+			newData: { ...data, ...newData },
+			newFormData,
+		};
+	};
 	const {
 		register,
 		handleSubmit,
@@ -43,6 +104,9 @@ const PatientDetails = () => {
 		watch,
 	} = useForm({
 		defaultValues: useMemo(() => {
+			// if (true) {
+			// 	return handleStructureDefaultValues(sampleResponse).newData;
+			// }
 			// if (!data)
 			return {
 				PATIENT_ID: "",
@@ -53,7 +117,7 @@ const PatientDetails = () => {
 				BIRTHDAY: today(getLocalTimeZone()), // default date (today)
 				HOME_ADDRESS: "",
 				CONTACT_NUMBER: "",
-				EMAIL_ADDRESS: "",
+				EMAIL_ADDRESS: user.email,
 				HEALTH_FUND: "",
 				MEMBER_NUMBER: "",
 				EMERGENCY_CONTACT_NAME: "",
@@ -74,38 +138,18 @@ const PatientDetails = () => {
 				REFFERAL: "",
 				CONSENT: [],
 			};
-			// return {
-			// 	ID: data?.ID,
-			// 	FIRSTNAME: data?.FIRSTNAME,
-			// 	LASTNAME: data?.LASTNAME,
-			// 	EMAIL: data?.EMAIL,
-			// 	PHONE: data?.PHONE,
-			// 	BIRTHDATE:
-			// 		parseDate(convertDateYYYYMMDD(data?.BIRTHDATE)) || today(getLocalTimeZone()),
-			// 	GENDER: data?.GENDER,
-			// 	FILES: [],
-			// };
 		}, []),
 	});
-	useEffect(() => {
-		console.log(errors);
-	}, [errors]);
+
+	// useEffect(() => {
+	// 	const data = handleStructureDefaultValues(sampleResponse);
+	// 	console.log(data);
+	// 	setFormData(data.newFormData);
+	// 	reset(data.newData);
+	// }, []);
+
 	let now = today(getLocalTimeZone());
 	const sixMonthsAgo = now.add({ months: -6 });
-
-	const validateForm = (property, parentProperty, parentPropertyValue, value) => {
-		if (watch(parentProperty).includes(parentPropertyValue) && !value) {
-			setErrorForm({
-				...errorForm,
-				[property]: `${property} is required`,
-			});
-		} else {
-			setErrorForm({
-				...errorForm,
-				[property]: "",
-			});
-		}
-	};
 
 	const addMutation = useMutation({
 		mutationFn: PatientsAPIManager.postAddPatientForm,
@@ -116,7 +160,29 @@ const PatientDetails = () => {
 				title: "Success!",
 				message: "Patient form added successfully!",
 				confirmCallback: () => {
-					navigate(`/${currentUser}/patients`);
+					// navigate(`/${currentUser}/patients`);
+				},
+			});
+		},
+		onError: (error) => {
+			setAlertDialogDetails({
+				isOpen: true,
+				type: "danger",
+				title: "Error!",
+				message: error.message,
+			});
+		},
+	});
+	const editMutation = useMutation({
+		mutationFn: PatientsAPIManager.postEditPatientForm,
+		onSuccess: (data) => {
+			setAlertDialogDetails({
+				isOpen: true,
+				type: "success",
+				title: "Success!",
+				message: "Patient form updated successfully!",
+				confirmCallback: () => {
+					// navigate(`/${currentUser}/patients`);
 				},
 			});
 		},
@@ -130,7 +196,6 @@ const PatientDetails = () => {
 		},
 	});
 
-	useEffect(() => {}, [formData]);
 	const autoOtherParent = (property, parentProperty, parentPropertyValue, value) => {
 		if (parentPropertyValue === "empty") {
 			if (value?.length) {
@@ -206,28 +271,50 @@ const PatientDetails = () => {
 	};
 	const onSubmit = (data) => {
 		data.PATIENT_ID = params.id;
-		data.TITLE = data.TITLE.includes("Other")
-			? data.TITLE[0] + ", " + formData.OTHER_TITLE
-			: data.TITLE[0];
-		switch (data.REFFERAL) {
-			case "Other":
-				data.REFFERAL = data.REFFERAL + ", " + formData.OTHER_REFFERAL;
-				break;
-			case "Friend/Family (Please provide name so we can thank them)":
-				data.REFFERAL = data.REFFERAL + ", " + formData.FRIEND_FAMILY;
-				break;
+		if (data.ID) {
+			data.TITLE = data.TITLE.includes("Other")
+				? data.TITLE + ", " + formData.OTHER_TITLE
+				: data.TITLE;
+			switch (data.REFFERAL) {
+				case "Other":
+					data.REFFERAL = data.REFFERAL + ", " + formData.OTHER_REFERRAL;
+					break;
+				case "Friend/Family (Please provide name so we can thank them)":
+					data.REFFERAL = data.REFFERAL + ", " + formData.FRIEND_FAMILY;
+					break;
+				default:
+					data.REFFERAL = data.REFFERAL[0];
+			}
+		} else {
+			data.TITLE = data.TITLE.includes("Other")
+				? data.TITLE + ", " + formData.OTHER_TITLE
+				: data.TITLE[0];
+			switch (data.REFFERAL) {
+				case "Other":
+					data.REFFERAL = data.REFFERAL + ", " + formData.OTHER_REFERRAL;
+					break;
+				case "Friend/Family (Please provide name so we can thank them)":
+					data.REFFERAL = data.REFFERAL + ", " + formData.FRIEND_FAMILY;
+					break;
+				default:
+					data.REFFERAL = data.REFFERAL[0];
+			}
+			data.MAKE_YOU_NERVOUS = data?.MAKE_YOU_NERVOUS[0];
 		}
-		data.SUFFERING = data?.SUFFERING[0] ? data?.SUFFERING[0] : formData?.OTHER_CONDITIONS;
-		data.MAKE_YOU_NERVOUS = data?.MAKE_YOU_NERVOUS[0];
+		data.SUFFERING = data?.SUFFERING[0] ? [data?.SUFFERING[0]] : [formData?.OTHER_CONDITIONS];
+		data.BIRTHDAY = convertDateYYYYMMDD(data.BIRTHDAY);
+		data.LAST_DENTAL = convertDateYYYYMMDD(data.LAST_DENTAL);
+
 		let newData = data;
 		Object.entries(data).forEach(([key, value]) => {
-			if (value === "" || !value.length) {
+			if (!value) {
 				newData[key] = "N/A";
 			}
 		});
-
-		addMutation.mutate(newData);
+		if (data?.ID) editMutation.mutate(newData);
+		else addMutation.mutate(newData);
 	};
+
 	return (
 		<div style={{ flex: 1 }}>
 			<div className="w-full h-full">
@@ -664,7 +751,7 @@ const PatientDetails = () => {
 							</div>
 							<div style={{ flex: 1 }}>
 								<Controller
-									name="EMERGENCY_PHONE_NUMBER"
+									name="EMERGENCY_CONTACT_NUMBER"
 									control={control}
 									rules={{
 										required: "Phone number is required",
@@ -680,8 +767,8 @@ const PatientDetails = () => {
 												field.onChange(value);
 											}}
 											isReadOnly={location.pathname.includes("info")}
-											isInvalid={!!errors.EMERGENCY_PHONE_NUMBER}
-											errorMessage={errors.EMERGENCY_PHONE_NUMBER?.message}
+											isInvalid={!!errors.EMERGENCY_CONTACT_NUMBER}
+											errorMessage={errors.EMERGENCY_CONTACT_NUMBER?.message}
 											aria-label="phone number"
 											label="Phone Number"
 											type="text"
@@ -838,73 +925,11 @@ const PatientDetails = () => {
 												wrapper: "~pl-2/5 grid grid-cols-2 gap-3",
 											}}
 										>
-											<Checkbox value="Diabetes">Diabetes</Checkbox>
-											<Checkbox value="Asthma">Asthma</Checkbox>
-											<Checkbox value="Heart Disorder/Complaint">
-												Heart Disorder/Complaint
-											</Checkbox>
-											<Checkbox value="Sterold Theraphy">
-												Sterold Theraphy
-											</Checkbox>
-											<Checkbox value="Radiation Theraphy">
-												Radiation Theraphy
-											</Checkbox>
-											<Checkbox value="Stroke">Stroke</Checkbox>
-											<Checkbox value="Excessive Bleeding">
-												Excessive Bleeding
-											</Checkbox>
-											<Checkbox value="Kidney Disease">
-												Kidney Disease
-											</Checkbox>
-											<Checkbox value="Cancer">Cancer</Checkbox>
-											<Checkbox value="Tuberculosis">Tuberculosis</Checkbox>
-											<Checkbox value="Rheumatic Fever">
-												Rheumatic Fever
-											</Checkbox>
-											<Checkbox value="Bone Disease (Osteoporosis)">
-												Bone Disease (Osteoporosis)
-											</Checkbox>
-											<Checkbox value="Epilepsy">Epilepsy</Checkbox>
-											<Checkbox value="Fainting Disorder">
-												Fainting Disorder
-											</Checkbox>
-											<Checkbox value="Cardiac Pacemaker">
-												Cardiac Pacemaker
-											</Checkbox>
-											<Checkbox value="Stomach or Digestive Disorder">
-												Stomach or Digestive Disorder
-											</Checkbox>
-											<Checkbox value="Prosthetic Implant">
-												Prosthetic Implant
-											</Checkbox>
-											<Checkbox value="Lung Disease (eg. Bronchitis)">
-												Lung Disease (eg. Bronchitis)
-											</Checkbox>
-											<Checkbox value="Hepatitis or Other Liver Disease">
-												Hepatitis or Other Liver Disease
-											</Checkbox>
-											<Checkbox value="Blood Disease (eg. Anemia)">
-												Blood Disease (eg. Anemia)
-											</Checkbox>
-											<Checkbox value="Thyroid Disease">
-												Thyroid Disease
-											</Checkbox>
-											<Checkbox value="Nervous or Psychiatric Condition">
-												Nervous or Psychiatric Condition
-											</Checkbox>
-											<Checkbox value="Low or High Blood Pressure">
-												Low or High Blood Pressure
-											</Checkbox>
-											<Checkbox value="Sleep Apnoea">Sleep Apnoea</Checkbox>
-											<Checkbox value="Allergy to Penicillin">
-												Allergy to Penicillin
-											</Checkbox>
-											<Checkbox value="Allergy to Medications">
-												Allergy to Medications
-											</Checkbox>
-											<Checkbox value="Allergy to Latex">
-												Allergy to Latex
-											</Checkbox>
+											{conditions.map((condition) => (
+												<Checkbox key={condition} value={condition}>
+													{condition}
+												</Checkbox>
+											))}
 										</CheckboxGroup>
 									)}
 								/>
@@ -1400,19 +1425,19 @@ const PatientDetails = () => {
 												wrapper: "~pl-2/5",
 											}}
 										>
-											<Checkbox value="I consent to the dental and oral surgery procedures agreed to be necessary or advisable, including the use of local anesthetic and other medication as indicated.  ">
+											<Checkbox value="I consent to the dental and oral surgery procedures agreed to be necessary or advisable, including the use of local anesthetic and other medication as indicated.">
 												I consent to the dental and oral surgery procedures
 												agreed to be necessary or advisable, including the
 												use of local anesthetic and other medication as
 												indicated.
 											</Checkbox>
-											<Checkbox value="I understand that the practice requires at least 24 hours notice if I need to cancel my scheduled appointment and that a cancellation fee may be incurred if I fail to do so.   ">
+											<Checkbox value="I understand that the practice requires at least 24 hours notice if I need to cancel my scheduled appointment and that a cancellation fee may be incurred if I fail to do so.">
 												I understand that the practice requires at least 24
 												hours notice if I need to cancel my scheduled
 												appointment and that a cancellation fee may be
 												incurred if I fail to do so.
 											</Checkbox>
-											<Checkbox value="I authorize the dentist or the designated team to take x-rays, study models, photographs, and other diagnostic aids deemed appropriate by the dentist to make a thorough diagnosis.   ">
+											<Checkbox value="I authorize the dentist or the designated team to take x-rays, study models, photographs, and other diagnostic aids deemed appropriate by the dentist to make a thorough diagnosis.">
 												I authorize the dentist or the designated team to
 												take x-rays, study models, photographs, and other
 												diagnostic aids deemed appropriate by the dentist to
@@ -1422,7 +1447,7 @@ const PatientDetails = () => {
 												I am aware that payment is required on the day of
 												treatment.
 											</Checkbox>
-											<Checkbox value="We provide a courtesy to our patients a preventative recall program that offers a call service if you have not been to the practice in 6 months.   ">
+											<Checkbox value="We provide a courtesy to our patients a preventative recall program that offers a call service if you have not been to the practice in 6 months.">
 												We provide a courtesy to our patients a preventative
 												recall program that offers a call service if you
 												have not been to the practice in 6 months.
@@ -1433,7 +1458,7 @@ const PatientDetails = () => {
 							</div>
 						</div>
 					</div>
-					<Button color="primary" type="submit" className="px-8 w-fit">
+					<Button color="primary" type="submit" className="px-8 mb-24 w-fit">
 						Submit
 					</Button>
 				</form>
@@ -1443,3 +1468,65 @@ const PatientDetails = () => {
 };
 
 export default PatientDetails;
+
+// const sampleResponse = {
+// 	ID: "16",
+// 	PATIENT_ID: "11",
+// 	TITLE: "Other, asd",
+// 	FIRST_NAME: "asd",
+// 	LAST_NAME: "asd",
+// 	OCCUPATION: "asd",
+// 	BIRTHDAY: "2024-10-03",
+// 	HOME_ADDRESS: "asd",
+// 	CONTACT_NUMBER: "09123456789",
+// 	EMAIL_ADDRESS: "test@staff.com",
+// 	HEALTH_FUND: "N/A",
+// 	MEMBER_NUMBER: "N/A",
+// 	EMERGENCY_CONTACT_NAME: "asd",
+// 	EMERGENCY_CONTACT_NUMBER: "09123456789",
+// 	EMERGENCY_CONTACT_RELATIONSHIP: "asd",
+// 	FAMILY_DOCTOR: "N/A",
+// 	DOCTOR_CONTACT: "N/A",
+// 	SUFFERING: ["Stroke"],
+// 	PREGNANT_DURATION: "N/A",
+// 	HOSPITAL_PAST_2_DURATION: "N/A",
+// 	MEDICATION: "N/A",
+// 	SMOKE_PER_DAY: "N/A",
+// 	DENTAL_CONCERN_PROBLEMS: ["Sensitivity to hot or cold", "Clicking/Pain in the jaw joints"],
+// 	VISIT_PURPOSE: "asd",
+// 	LAST_DENTAL: "2024-10-03",
+// 	MAKE_YOU_NERVOUS: "Yes",
+// 	DENTAL_TREATMENT_REQUIREMENT: ["Gas (Nitrous oxide-laughing gas)", "Intravenous sedation"],
+// 	REFFERAL: "Other, asdasd",
+// 	CONSENT: ["I am aware that payment is required on the day of treatment."],
+// };
+
+const conditions = [
+	"Diabetes",
+	"Asthma",
+	"Heart Disorder/Complaint",
+	"Steroid Therapy",
+	"Radiation Therapy",
+	"Stroke",
+	"Excessive Bleeding",
+	"Kidney Disease",
+	"Cancer",
+	"Tuberculosis",
+	"Rheumatic Fever",
+	"Bone Disease (Osteoporosis)",
+	"Epilepsy",
+	"Fainting Disorder",
+	"Cardiac Pacemaker",
+	"Stomach or Digestive Disorder",
+	"Prosthetic Implant",
+	"Lung Disease (eg. Bronchitis)",
+	"Hepatitis or Other Liver Disease",
+	"Blood Disease (eg. Anemia)",
+	"Thyroid Disease",
+	"Nervous or Psychiatric Condition",
+	"Low or High Blood Pressure",
+	"Sleep Apnoea",
+	"Allergy to Penicillin",
+	"Allergy to Medications",
+	"Allergy to Latex",
+];

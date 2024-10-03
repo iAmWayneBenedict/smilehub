@@ -186,7 +186,13 @@ const EditGroupItem = () => {
 								<Controller
 									name="QUANTITY"
 									control={control}
-									rules={{ required: "Quantity is required" }}
+									rules={{
+										required: "Quantity is required",
+										pattern: {
+											value: /^[0-9]*$/,
+											message: "Quantity must be a number",
+										},
+									}}
 									render={({ field, formState: { errors } }) => (
 										<Input
 											value={field.value}
@@ -199,7 +205,7 @@ const EditGroupItem = () => {
 											errorMessage={errors.QUANTITY?.message}
 											label={"Quantity in number"}
 											placeholder={" "}
-											type="text"
+											type="number"
 											variant="bordered"
 											color="primary"
 											radius="sm"

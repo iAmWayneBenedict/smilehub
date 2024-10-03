@@ -4,17 +4,22 @@ import { getLocalTimeZone, parseDate } from "@internationalized/date";
 import { today } from "@internationalized/date";
 import { Tabs, Tab, Button, Input, Select, SelectItem, Avatar } from "@nextui-org/react";
 import { useEffect, useMemo, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, set, useForm } from "react-hook-form";
 import PropTypes from "prop-types";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import EmployeesAPIManager from "@/services/api/managers/employees/EmployeesAPIManager.js";
 import { useParams } from "react-router-dom";
-import { useAppStore } from "@/store/zustand.js";
+import { useAppStore, useAuthTokenPersisted } from "@/store/zustand.js";
 import { Eye, EyeOff } from "lucide-react";
+import { decrypt } from "@/lib/utils";
 
 const Profile = () => {
 	// controlled tabs
 	const [selected, setSelected] = useState("view");
+	const [currentDisplay, setCurrentDisplay] = useState("");
+	const { authToken } = useAuthTokenPersisted();
+	const currentUser = location.pathname.includes("admin") ? "admin" : "staff";
+	const user = decrypt(authToken);
 	return (
 		<div style={{ flex: 1 }} className="px-10 mt-10">
 			<div style={{ flex: 1 }} className="relative p-4 bg-white">
@@ -32,15 +37,31 @@ const Profile = () => {
 						}}
 					>
 						<Tab key="view" title="My Profile">
-							<ProfileForm isView selected={selected} setSelected={setSelected} />
-						</Tab>
-						<Tab key="edit" title="Edit Profile">
 							<ProfileForm
-								isView={false}
+								isView
 								selected={selected}
 								setSelected={setSelected}
+								setCurrentDisplay={setCurrentDisplay}
 							/>
 						</Tab>
+						{currentDisplay === user.email && currentUser === "staff" && (
+							<Tab key="edit" title="Edit Profile">
+								<ProfileForm
+									isView={false}
+									selected={selected}
+									setSelected={setSelected}
+								/>
+							</Tab>
+						)}
+						{currentUser === "admin" && (
+							<Tab key="edit" title="Edit Profile">
+								<ProfileForm
+									isView={false}
+									selected={selected}
+									setSelected={setSelected}
+								/>
+							</Tab>
+						)}
 					</Tabs>
 				</div>
 			</div>
@@ -50,7 +71,7 @@ const Profile = () => {
 
 export default Profile;
 
-const ProfileForm = ({ isView, selected, setSelected }) => {
+const ProfileForm = ({ isView, selected, setSelected, setCurrentDisplay = () => {} }) => {
 	const params = useParams();
 	const { setAlertDialogDetails } = useAppStore();
 
@@ -69,7 +90,7 @@ const ProfileForm = ({ isView, selected, setSelected }) => {
 
 	useEffect(() => {
 		if (isSuccess) {
-			console.log(data);
+			setCurrentDisplay(data?.EMAIL);
 		}
 	}, [data, isSuccess]);
 
@@ -429,6 +450,7 @@ ProfileForm.propTypes = {
 	isView: PropTypes.bool,
 	selected: PropTypes.any,
 	setSelected: PropTypes.any,
+	setCurrentDisplay: PropTypes.any,
 };
 
 const PasswordResetComponent = ({ isView, selected, setSelected, refetch }) => {

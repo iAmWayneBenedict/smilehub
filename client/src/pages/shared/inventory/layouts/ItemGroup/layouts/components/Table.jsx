@@ -24,6 +24,7 @@ import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { Pencil } from "lucide-react";
+import { useMemo } from "react";
 
 //! change this based on the columns in the db
 const INITIAL_VISIBLE_COLUMNS = ["NAME", "QUANTITY", "actions"];
@@ -34,7 +35,6 @@ export default function TableAppointments() {
 	const [visibleColumns, setVisibleColumns] = React.useState(new Set(INITIAL_VISIBLE_COLUMNS));
 	const [statusFilter, setStatusFilter] = React.useState("all");
 	const [rowsPerPage, setRowsPerPage] = React.useState(10);
-	const [groupDetail, setGroupDetail] = React.useState();
 	const [sortDescriptor, setSortDescriptor] = React.useState({
 		column: "NAME", //! update this based on the column in the db
 		direction: "ascending",
@@ -57,13 +57,13 @@ export default function TableAppointments() {
 		queryKey: ["groups"],
 		queryFn: InventoryAPIManager.getInventoryGroups,
 	});
-	useEffect(() => {
-		if (!isSuccessGroupData) return;
 
-		const filteredData = groupsData.find((item) => item.NAME === params.group);
+	const groupDetailData = useMemo(() => {
+		if (!isSuccessGroupData) return [];
 
-		setGroupDetail(filteredData);
-	}, [isSuccessGroupData, groupsData]);
+		return groupsData.find((item) => item.NAME === params.group);
+	}, [groupsData, params, isSuccessGroupData]);
+
 	const deleteGroupMutation = useMutation({
 		mutationFn: InventoryAPIManager.postDeleteGroup,
 		onSuccess: () => {
@@ -126,8 +126,8 @@ export default function TableAppointments() {
 
 	// filters the itemsData based on the search value
 	const filteredItems = React.useMemo(() => {
-		if (isLoading || !isSuccess || !groupDetail) return [];
-		const items = data.all_items.filter((item) => item.ITEM_GROUP === groupDetail.NAME);
+		if (isLoading || !isSuccess || !groupDetailData) return [];
+		const items = data.all_items.filter((item) => item.ITEM_GROUP === groupDetailData.NAME);
 		let filteredItemsData = [...items];
 
 		if (hasSearchFilter) {
@@ -137,7 +137,7 @@ export default function TableAppointments() {
 		}
 
 		return filteredItemsData;
-	}, [data, isSuccess, isLoading, filterValue, statusFilter, groupDetail]);
+	}, [data, isSuccess, isLoading, filterValue, statusFilter, groupDetailData]);
 
 	// paginates the filtered items
 	const items = React.useMemo(() => {
@@ -389,7 +389,7 @@ export default function TableAppointments() {
 
 								confirmCallback: () => {
 									deleteGroupMutation.mutate({
-										ID: groupDetail.ID,
+										ID: groupDetailData.ID,
 									});
 								},
 							});
@@ -400,7 +400,7 @@ export default function TableAppointments() {
 				</div>
 			</div>
 		);
-	}, [selectedKeys, items.length, page, pages, hasSearchFilter]);
+	}, [selectedKeys, items.length, page, pages, hasSearchFilter, groupDetailData]);
 
 	// render the table
 	return (

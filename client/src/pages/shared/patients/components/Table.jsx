@@ -40,6 +40,7 @@ export default function TablePatients({
 	type,
 	filterType: statusFilterProp,
 	filterKeys: filterKeysProp,
+	setTotalPatients: setTotalPatientsProp = () => {},
 }) {
 	const [filterKeys, setFilterKeys] = React.useState(filterKeysProp);
 	const [filterValue, setFilterValue] = React.useState("");
@@ -74,6 +75,12 @@ export default function TablePatients({
 		queryKey: ["all-patients"],
 		queryFn: PatientsAPIManager.getAllPatients,
 	});
+
+	useEffect(() => {
+		if (isSuccessPatientData) {
+			setTotalPatientsProp(patientsData.length);
+		}
+	}, [isSuccessPatientData]);
 
 	const mutationArchive = useMutation({
 		mutationFn: PatientsAPIManager.postChangeStatusPatient,
@@ -435,4 +442,5 @@ TablePatients.propTypes = {
 	type: PropTypes.string,
 	filterType: PropTypes.string,
 	filterKeys: PropTypes.array,
+	setTotalPatients: PropTypes.func,
 };

@@ -49,7 +49,10 @@ import { Trash2 } from "lucide-react";
 const AdminDashboard = () => {
 	const { setNewAppointmentModal } = useAppStore();
 
-	const [visitData, setVisitData] = useState([]);
+	const [visitData, setVisitData] = useState({
+		labels: [],
+		data: [],
+	});
 
 	const zoomedDevices = useMediaQuery({
 		query: "(min-device-width: 900px) and (max-device-width: 1600px)",
@@ -521,7 +524,7 @@ const AccordionSchedule = () => {
 									} ${startTime?.meridian}`;
 
 									const status = validateTimeStatus(item.APPOINTMENT_TIME);
-									
+
 									return (
 										<AccordionItem
 											key={index}

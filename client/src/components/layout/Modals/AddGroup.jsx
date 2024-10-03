@@ -52,6 +52,10 @@ export default function AddGroup() {
 			reset({
 				NAME: addGroupModal.data.GROUP_NAME,
 			});
+		} else {
+			reset({
+				NAME: "",
+			});
 		}
 	}, [addGroupModal]);
 	const mutation = useMutation({

@@ -9,6 +9,7 @@ import { useState } from "react";
 import { formatDate } from "@/lib/utils";
 import { Pencil } from "lucide-react";
 import { Trash2 } from "lucide-react";
+import { Eye } from "lucide-react";
 
 const ProgressNotes = () => {
 	const params = useParams();
@@ -75,6 +76,7 @@ const ProgressNotes = () => {
 										},
 									});
 								}}
+								isDisabled={currentUser === "staff"}
 							>
 								Add Progress
 							</Button>
@@ -106,6 +108,22 @@ const ProgressNotes = () => {
 														size="sm"
 														onClick={() => {
 															setAddProgressNoteModal({
+																title: "View Progress Notes",
+																isOpen: true,
+																data: item,
+
+																confirmCallback: (data) => {},
+															});
+														}}
+													>
+														<Eye size={20} />
+													</Button>
+													<Button
+														isIconOnly
+														variant="light"
+														size="sm"
+														onClick={() => {
+															setAddProgressNoteModal({
 																title: "Edit Progress Notes",
 																isOpen: true,
 																data: item,
@@ -113,6 +131,7 @@ const ProgressNotes = () => {
 																confirmCallback: (data) => {},
 															});
 														}}
+														isDisabled={currentUser === "staff"}
 													>
 														<Pencil size={20} />
 													</Button>
@@ -136,6 +155,7 @@ const ProgressNotes = () => {
 																},
 															});
 														}}
+														isDisabled={currentUser === "staff"}
 													>
 														<Trash2 size={20} />
 													</Button>

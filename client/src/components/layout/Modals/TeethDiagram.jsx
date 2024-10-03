@@ -25,11 +25,10 @@ const TeethDiagram = () => {
 	const [brushSize, setBrushSize] = useState(25);
 	const [color, setColor] = useState("#000000");
 	const [alpha, setAlpha] = useState(10);
-	const [initialImage, setInitialImage] = useState(
-		"https://res.cloudinary.com/dxxg9plr5/image/upload/v1727689645/eg6o2phse0cd8jttetwy.png"
-	);
+	const [initialImage, setInitialImage] = useState();
 	const [loading, setLoading] = useState(false);
 	const [showDownload, setShowDownload] = useState(false);
+	const currentUser = location.pathname.includes("admin") ? "admin" : "staff";
 	const { teethDiagramModalDetails, setTeethDiagramModalDetails, setAlertDialogDetails } =
 		useAppStore();
 
@@ -43,6 +42,7 @@ const TeethDiagram = () => {
 				message: "The diagram has been added successfully.",
 			});
 			setTeethDiagramModalDetails({});
+			setInitialImage(null);
 			setLoading(false);
 		},
 		onError: (error) => {
@@ -56,29 +56,14 @@ const TeethDiagram = () => {
 			setLoading(false);
 		},
 	});
-	const [temp, setTemp] = useState();
 	const getMutation = useMutation({
 		mutationFn: PatientsAPIManager.getDiagram,
 		onSuccess: (data) => {
-			// console.log(data);
-			const url = import.meta.env.VITE_SERVER_URL + "/uploads/" + data?.FILENAME;
-			const file = new File([url], "teeth-diagram.png", { type: "image/png" });
-
-			// setTemp(url);
-			// setInitialImage(file);
-			// const canvas = document.createElement("canvas");
-			// const ctx = canvas.getContext("2d");
-			// const img = new Image();
-			// img.crossOrigin = "anonymous";
-			// img.src = url;
-			// img.onload = () => {
-			// 	canvas.width = img.width;
-			// 	canvas.height = img.height;
-			// 	ctx.drawImage(img, 0, 0);
-
-			// 	setTemp(canvas.toDataURL());
-			// 	setInitialImage(canvas.toDataURL());
-			// };
+			setInitialImage(data?.URL);
+		},
+		onError: (error) => {
+			console.log(error);
+			setInitialImage(teethDiagramImg);
 		},
 	});
 
@@ -197,13 +182,10 @@ const TeethDiagram = () => {
 			const data = await res.json();
 			const imageUrl = data.url;
 
-			const formData = new FormData();
-
-			formData.append("file1", file);
-			formData.append("URL", imageUrl);
-			formData.append("PATIENT_ID", teethDiagramModalDetails?.data?.id);
-
-			addDiagramMutation.mutate(formData);
+			addDiagramMutation.mutate({
+				URL: imageUrl,
+				PATIENT_ID: teethDiagramModalDetails?.data?.id,
+			});
 		} catch (error) {
 			console.log(error);
 		}
@@ -249,14 +231,6 @@ const TeethDiagram = () => {
 												style={{ flex: 3 }}
 												className="flex items-center justify-center"
 											>
-												{/* {!imageCanDownload ? (
-													<p>
-														Sorry, the image that you have provided is
-														not accessible.
-													</p>
-												) : (
-													
-												)} */}
 												<canvas
 													onClick={() => {
 														handleSave();
@@ -265,11 +239,6 @@ const TeethDiagram = () => {
 													{...getCanvasProps({
 														ref: (ref) => (canvasRef.current = ref),
 													})}
-													// style={{
-													// 	width: "4rem",
-													// 	height: "auto",
-													// 	aspectRatio: "1/1",
-													// }}
 												/>
 											</div>
 											<div
@@ -281,6 +250,10 @@ const TeethDiagram = () => {
 														style={{ flex: 1 }}
 														onClick={handleUndo}
 														startContent={<Undo2 />}
+														isDisabled={
+															history.length === 0 ||
+															currentUser === "staff"
+														}
 													>
 														Undo
 													</Button>
@@ -288,6 +261,10 @@ const TeethDiagram = () => {
 														style={{ flex: 1 }}
 														onClick={handleRedo}
 														startContent={<Redo2 />}
+														isDisabled={
+															redoStack.length === 0 ||
+															currentUser === "staff"
+														}
 													>
 														Redo
 													</Button>
@@ -295,6 +272,7 @@ const TeethDiagram = () => {
 														style={{ flex: 1 }}
 														onClick={clearCanvas}
 														startContent={<CircleX />}
+														isDisabled={currentUser === "staff"}
 													>
 														Clear
 													</Button>
@@ -310,6 +288,7 @@ const TeethDiagram = () => {
 															setBrushColor(e.target.value + alpha);
 															setColor(e.target.value);
 														}}
+														disabled={currentUser === "staff"}
 													/>
 												</div>
 												<Slider
@@ -323,6 +302,7 @@ const TeethDiagram = () => {
 													}}
 													minValue={0}
 													className="max-w-md"
+													isDisabled={currentUser === "staff"}
 												/>
 												<Slider
 													label="Alpha"
@@ -338,6 +318,7 @@ const TeethDiagram = () => {
 													minValue={0}
 													defaultValue={10}
 													className="max-w-md"
+													isDisabled={currentUser === "staff"}
 												/>
 
 												<div className="flex flex-row w-full gap-3">
@@ -350,6 +331,7 @@ const TeethDiagram = () => {
 															isLoading={loading}
 															className=""
 															color="primary"
+															isDisabled={currentUser === "staff"}
 															style={{ flex: 1 }}
 														>
 															Save Changes

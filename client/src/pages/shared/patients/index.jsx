@@ -24,6 +24,7 @@ const Patients = () => {
 	// controlled tabs
 	const [selected, setSelected] = useState("patients");
 	const currentUser = location.pathname.includes("admin") ? "admin" : "staff";
+	const [totalPatients, setTotalPatients] = useState(0);
 
 	return (
 		<div style={{ flex: 1 }} className="bg-[#f9f9f9]">
@@ -35,7 +36,7 @@ const Patients = () => {
 						className="flex items-center justify-between p-4 mt-5 bg-white rounded-lg shadow-md"
 					>
 						<h3 className="text-2xl font-medium" style={{ flex: 1 }}>
-							Total Patients <span className="text-lightText">(197)</span>
+							Total Patients <span className="text-lightText">({totalPatients})</span>
 						</h3>
 						<div className="flex gap-2">
 							<Button
@@ -141,6 +142,7 @@ const Patients = () => {
 									type={"regular"}
 									filterType={filterType}
 									filterKeys={[...filterKeys]}
+									setTotalPatients={setTotalPatients}
 								/>
 							</Tab>
 							{currentUser === "admin" && (
@@ -149,6 +151,7 @@ const Patients = () => {
 										type={"archived"}
 										filterType={filterType}
 										filterKeys={[...filterKeys]}
+										setTotalPatients={setTotalPatients}
 									/>
 								</Tab>
 							)}

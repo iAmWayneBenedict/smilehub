@@ -254,7 +254,7 @@ export default function TableEmployees({ type }) {
 								<DropdownItem key={"view"} aria-label="view">
 									Profile
 								</DropdownItem>
-								{type === "regular" ? (
+								{type === "regular" && currentUser === "admin" && (
 									<DropdownItem
 										key={"archive"}
 										className="text-warning"
@@ -263,7 +263,8 @@ export default function TableEmployees({ type }) {
 									>
 										Archive
 									</DropdownItem>
-								) : (
+								)}
+								{type === "archived" && currentUser === "admin" && (
 									<DropdownItem
 										key={"activate"}
 										className="text-warning"
