@@ -3,6 +3,7 @@ import { checkboxSetterSingleItem, decrypt } from "@/lib/utils";
 import PatientsAPIManager from "@/services/api/managers/patients/PatientsAPIManager";
 import { convertDateYYYYMMDD } from "@/services/api/utils";
 import { useAppStore, useAuthTokenPersisted } from "@/store/zustand";
+import { parseDate } from "@internationalized/date";
 import { getLocalTimeZone } from "@internationalized/date";
 import { today } from "@internationalized/date";
 import { BreadcrumbItem, Breadcrumbs } from "@nextui-org/breadcrumbs";
@@ -23,6 +24,7 @@ const PatientDetails = () => {
 	const user = decrypt(authToken);
 	const params = useParams();
 	const navigate = useNavigate();
+	const [getRequestData, setGetRequestData] = useState(null);
 	const [formData, setFormData] = useState({
 		OTHER_TITLE: "",
 		OTHER_CONDITIONS: "",
@@ -39,10 +41,11 @@ const PatientDetails = () => {
 	const getMutation = useMutation({
 		mutationFn: PatientsAPIManager.getPatientForm,
 		onSuccess: (data) => {
-			console.log(data);
-			// const res = handleStructureDefaultValues(data);
-			// setFormData(res.newFormData);
-			// reset(res.newData);
+			const res = handleStructureDefaultValues(data);
+			console.log(res.newFormData);
+			setFormData(res.newFormData);
+			reset(res.newData);
+			setGetRequestData(res.newData);
 		},
 	});
 
@@ -53,8 +56,15 @@ const PatientDetails = () => {
 	const handleStructureDefaultValues = (data) => {
 		let newData = {};
 		let newFormData = {};
+		console.log(JSON.parse(data.SUFFERING));
+		newData.SUFFERING = JSON.parse(data.SUFFERING);
+		newData.DENTAL_CONCERN_PROBLEMS = JSON.parse(data.DENTAL_CONCERN_PROBLEMS);
+		newData.DENTAL_TREATMENT_REQUIREMENT = JSON.parse(data.DENTAL_TREATMENT_REQUIREMENT);
+		// newData.CONSENT = JSON.parse(data.CONSENT);
+		// console.log(1233);
+
 		if (data.TITLE.includes("Other")) {
-			const temp = data.TITLE.split(",");
+			const temp = data.TITLE.split(", ");
 			newData.TITLE = temp[0];
 			newFormData.OTHER_TITLE = temp[1];
 		} else {
@@ -62,21 +72,21 @@ const PatientDetails = () => {
 		}
 
 		if (data.REFFERAL.includes("Other")) {
-			const temp = data.REFFERAL.split(",");
+			const temp = data.REFFERAL.split(", ");
 			newData.REFFERAL = temp[0];
 			newFormData.OTHER_REFERRAL = temp[1];
 		} else if (
 			data.REFFERAL.includes("Friend/Family (Please provide name so we can thank them)")
 		) {
-			const temp = data.REFFERAL.split(",");
+			const temp = data.REFFERAL.split(", ");
 			newFormData.FRIEND_FAMILY = temp[1];
 		} else {
 			newData.REFFERAL = data.REFFERAL;
 		}
-
-		if (!conditions.includes(data.SUFFERING[0])) {
-			newData.SUFFERING = "";
-			newFormData.OTHER_CONDITIONS = data.SUFFERING[0];
+		console.log(conditions.includes(newData.SUFFERING));
+		if (!conditions.includes(newData.SUFFERING[0])) {
+			newFormData.OTHER_CONDITIONS = newData.SUFFERING[0];
+			newData.SUFFERING = [];
 		}
 
 		Object.entries(data).forEach(([key, value]) => {
@@ -86,8 +96,12 @@ const PatientDetails = () => {
 		});
 
 		newData.TITLE = data.TITLE.includes("Other") ? data.TITLE.split(",")[0] : data.TITLE;
-		newData.BIRTHDAY = data.BIRTHDAY ? today(getLocalTimeZone()) : data.BIRTHDAY;
-		newData.LAST_DENTAL = data.LAST_DENTAL ? today(getLocalTimeZone()) : data.LAST_DENTAL;
+		newData.BIRTHDAY = data.BIRTHDAY
+			? parseDate(convertDateYYYYMMDD(data.BIRTHDAY))
+			: today(getLocalTimeZone());
+		newData.LAST_DENTAL = data.LAST_DENTAL
+			? parseDate(convertDateYYYYMMDD(data.LAST_DENTAL))
+			: today(getLocalTimeZone());
 		return {
 			newData: { ...data, ...newData },
 			newFormData,
@@ -104,8 +118,8 @@ const PatientDetails = () => {
 		watch,
 	} = useForm({
 		defaultValues: useMemo(() => {
-			// if (true) {
-			// 	return handleStructureDefaultValues(sampleResponse).newData;
+			// if (getRequestData && getMutation.isSuccess) {
+			// 	return handleStructureDefaultValues(getRequestData).newData;
 			// }
 			// if (!data)
 			return {
@@ -138,7 +152,7 @@ const PatientDetails = () => {
 				REFFERAL: "",
 				CONSENT: [],
 			};
-		}, []),
+		}, [getRequestData, getMutation]),
 	});
 
 	// useEffect(() => {
@@ -271,6 +285,7 @@ const PatientDetails = () => {
 	};
 	const onSubmit = (data) => {
 		data.PATIENT_ID = params.id;
+		console.log(data.SUFFERING);
 		if (data.ID) {
 			data.TITLE = data.TITLE.includes("Other")
 				? data.TITLE + ", " + formData.OTHER_TITLE
@@ -285,6 +300,10 @@ const PatientDetails = () => {
 				default:
 					data.REFFERAL = data.REFFERAL[0];
 			}
+
+			data.SUFFERING = data?.SUFFERING[0]
+				? JSON.stringify(data?.SUFFERING)
+				: JSON.stringify([formData?.OTHER_CONDITIONS]);
 		} else {
 			data.TITLE = data.TITLE.includes("Other")
 				? data.TITLE + ", " + formData.OTHER_TITLE
@@ -300,8 +319,15 @@ const PatientDetails = () => {
 					data.REFFERAL = data.REFFERAL[0];
 			}
 			data.MAKE_YOU_NERVOUS = data?.MAKE_YOU_NERVOUS[0];
+			data.SUFFERING = data?.SUFFERING[0]
+				? JSON.stringify([data?.SUFFERING[0]])
+				: JSON.stringify([formData?.OTHER_CONDITIONS]);
 		}
-		data.SUFFERING = data?.SUFFERING[0] ? [data?.SUFFERING[0]] : [formData?.OTHER_CONDITIONS];
+
+		data.DENTAL_CONCERN_PROBLEMS = JSON.stringify(data.DENTAL_CONCERN_PROBLEMS);
+		data.DENTAL_TREATMENT_REQUIREMENT = JSON.stringify(data.DENTAL_TREATMENT_REQUIREMENT);
+		data.CONSENT = JSON.stringify(data.CONSENT);
+
 		data.BIRTHDAY = convertDateYYYYMMDD(data.BIRTHDAY);
 		data.LAST_DENTAL = convertDateYYYYMMDD(data.LAST_DENTAL);
 
@@ -311,6 +337,7 @@ const PatientDetails = () => {
 				newData[key] = "N/A";
 			}
 		});
+		console.log(newData);
 		if (data?.ID) editMutation.mutate(newData);
 		else addMutation.mutate(newData);
 	};
@@ -910,6 +937,7 @@ const PatientDetails = () => {
 											orientation="vertical"
 											value={field.value}
 											onValueChange={(value) => {
+												console.log(value);
 												field.onChange(value);
 												autoOtherParent(
 													"OTHER_CONDITIONS",
@@ -1169,6 +1197,28 @@ const PatientDetails = () => {
 								<Controller
 									name="LAST_DENTAL"
 									control={control}
+									rules={{ required: "Date is required" }}
+									render={({ field, formState: { errors } }) => (
+										<CustomDatePicker
+											value={field.value}
+											isInvalid={!!errors.LAST_DENTAL}
+											errorMessage={errors.LAST_DENTAL?.message}
+											setValue={(value) => {
+												field.onChange(value);
+											}}
+											aria-label="How long since your last dental visit?"
+											label="How long since your last dental visit?"
+											showTimeSelect={false}
+											classNames={{
+												label: "text-darkText font-semibold",
+												innerWrapper: "h-full",
+											}}
+										/>
+									)}
+								/>
+								{/* <Controller
+									name="LAST_DENTAL"
+									control={control}
 									render={({ field, formState: { errors } }) => (
 										<Input
 											value={field.value}
@@ -1194,7 +1244,7 @@ const PatientDetails = () => {
 											labelPlacement={"outside"}
 										/>
 									)}
-								/>
+								/> */}
 							</div>
 						</div>
 						<div className="flex flex-row gap-5">
@@ -1207,9 +1257,7 @@ const PatientDetails = () => {
 											label="Have you ever had or are you suffering from any of the following? (Please tick that apply)"
 											orientation="vertical"
 											value={field.value}
-											onValueChange={(value) =>
-												field.onChange(checkboxSetterSingleItem(value))
-											}
+											onValueChange={(value) => field.onChange(value)}
 											isInvalid={!!errors.DENTAL_TREATMENT_REQUIREMENT}
 											errorMessage={
 												errors.DENTAL_TREATMENT_REQUIREMENT?.message
