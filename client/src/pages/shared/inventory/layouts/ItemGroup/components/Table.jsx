@@ -257,6 +257,7 @@ export default function TableAppointments() {
 		onRowsPerPageChange,
 		onClear,
 		setNewAppointmentModal,
+		filteredItems,
 	]);
 
 	// table bottom content with pagination
@@ -264,9 +265,9 @@ export default function TableAppointments() {
 		return (
 			<div className="flex items-center justify-between px-2 py-2">
 				<span className="w-[30%] text-small text-default-400">
-					{selectedKeys === "all"
+					{/* {selectedKeys === "all"
 						? "All items selected"
-						: `${selectedKeys.size} of ${filteredItems.length} selected`}
+						: `${selectedKeys.size} of ${filteredItems.length} selected`} */}
 				</span>
 
 				<div className="hidden sm:flex w-[30%] justify-end gap-2">

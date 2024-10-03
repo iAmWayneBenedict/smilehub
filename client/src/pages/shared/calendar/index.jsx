@@ -107,8 +107,12 @@ const Calendar = () => {
 	// hide the syncfusion license error message
 	// ! This is a temporary fix. bug in syncfusion license key
 	useEffect(() => {
-		document.querySelectorAll("[style]").forEach((el) => {
-			if (el.innerText?.toLowerCase().includes("free account")) el.style.display = "none";
+		document.querySelectorAll("div[style]").forEach((el) => {
+			if (
+				el.innerText?.toLowerCase()?.includes("free account") &&
+				el.outerHTML?.includes("position: fixed")
+			)
+				el.style.display = "none";
 		});
 	}, [isCompletedData]);
 
@@ -262,7 +266,7 @@ const Calendar = () => {
 					dataSource: weeklyAppointmentsData,
 				}}
 				showHeaderBar={false}
-				selectedDate={new Date(currentYear, currentMonth, currentDay + 1)}
+				selectedDate={new Date()}
 				workDays={[1, 2, 3, 4, 5]}
 				workHours={{ start: "08:00", end: "18:00" }}
 				showWeekend={false}
