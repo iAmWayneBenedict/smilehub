@@ -36,23 +36,7 @@ const SharedNavBar = () => {
 					</Link>
 				</div>
 			</div>
-			<div style={{ flex: 1 }} className="flex justify-between px-5">
-				<div style={{ flex: 1 }} className="max-w-[40rem] w-full">
-					{/* search nav bar */}
-					<Input
-						endContent={<Search className="text-[#a2a2a2]" />}
-						variant="bordered"
-						color="primary"
-						type="text"
-						placeholder="Search"
-						className="w-full bg-white"
-						size="lg"
-						radius="sm"
-						classNames={{
-							label: "text-[#a2a2a2]",
-						}}
-					/>
-				</div>
+			<div style={{ flex: 1 }} className="flex justify-end px-5">
 				<div style={{ flex: 1 }} className="flex justify-evenly max-w-[40rem]">
 					<div>
 						{/* TODO: make this dynamic */}

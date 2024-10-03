@@ -147,10 +147,6 @@ const Tasks = () => {
 										<DropdownItem key="Completed">Completed</DropdownItem>
 									</DropdownMenu>
 								</Dropdown>
-
-								<Button isIconOnly variant="bordered" radius="sm" size="lg">
-									<CircleHelp />
-								</Button>
 							</div>
 						</div>
 						<div className="flex flex-col bg-white ">

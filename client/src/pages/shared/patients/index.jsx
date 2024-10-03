@@ -120,9 +120,6 @@ const Patients = () => {
 									</DropdownItem>
 								</DropdownMenu>
 							</Dropdown>
-							<Button isIconOnly variant="bordered" size="lg">
-								<CircleHelp />
-							</Button>
 						</div>
 					</div>
 					<div className="p-4 mt-5 bg-white rounded-lg shadow-md ">

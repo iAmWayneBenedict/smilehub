@@ -375,9 +375,6 @@ const Calendar = () => {
 							>
 								<Printer />
 							</Button>
-							<Button isIconOnly variant="bordered" radius="sm" size="lg">
-								<CircleHelp />
-							</Button>
 						</div>
 					</div>
 				</div>
