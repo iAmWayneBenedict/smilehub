@@ -13,16 +13,15 @@ import { useAppStore, useAuthTokenPersisted } from "@/store/zustand.js";
 import { Eye, EyeOff } from "lucide-react";
 import { decrypt } from "@/lib/utils";
 
-const Profile = () => {
+const PatientProfile = () => {
 	// controlled tabs
 	const [selected, setSelected] = useState("view");
-	const [currentDisplay, setCurrentDisplay] = useState("");
 	const { authToken } = useAuthTokenPersisted();
-	const currentUser = location.pathname.includes("admin") ? "admin" : "staff";
 	const user = decrypt(authToken);
+
 	return (
-		<div style={{ flex: 1 }} className="px-10 mt-10">
-			<div style={{ flex: 1 }} className="relative p-4 bg-white">
+		<div style={{ flex: 1 }} className="max-w-[1536px] px-6 mt-10 mx-auto">
+			<div style={{ flex: 1 }} className="relative bg-white">
 				<div>
 					<Tabs
 						selectedKey={selected}
@@ -34,34 +33,19 @@ const Profile = () => {
 						classNames={{
 							tabContent:
 								"group-data-[selected=true]:text-darkText group-data-[selected=true]:font-bold",
+							base: "w-full flex justify-center xl:justify-start",
 						}}
 					>
 						<Tab key="view" title="Profile">
+							<ProfileForm isView selected={selected} setSelected={setSelected} />
+						</Tab>
+						<Tab key="edit" title="Edit Profile">
 							<ProfileForm
-								isView
+								isView={false}
 								selected={selected}
 								setSelected={setSelected}
-								setCurrentDisplay={setCurrentDisplay}
 							/>
 						</Tab>
-						{currentDisplay === user.email && currentUser === "staff" && (
-							<Tab key="edit" title="Edit Profile">
-								<ProfileForm
-									isView={false}
-									selected={selected}
-									setSelected={setSelected}
-								/>
-							</Tab>
-						)}
-						{currentUser === "admin" && (
-							<Tab key="edit" title="Edit Profile">
-								<ProfileForm
-									isView={false}
-									selected={selected}
-									setSelected={setSelected}
-								/>
-							</Tab>
-						)}
 					</Tabs>
 				</div>
 			</div>
@@ -69,30 +53,24 @@ const Profile = () => {
 	);
 };
 
-export default Profile;
+export default PatientProfile;
 
-const ProfileForm = ({ isView, selected, setSelected, setCurrentDisplay = () => {} }) => {
+const ProfileForm = ({ isView, selected, setSelected }) => {
 	const params = useParams();
 	const { setAlertDialogDetails } = useAppStore();
 
 	const onSubmitDetails = (data) => {
 		data.BIRTHDAY = convertDateYYYYMMDD(data.BIRTHDAY);
 		data.ID = params?.id;
-		detailsMutation.mutate(data);
+		// detailsMutation.mutate(data);
 	};
-	const { data, isSuccess, isLoading, refetch } = useQuery({
-		queryKey: ["employee-detail"],
-		queryFn: () =>
-			EmployeesAPIManager.getEmployeeDetails({
-				ID: params?.id,
-			}),
-	});
-
-	useEffect(() => {
-		if (isSuccess) {
-			setCurrentDisplay(data?.EMAIL);
-		}
-	}, [data, isSuccess]);
+	// const { data, isSuccess, isLoading, refetch } = useQuery({
+	// 	queryKey: ["employee-detail"],
+	// 	queryFn: () =>
+	// 		EmployeesAPIManager.getEmployeeDetails({
+	// 			ID: params?.id,
+	// 		}),
+	// });
 
 	const {
 		register,
@@ -103,32 +81,34 @@ const ProfileForm = ({ isView, selected, setSelected, setCurrentDisplay = () => 
 		setError,
 	} = useForm({
 		defaultValues: useMemo(() => {
-			if (!data) {
-				return {
-					FULLNAME: "",
-					BIRTHDAY: today(getLocalTimeZone()), // default date (today)
-					GENDER: "",
-					ROLE: "",
-					EMAIL: "",
-				};
-			}
+			// if (!data) {
 			return {
-				FULLNAME: data?.FULLNAME,
-				BIRTHDAY: data?.BIRTHDAY
-					? parseDate(convertDateYYYYMMDD(data?.BIRTHDAY))
-					: today(getLocalTimeZone()), // default date (today)
-				GENDER: data?.GENDER,
-				ROLE: data?.ROLE,
-				EMAIL: data?.EMAIL,
+				FIRSTNAME: "",
+				LASTNAME: "",
+				BIRTHDATE: today(getLocalTimeZone()), // default date (today)
+				GENDER: "",
+				PHONE: "",
+				ROLE: "",
+				EMAIL: "",
 			};
-		}, [data]),
+			// }
+			// return {
+			// 	FULLNAME: data?.FULLNAME,
+			// 	BIRTHDAY: data?.BIRTHDAY
+			// 		? parseDate(convertDateYYYYMMDD(data?.BIRTHDAY))
+			// 		: today(getLocalTimeZone()), // default date (today)
+			// 	GENDER: data?.GENDER,
+			// 	ROLE: data?.ROLE,
+			// 	EMAIL: data?.EMAIL,
+			// };
+		}, []),
 	});
 
 	const detailsMutation = useMutation({
 		mutationFn: EmployeesAPIManager.postUpdateEmployeeInfo,
 		onSuccess: (data) => {
 			reset();
-			refetch();
+			// refetch();
 			const isStaff = location.pathname.includes("staff");
 			const isAdmin = location.pathname.includes("admin");
 
@@ -162,20 +142,30 @@ const ProfileForm = ({ isView, selected, setSelected, setCurrentDisplay = () => 
 				});
 		},
 	});
-
 	useEffect(() => {
-		if (!isSuccess) return;
-
 		reset({
-			FULLNAME: data?.FULLNAME,
-			BIRTHDAY: data?.BIRTHDAY
-				? parseDate(convertDateYYYYMMDD(data?.BIRTHDAY))
-				: today(getLocalTimeZone()), // default date (today)
-			GENDER: data?.GENDER,
-			ROLE: data?.ROLE,
-			EMAIL: data?.EMAIL,
+			FIRSTNAME: "Test",
+			LASTNAME: "Lastname",
+			BIRTHDATE: today(getLocalTimeZone()), // default date (today)
+			GENDER: "Male",
+			ROLE: "PATIENT",
+			EMAIL: "test@patient.com",
+			PHONE: "09123456789",
 		});
-	}, [data, isSuccess]);
+	}, []);
+	// useEffect(() => {
+	// 	if (!isSuccess) return;
+
+	// 	reset({
+	// 		FULLNAME: data?.FULLNAME,
+	// 		BIRTHDAY: data?.BIRTHDAY
+	// 			? parseDate(convertDateYYYYMMDD(data?.BIRTHDAY))
+	// 			: today(getLocalTimeZone()), // default date (today)
+	// 		GENDER: data?.GENDER,
+	// 		ROLE: data?.ROLE,
+	// 		EMAIL: data?.EMAIL,
+	// 	});
+	// }, [data, isSuccess]);
 
 	return (
 		<div>
@@ -187,13 +177,18 @@ const ProfileForm = ({ isView, selected, setSelected, setCurrentDisplay = () => 
 					<div className="mt-10 xl:mt-0">
 						<Avatar
 							src={null}
-							className="w-56 h-56 text-large text-primary bg-accent "
+							className="w-56 h-56 text-primary bg-accent text-large"
 						/>
 					</div>
 
 					{isView && (
 						<div>
-							<h1 className="text-3xl font-bold">{data?.FULLNAME}</h1>
+							<h1 className="text-3xl font-bold">
+								{
+									// data?.FULLNAME
+								}
+								Sample Name
+							</h1>
 						</div>
 					)}
 				</div>
@@ -201,10 +196,10 @@ const ProfileForm = ({ isView, selected, setSelected, setCurrentDisplay = () => 
 					<form style={{ flex: 1 }} onSubmit={handleSubmit(onSubmitDetails)}>
 						<div
 							style={{ flex: 1 }}
-							className="flex flex-col items-center justify-center gap-5 mr-0 lg:mr-16 2xl:mr-64"
+							className="flex flex-col items-center justify-center gap-5 mr-0 xl:mr-16 2xl:mr-48"
 						>
 							<Controller
-								name="BIRTHDAY"
+								name="BIRTHDATE"
 								control={control}
 								rules={{ required: "Date of Birth is required" }}
 								render={({ field, formState: { errors } }) => (
@@ -212,8 +207,8 @@ const ProfileForm = ({ isView, selected, setSelected, setCurrentDisplay = () => 
 										isReadOnly={isView}
 										value={field.value}
 										label={"Date of Birth"}
-										isInvalid={!!errors.BIRTHDAY}
-										errorMessage={errors.BIRTHDAY?.message}
+										isInvalid={!!errors.BIRTHDATE}
+										errorMessage={errors.BIRTHDATE?.message}
 										setValue={(value) => {
 											field.onChange(value);
 										}}
@@ -222,21 +217,21 @@ const ProfileForm = ({ isView, selected, setSelected, setCurrentDisplay = () => 
 								)}
 							/>
 							<Controller
-								name="FULLNAME"
+								name="FIRSTNAME"
 								control={control}
-								rules={{ required: "Full name is required" }}
+								rules={{ required: "First name is required" }}
 								render={({ field, formState: { errors } }) => (
 									<Input
 										value={field.value}
 										onValueChange={(value) => {
 											field.onChange(value);
 										}}
-										aria-label="Full name"
+										aria-label="First name"
 										isReadOnly={isView}
-										isInvalid={!!errors.FULLNAME}
-										errorMessage={errors.FULLNAME?.message}
+										isInvalid={!!errors.FIRSTNAME}
+										errorMessage={errors.FIRSTNAME?.message}
 										type="text"
-										label="Full Name"
+										label="First Name"
 										size="lg"
 										variant="bordered"
 										color="primary"
@@ -245,7 +240,36 @@ const ProfileForm = ({ isView, selected, setSelected, setCurrentDisplay = () => 
 											label: "text-darkText font-semibold ",
 											inputWrapper: "rounded-lg h-[4rem] bg-white",
 										}}
-										placeholder="Full Name"
+										placeholder="First Name"
+										labelPlacement={"outside"}
+									/>
+								)}
+							/>
+							<Controller
+								name="LASTNAME"
+								control={control}
+								rules={{ required: "Last name is required" }}
+								render={({ field, formState: { errors } }) => (
+									<Input
+										value={field.value}
+										onValueChange={(value) => {
+											field.onChange(value);
+										}}
+										aria-label="Last name"
+										isReadOnly={isView}
+										isInvalid={!!errors.LASTNAME}
+										errorMessage={errors.LASTNAME?.message}
+										type="text"
+										label="Last Name"
+										size="lg"
+										variant="bordered"
+										color="primary"
+										className="w-full"
+										classNames={{
+											label: "text-darkText font-semibold ",
+											inputWrapper: "rounded-lg h-[4rem] bg-white",
+										}}
+										placeholder="Last Name"
 										labelPlacement={"outside"}
 									/>
 								)}
@@ -317,73 +341,7 @@ const ProfileForm = ({ isView, selected, setSelected, setCurrentDisplay = () => 
 									)}
 								/>
 							)}
-							{!isView ? (
-								<Controller
-									name="ROLE"
-									control={control}
-									rules={{ required: "Role is required" }}
-									render={({ field, formState: { errors } }) => (
-										<Select
-											{...field}
-											isReadOnly={isView}
-											selectedKeys={[field.value]}
-											onChange={(selectedKeys) => {
-												field.onChange(selectedKeys);
-											}}
-											isInvalid={!!errors.ROLE}
-											errorMessage={errors.ROLE?.message}
-											labelPlacement={"outside"}
-											placeholder="Select Role"
-											label="Role"
-											size="lg"
-											variant="bordered"
-											color="primary"
-											className="w-full bg-white"
-											radius="sm"
-											classNames={{
-												label: "text-darkText font-semibold ",
-												inputWrapper: "h-full",
-												trigger: "h-[4rem]",
-											}}
-										>
-											{employeeRoles.map((role) => (
-												<SelectItem key={role.name} value={role.name}>
-													{role.name}
-												</SelectItem>
-											))}
-										</Select>
-									)}
-								/>
-							) : (
-								<Controller
-									name="ROLE"
-									control={control}
-									rules={{ required: "Role is required" }}
-									render={({ field, formState: { errors } }) => (
-										<Input
-											value={field.value}
-											onValueChange={(value) => {
-												field.onChange(value);
-											}}
-											isReadOnly={isView}
-											isInvalid={!!errors.ROLE}
-											errorMessage={errors.ROLE?.message}
-											type="text"
-											label="Role"
-											size="lg"
-											variant="bordered"
-											color="primary"
-											className="w-full"
-											classNames={{
-												label: "text-darkText font-semibold ",
-												inputWrapper: "rounded-lg h-[4rem] bg-white",
-											}}
-											placeholder="Role"
-											labelPlacement={"outside"}
-										/>
-									)}
-								/>
-							)}
+
 							<Controller
 								name="EMAIL"
 								control={control}
@@ -419,6 +377,41 @@ const ProfileForm = ({ isView, selected, setSelected, setCurrentDisplay = () => 
 									/>
 								)}
 							/>
+							<Controller
+								name="PHONE"
+								control={control}
+								rules={{
+									required: "Phone is required",
+									pattern: {
+										value: /^[+069](\d{9}|\d{10}|\d{11}|\d{12})$/,
+										message: "Invalid phone number",
+									},
+								}}
+								render={({ field, formState: { errors } }) => (
+									<Input
+										value={field.value}
+										onValueChange={(value) => {
+											field.onChange(value);
+										}}
+										isReadOnly={isView}
+										isInvalid={!!errors.PHONE}
+										errorMessage={errors.PHONE?.message}
+										key={"Phone"}
+										type="text"
+										label="Phone"
+										size="lg"
+										variant="bordered"
+										color="primary"
+										className="w-full"
+										classNames={{
+											label: "text-darkText font-semibold ",
+											inputWrapper: "rounded-lg h-[4rem] bg-white",
+										}}
+										placeholder="+639123456789"
+										labelPlacement={"outside"}
+									/>
+								)}
+							/>
 
 							{!isView && (
 								<div>
@@ -442,7 +435,7 @@ const ProfileForm = ({ isView, selected, setSelected, setCurrentDisplay = () => 
 						isView={isView}
 						selected={selected}
 						setSelected={setSelected}
-						refetch={refetch}
+						// refetch={refetch}
 					/>
 				</div>
 			</div>
@@ -456,7 +449,7 @@ ProfileForm.propTypes = {
 	setCurrentDisplay: PropTypes.any,
 };
 
-const PasswordResetComponent = ({ isView, selected, setSelected, refetch }) => {
+const PasswordResetComponent = ({ isView, selected, setSelected }) => {
 	const params = useParams();
 	const { setAlertDialogDetails } = useAppStore();
 	const [isVisiblePassword, setIsVisiblePassword] = useState(false);
@@ -488,7 +481,7 @@ const PasswordResetComponent = ({ isView, selected, setSelected, refetch }) => {
 		mutationFn: EmployeesAPIManager.postUpdateEmployeePassword,
 		onSuccess: (data) => {
 			reset();
-			refetch();
+			// refetch();
 			setAlertDialogDetails({
 				isOpen: true,
 				type: "success",

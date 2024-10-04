@@ -45,6 +45,7 @@ import EditItemShortage from "./pages/shared/inventory/layouts/ItemShortageList/
 import ItemListShortage from "./pages/shared/inventory/layouts/ItemShortageList";
 import ItemShortage from "./pages/shared/inventory/layouts/ItemShortageList/layout/Item";
 import PatientDetails from "./pages/shared/patients/components/PatientDetails";
+import PatientProfile from "./pages/Profile/Profile";
 
 function App() {
 	const navigate = useNavigate();
@@ -69,6 +70,7 @@ function App() {
 					<Route path="/blogs" element={<LayoutWrapper child={<Blogs />} />} />
 					<Route path="/about" element={<LayoutWrapper child={<About />} />} />
 					<Route path="/contact" element={<LayoutWrapper child={<Contact />} />} />
+					<Route path="/profile" element={<LayoutWrapper child={<PatientProfile />} />} />
 					<Route
 						path="/terms-and-privacy-policy"
 						element={<LayoutWrapper child={<TermsAndPrivacyPolicy />} />}

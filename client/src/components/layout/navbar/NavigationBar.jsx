@@ -30,7 +30,6 @@ const NavigationBar = () => {
 	const { authToken, setAuthToken } = useAuthTokenPersisted();
 
 	const user = decrypt(authToken);
-
 	useEffect(() => {
 		// change navbar color on specific pages
 		if (nav.current === null) return;
@@ -38,6 +37,7 @@ const NavigationBar = () => {
 			location.pathname === "/" ||
 			location.pathname === "/login" ||
 			location.pathname === "/register" ||
+			location.pathname === "/profile" ||
 			location.pathname === "/terms-and-privacy-policy"
 		) {
 			nav.current.classList.add("colored");
@@ -53,6 +53,7 @@ const NavigationBar = () => {
 				location.pathname === "/" ||
 				location.pathname === "/login" ||
 				location.pathname === "/register" ||
+				location.pathname === "/profile" ||
 				location.pathname === "/terms-and-privacy-policy"
 			)
 				return;
@@ -140,7 +141,7 @@ const NavigationBar = () => {
 							<DropdownTrigger>
 								<Avatar
 									as="button"
-									className="transition-transform"
+									className="transition-transform text-primary bg-accent "
 									color="secondary"
 									size="md"
 									showFallback
@@ -152,6 +153,11 @@ const NavigationBar = () => {
 									<p className="font-semibold">Signed in as</p>
 									<p className="font-semibold">{user?.fullname}</p>
 								</DropdownItem>
+								{user?.role === "PATIENT" && (
+									<DropdownItem key="admin" href="/profile">
+										Profile
+									</DropdownItem>
+								)}
 								{user?.role === "ADMIN" && (
 									<DropdownItem key="admin" href="/admin/dashboard">
 										Admin Panel
