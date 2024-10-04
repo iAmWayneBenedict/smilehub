@@ -15,7 +15,7 @@ const ArticleHomePage = ({ title, description, isForm, image }) => {
 				</h2>
 				<p className="~text-base/lg text-center lg:text-left">{description}</p>
 				{isForm ? (
-					<div className="flex overflow-hidden rounded-lg h-[4rem] ~w-80/120  justify-center lg:justify-start">
+					<div className="flex overflow-hidden rounded-lg h-[4rem] w-full md:~w-80/120  justify-center lg:justify-start">
 						<Input
 							startContent={<CallIcon width="28" height="27" />}
 							variant="bordered"

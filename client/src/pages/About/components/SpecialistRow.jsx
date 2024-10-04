@@ -3,12 +3,12 @@ import PropTypes from "prop-types";
 
 const SpecialistRow = ({ img, name, specialty, description }) => {
 	return (
-		<div className="flex ~gap-4/12 ~mx-12/24 flex-col lg:flex-row">
+		<div className="flex ~gap-4/12 mx-2 md:~mx-12/24 flex-col lg:flex-row">
 			<div style={{ flex: 3 }}>
 				<Image src={img} className="w-full" removeWrapper alt="About Us" />
 			</div>
 			<div className="flex flex-col gap-6 my-0 lg:my-10" style={{ flex: 7 }}>
-				<div className="flex flex-row items-center gap-12">
+				<div className="flex flex-col items-start gap-2 md:items-center md:gap-12 md:flex-row">
 					<h2 className="~text-xl/3xl font-bold">{name}</h2>
 					<span className="text-base">{specialty}</span>
 				</div>

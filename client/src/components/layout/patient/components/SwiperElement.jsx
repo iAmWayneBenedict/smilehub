@@ -8,6 +8,7 @@ import PropTypes from "prop-types";
 import { cn } from "@/lib/utils";
 import FeedbackCard from "./FeedbackCard";
 import ArticleCard from "./ArticleCard";
+import { useMediaQuery } from "react-responsive";
 
 // register SwiperElement
 register();
@@ -16,7 +17,9 @@ const SwiperElement = ({ data, buttonTheme, type, slidesPerView = "4.5" }) => {
 	const swiperElRef = useRef(null);
 	const nextSlide = useRef(null);
 	const prevSlide = useRef(null);
-
+	const isMobile = useMediaQuery({
+		query: "(max-width: 640px)",
+	});
 	const buttonClassesTheme =
 		buttonTheme === "light" ? "text-black bg-white" : "text-white bg-black";
 
@@ -51,7 +54,7 @@ const SwiperElement = ({ data, buttonTheme, type, slidesPerView = "4.5" }) => {
 			<div className="w-full">
 				{/* swiper wrapper */}
 				<swiper-container
-					space-between="5"
+					space-between={isMobile ? "0" : "5"}
 					free-mode="true"
 					ref={swiperElRef}
 					slides-per-view={slidesPerView}
@@ -61,7 +64,10 @@ const SwiperElement = ({ data, buttonTheme, type, slidesPerView = "4.5" }) => {
 						data?.map((item, index) => {
 							return (
 								// swiper-slide wrapper from swiper library
-								<swiper-slide key={index} style={{ paddingLeft: "2rem" }}>
+								<swiper-slide
+									key={index}
+									style={{ paddingLeft: isMobile ? "1rem" : "2rem" }}
+								>
 									{/* custom styled cards */}
 									{type === "specialists" && <SpecialistCard data={item} />}
 									{type === "feedbacks" && <FeedbackCard data={item} />}

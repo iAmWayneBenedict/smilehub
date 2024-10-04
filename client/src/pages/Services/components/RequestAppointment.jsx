@@ -4,7 +4,7 @@ import { Button, Input } from "@nextui-org/react";
 
 const RequestAppointment = () => {
 	return (
-		<div className="bg-[--dark-bg] p-16 mt-36">
+		<div className="bg-[--dark-bg] p-4 py-9 md:p-16 mt-36">
 			<ContainerWrapper className="flex flex-col lg:flex-row">
 				<div id="request-appointment-left" style={{ flex: 5 }}>
 					<SectionHeader
@@ -27,7 +27,7 @@ const RequestAppointment = () => {
 					</Button>
 				</div>
 				<div style={{ flex: 7 }} className="flex items-center justify-end">
-					<div className="max-w-none mt-14 lg:mt-0 lg:max-w-[35rem] w-full p-10 rounded-3xl bg-white">
+					<div className="max-w-none mt-14 lg:mt-0 lg:max-w-[35rem] w-full p-4 py-7 md:p-10 rounded-3xl bg-white">
 						<h4 className="mb-10 text-3xl font-semibold text-center">
 							Request Appointment
 						</h4>

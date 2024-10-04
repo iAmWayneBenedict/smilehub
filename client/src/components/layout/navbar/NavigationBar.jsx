@@ -24,6 +24,7 @@ import { decrypt } from "@/lib/utils";
 const NavigationBar = () => {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const nav = useRef(null);
+	const navMenuBtn = useRef(null);
 	const { setAlertDialogDetails } = useAppStore();
 	const location = useLocation();
 	const { authToken, setAuthToken } = useAuthTokenPersisted();
@@ -93,15 +94,16 @@ const NavigationBar = () => {
 				<NavbarMenuToggle
 					aria-label={isMenuOpen ? "Close menu" : "Open menu"}
 					className="md:hidden"
+					ref={navMenuBtn}
 				/>
 				<Link href={"/"}>
 					<NavbarBrand>
-							<div className="flex items-center gap-3 h-[3rem] md:h-fit">
-								<img src={logoIcon} alt="logo-icon" className="h-full" />
-								<div className="h-[1.35rem] md:h-fit">
-									<img src={logoText} className="h-full" alt="logo-text" />
-								</div>
+						<div className="flex items-center gap-3 h-[2.5rem] sm:h-[3rem] md:h-fit">
+							<img src={logoIcon} alt="logo-icon" className="h-full" />
+							<div className="h-[1rem] sm:h-[1.35rem] md:h-fit">
+								<img src={logoText} className="h-full" alt="logo-text" />
 							</div>
+						</div>
 					</NavbarBrand>
 				</Link>
 			</NavbarContent>
@@ -219,22 +221,25 @@ const NavigationBar = () => {
 							color={location.pathname === item.href ? "primary" : "foreground"}
 							className="w-full"
 							href={item.href}
+							onClick={() => navMenuBtn.current.click()}
 							size="lg"
 						>
 							{item.name}
 						</Link>
 					</NavbarMenuItem>
 				))}
-				<NavbarMenuItem>
-					<Button
-						variant="light"
-						color={"danger"}
-						className="min-w-0 p-0 data-[hover=true]:bg-transparent w-fit h-fit text-base"
-						size="lg"
-					>
-						Logout
-					</Button>
-				</NavbarMenuItem>
+				{/* {authToken && (
+					<NavbarMenuItem>
+						<Button
+							variant="light"
+							color={"danger"}
+							className="min-w-0 p-0 data-[hover=true]:bg-transparent w-fit h-fit text-base"
+							size="lg"
+						>
+							Logout
+						</Button>
+					</NavbarMenuItem>
+				)} */}
 			</NavbarMenu>
 		</Navbar>
 	);

@@ -26,10 +26,12 @@ const Footer = () => {
 				</div>
 			</div>
 			<Divider className="h-[2px] bg-[#011632] mt-10" />
-			<div className="flex flex-col justify-between mt-6 sm:flex-row">
-				<div className={"flex flex-row gap-1 items-center"}>
+			<div className="flex flex-col items-center justify-between mt-6 sm:flex-row">
+				<div className={"flex flex-col sm:flex-row gap-1 items-center"}>
 					<p>All rights reserved ® smilehub.com | </p>
-					<Link color={"foreground"} href="/terms-and-privacy-policy">Terms and conditions apply!</Link>
+					<Link color={"foreground"} href="/terms-and-privacy-policy">
+						Terms and conditions apply!
+					</Link>
 				</div>
 				<div className="flex gap-3 mt-6 sm:mt-0">
 					<Image src={facebook} alt="facebook" />

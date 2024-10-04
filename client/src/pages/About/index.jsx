@@ -28,7 +28,7 @@ const About = () => {
 							}}
 						/>
 					</div>
-					<div className="flex flex-col gap-24 mx-12 mt-24 lg:flex-row">
+					<div className="flex flex-col gap-24 mx-2 mt-24 md:mx-12 lg:flex-row">
 						<div style={{ flex: 5 }} className="flex flex-col order-2 gap-6 lg:order-1">
 							<h2 className="text-5xl font-bold">Our Mission</h2>
 							<p style={{ lineHeight: 1.8 }} className="~text-base/xl font-normal">

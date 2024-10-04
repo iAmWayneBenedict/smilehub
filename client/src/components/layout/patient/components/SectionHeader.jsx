@@ -52,7 +52,7 @@ const SectionHeader = ({
 			{description && (
 				<p
 					className={cn(
-						"~text-base/lg text-center max-w-[30rem] px-4",
+						"~text-base/lg text-center max-w-[30rem] px-0 sm:px-4",
 						elementClasses?.childClasses
 					)}
 				>

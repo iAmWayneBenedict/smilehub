@@ -13,3 +13,8 @@
 		max-width: 18rem;
 	}
 }
+@media only screen and (max-width: 640px) {
+	#article-card-img-container {
+		max-width: 100%;
+	}
+}

@@ -36,7 +36,7 @@ const Profile = () => {
 								"group-data-[selected=true]:text-darkText group-data-[selected=true]:font-bold",
 						}}
 					>
-						<Tab key="view" title="My Profile">
+						<Tab key="view" title="Profile">
 							<ProfileForm
 								isView
 								selected={selected}

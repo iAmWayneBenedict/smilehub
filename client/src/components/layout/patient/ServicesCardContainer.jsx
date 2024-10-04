@@ -8,7 +8,7 @@ const ServicesCardContainer = ({ cardListData, className }) => {
 		<ContainerWrapper>
 			<div
 				className={cn(
-					"flex flex-wrap gap-8 py-16 rounded-xl justify-evenly bg-accent",
+					"flex flex-wrap gap-8 px-4 md:px-0 py-16 rounded-xl justify-evenly bg-accent",
 					className
 				)}
 			>

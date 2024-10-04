@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 
 export default function ServicesCard({ icon, href, title, description }) {
 	return (
-		<Card className="max-w-[300px] md:max-w-[400px]">
+		<Card className="w-full max-w-full sm:max-w-[300px] md:max-w-[400px]">
 			<CardHeader className="flex justify-center">
 				<div className="p-3 rounded-full bg-primary">{icon}</div>
 			</CardHeader>

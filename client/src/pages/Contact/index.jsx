@@ -195,7 +195,7 @@ const Contact = () => {
 							</div>
 						</div>
 						<div style={{ flex: 7 }}>
-							<div className="border-2 rounded-lg border-[#25b4f8] p-10">
+							<div className="border-2 rounded-lg border-[#25b4f8] p-5 md:p-10">
 								<form
 									onSubmit={(e) => {
 										e.preventDefault();

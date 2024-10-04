@@ -16,8 +16,8 @@ const Banner = () => {
 	return (
 		<ContainerWrapper className="relative flex mt-12 mb-36 lg:mb-0">
 			<div id="left-banner" className="flex flex-col flex-1 mt-10 gap-9">
-				<div>
-					<h1 className="inline font-medium leading-tight capitalize ~text-3xl/7xl">
+				<div className="mt-36 md:mt-0">
+					<h1 className="inline font-semibold leading-tight capitalize ~text-4xl/7xl">
 						Get ready for your best ever{" "}
 						<CustomUnderline childClassName="w-[115%]">
 							Dental Experience!
