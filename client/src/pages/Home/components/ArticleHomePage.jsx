@@ -1,9 +1,11 @@
 import CallIcon from "@/components/icons/CallIcon";
 import ContainerWrapper from "@/components/layout/wrappers/ContainerWrapper";
-import { Input, Button } from "@nextui-org/react";
+import { Input, Button, Link } from "@nextui-org/react";
 import PropTypes from "prop-types";
+import { useAuthTokenPersisted } from "@/store/zustand";
 
 const ArticleHomePage = ({ title, description, isForm, image }) => {
+	const { authToken } = useAuthTokenPersisted();
 	return (
 		<ContainerWrapper className="flex flex-col items-center gap-5 lg:flex-row mt-36 lg:items-start">
 			<div
@@ -15,32 +17,38 @@ const ArticleHomePage = ({ title, description, isForm, image }) => {
 				</h2>
 				<p className="~text-base/lg text-center lg:text-left">{description}</p>
 				{isForm ? (
-					<div className="flex overflow-hidden rounded-lg h-[4rem] w-full md:~w-80/120  justify-center lg:justify-start">
-						<Input
-							startContent={<CallIcon width="28" height="27" />}
-							variant="bordered"
-							color="primary"
-							type="text"
-							size="lg"
-							radius="none"
-							placeholder="Enter your Phone Number"
-							classNames={{
-								inputWrapper: "rounded-l-lg border-r-0 h-full pl-5",
-								mainWrapper: "h-full",
-								input: "ml-3",
-							}}
-						/>
-						<Button
-							color="primary"
-							className="h-full font-medium"
-							size="lg"
-							radius="none"
-						>
-							Submit
-						</Button>
-					</div>
+					// <div className="flex overflow-hidden rounded-lg h-[4rem] w-full md:~w-80/120  justify-center lg:justify-start">
+					// 	<Input
+					// 		startContent={<CallIcon width="28" height="27" />}
+					// 		variant="bordered"
+					// 		color="primary"
+					// 		type="text"
+					// 		size="lg"
+					// 		radius="none"
+					// 		placeholder="Enter your Phone Number"
+					// 		classNames={{
+					// 			inputWrapper: "rounded-l-lg border-r-0 h-full pl-5",
+					// 			mainWrapper: "h-full",
+					// 			input: "ml-3",
+					// 		}}
+					// 	/>
+					// 	<Button
+					// 		color="primary"
+					// 		className="h-full font-medium"
+					// 		size="lg"
+					// 		radius="none"
+					// 	>
+					// 		Submit
+					// 	</Button>
+					// </div>
+					<></>
 				) : (
-					<Button color="primary" className="font-semibold p-7 w-fit">
+					<Button
+						color="primary"
+						className="font-semibold p-7 w-fit"
+						as={Link}
+						href={authToken ? "/appointment" : "/login"}
+					>
 						Book an appointment
 					</Button>
 				)}

@@ -1,10 +1,12 @@
 import ContainerWrapper from "@/components/layout/wrappers/ContainerWrapper";
 import whyChooseImage from "../../../assets/images/wh-choose-smile-for-all-your-dental-treatments.png";
 import shieldDone from "../../../assets/icons/Shield Done.svg";
-import { Image, Button } from "@nextui-org/react";
+import { Image, Button, Link } from "@nextui-org/react";
 import CustomUnderline from "@/components/illustrations/CustomUnderline";
+import { useAuthTokenPersisted } from "@/store/zustand";
 
 const WhyChoose = () => {
+	const { authToken } = useAuthTokenPersisted();
 	return (
 		<ContainerWrapper className="mt-36">
 			<div className="flex flex-col justify-center gap-10 ~p-6/14 bg-accent lg:flex-row">
@@ -51,7 +53,12 @@ const WhyChoose = () => {
 							</p>
 						</div>
 					</div>
-					<Button color="primary" className="font-semibold p-7 w-fit">
+					<Button
+						color="primary"
+						className="font-semibold p-7 w-fit"
+						as={Link}
+						href={authToken ? "/appointment" : "/login"}
+					>
 						Book an appointment
 					</Button>
 				</div>

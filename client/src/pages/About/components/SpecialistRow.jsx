@@ -7,15 +7,15 @@ const SpecialistRow = ({ img, name, specialty, description }) => {
 			<div style={{ flex: 3 }}>
 				<Image src={img} className="w-full" removeWrapper alt="About Us" />
 			</div>
-			<div className="flex flex-col gap-6 my-0 lg:my-10" style={{ flex: 7 }}>
+			<div className="flex flex-col justify-center gap-6 my-0 lg:my-10" style={{ flex: 7 }}>
 				<div className="flex flex-col items-start gap-2 md:items-center md:gap-12 md:flex-row">
 					<h2 className="~text-xl/3xl font-bold">{name}</h2>
 					<span className="text-base">{specialty}</span>
 				</div>
 				<p className="text-lg leading-8">{description}</p>
-				<Button color="primary" className="~mt-4/10 font-semibold p-7 w-fit">
+				{/* <Button color="primary" className="~mt-4/10 font-semibold p-7 w-fit">
 					Book an Appointment
-				</Button>
+				</Button> */}
 			</div>
 		</div>
 	);

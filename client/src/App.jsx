@@ -74,7 +74,7 @@ function App() {
 					<Route path="/services" element={<LayoutWrapper child={<Services />} />} />
 					<Route path="/blogs" element={<LayoutWrapper child={<Blogs />} />} />
 					<Route path="/about" element={<LayoutWrapper child={<About />} />} />
-					<Route path="/contact" element={<LayoutWrapper child={<Contact />} />} />
+					<Route path="/appointment" element={<LayoutWrapper child={<Contact />} />} />
 					<Route element={<PatientAuthRoutes />}>
 						<Route
 							path="/profile"

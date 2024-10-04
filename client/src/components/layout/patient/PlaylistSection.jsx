@@ -20,9 +20,9 @@ const PlaylistSection = () => {
 					className="w-full h-full px-0 lg:px-24"
 				/>
 
-				<Button color="primary" className="font-semibold p-7 w-fit">
+				{/* <Button color="primary" className="font-semibold p-7 w-fit">
 					Watch Playlist
-				</Button>
+				</Button> */}
 			</div>
 		</ContainerWrapper>
 	);

@@ -6,7 +6,11 @@ const RequestAppointment = () => {
 	return (
 		<div className="bg-[--dark-bg] p-4 py-9 md:p-16 mt-36">
 			<ContainerWrapper className="flex flex-col lg:flex-row">
-				<div id="request-appointment-left" style={{ flex: 5 }}>
+				<div
+					id="request-appointment-left"
+					className="flex flex-col items-center"
+					style={{ flex: 5 }}
+				>
 					<SectionHeader
 						firstSeriesText="Leave your worries at the door and enjoy a healthier, more "
 						textUnderlined="Precise Smile"
@@ -17,16 +21,16 @@ const RequestAppointment = () => {
 							classes: "w-[105%]",
 						}}
 						elementClasses={{
-							parentClasses: "items-start",
-							headingClasses: "text-white text-left",
-							childClasses: "text-white text-left",
+							parentClasses: "items-center max-w-[40rem] justify-center",
+							headingClasses: "text-white text-center",
+							childClasses: "text-white text-center",
 						}}
 					/>
 					<Button color="primary" className="mt-10 font-semibold p-7 w-fit">
 						Learn More
 					</Button>
 				</div>
-				<div style={{ flex: 7 }} className="flex items-center justify-end">
+				{/* <div style={{ flex: 7 }} className="flex items-center justify-end">
 					<div className="max-w-none mt-14 lg:mt-0 lg:max-w-[35rem] w-full p-4 py-7 md:p-10 rounded-3xl bg-white">
 						<h4 className="mb-10 text-3xl font-semibold text-center">
 							Request Appointment
@@ -70,7 +74,7 @@ const RequestAppointment = () => {
 							</div>
 						</div>
 					</div>
-				</div>
+				</div> */}
 			</ContainerWrapper>
 		</div>
 	);

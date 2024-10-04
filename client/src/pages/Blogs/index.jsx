@@ -34,7 +34,7 @@ export const Blogs = () => {
 								classes: "w-[105%]",
 							}}
 						/>
-						<div className="max-w-[20rem] w-full mt-10">
+						{/* <div className="max-w-[20rem] w-full mt-10">
 							<Input
 								startContent={<Search className="text-[#a2a2a2]" />}
 								variant="bordered"
@@ -47,7 +47,7 @@ export const Blogs = () => {
 									label: "text-[#a2a2a2]",
 								}}
 							/>
-						</div>
+						</div> */}
 					</div>
 				</ContainerWrapper>
 				<SwiperSection

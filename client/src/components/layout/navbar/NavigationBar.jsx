@@ -75,7 +75,7 @@ const NavigationBar = () => {
 		{ name: "Services", href: "/services" },
 		{ name: "Blogs", href: "/blogs" },
 		{ name: "About", href: "/about" },
-		{ name: "Contact", href: "/contact" },
+		{ name: "Appointment", href: "/appointment" },
 	];
 
 	return (
@@ -205,7 +205,7 @@ const NavigationBar = () => {
 						as={Link}
 						color="primary"
 						className="px-6 py-6 font-medium text-white bg-primary"
-						href={authToken ? "/contact" : "/login"}
+						href={authToken ? "/appointment" : "/login"}
 						variant="flat"
 					>
 						Book Now

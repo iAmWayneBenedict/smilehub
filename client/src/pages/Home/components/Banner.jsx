@@ -2,9 +2,10 @@ import Calling from "@/components/icons/Calling";
 import CustomUnderline from "@/components/illustrations/CustomUnderline";
 import LandingPageIllustration from "@/components/illustrations/LandingPageIllustration";
 import ContainerWrapper from "@/components/layout/wrappers/ContainerWrapper";
-import { Button } from "@nextui-org/react";
+import { Button, Link } from "@nextui-org/react";
 import { useMediaQuery } from "react-responsive";
 import "./styles.css";
+import { useAuthTokenPersisted } from "@/store/zustand";
 
 const Banner = () => {
 	const isSmallerDesktop = useMediaQuery({
@@ -13,6 +14,7 @@ const Banner = () => {
 	// const isTablet = useMediaQuery({
 	// 	query: "(max-width: 1024px)",
 	// });
+	const { authToken } = useAuthTokenPersisted();
 	return (
 		<ContainerWrapper className="relative flex mt-12 mb-36 lg:mb-0">
 			<div id="left-banner" className="flex flex-col flex-1 mt-10 gap-9">
@@ -29,7 +31,12 @@ const Banner = () => {
 					best products to our patients, So don’t worry about anything and book yourself.
 				</p>
 				<div className="flex flex-col gap-6 sm:flex-row">
-					<Button color="primary" className="p-7">
+					<Button
+						color="primary"
+						className="p-7"
+						as={Link}
+						href={authToken ? "/appointment" : "/login"}
+					>
 						Book an appointment
 					</Button>
 					<div className="flex gap-4">
