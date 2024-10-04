@@ -53,3 +53,20 @@ export const AdminAuthRoutes = () => {
 		return <Outlet />;
 	}
 };
+/**
+ * Component that conditionally renders navigation based on authentication status.
+ *
+ * If an authentication token is present, it redirects to the home page.
+ * Otherwise, it renders the child components (Outlet).
+ *
+ * @returns {JSX.Element} Either a <Navigate> component or an <Outlet> component.
+ */
+export const PatientAuthRoutes = () => {
+	const { authToken } = useAuthTokenPersisted();
+	const token = decrypt(authToken);
+	if (!token || token.role !== "PATIENT") {
+		return <Navigate to="/" />;
+	} else {
+		return <Outlet />;
+	}
+};

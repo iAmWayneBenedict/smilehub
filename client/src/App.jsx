@@ -16,7 +16,12 @@ import StaffRegister from "./pages/staff/Register";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import AlertDialog from "./components/layout/AlertDialog";
 import SharedLogin from "./pages/shared/Login";
-import { AdminAuthRoutes, DisableAuthRoutes, StaffAuthRoutes } from "./lib/routeHelper";
+import {
+	AdminAuthRoutes,
+	DisableAuthRoutes,
+	PatientAuthRoutes,
+	StaffAuthRoutes,
+} from "./lib/routeHelper";
 import AdminDashboard from "./pages/shared/dashboard";
 import Patients from "./pages/shared/patients";
 import Appointments from "./pages/shared/appointments";
@@ -70,7 +75,12 @@ function App() {
 					<Route path="/blogs" element={<LayoutWrapper child={<Blogs />} />} />
 					<Route path="/about" element={<LayoutWrapper child={<About />} />} />
 					<Route path="/contact" element={<LayoutWrapper child={<Contact />} />} />
-					<Route path="/profile" element={<LayoutWrapper child={<PatientProfile />} />} />
+					<Route element={<PatientAuthRoutes />}>
+						<Route
+							path="/profile"
+							element={<LayoutWrapper child={<PatientProfile />} />}
+						/>
+					</Route>
 					<Route
 						path="/terms-and-privacy-policy"
 						element={<LayoutWrapper child={<TermsAndPrivacyPolicy />} />}
