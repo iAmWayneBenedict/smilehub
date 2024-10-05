@@ -74,6 +74,10 @@ export default function TableDashboard({ type }) {
 				type: "success",
 				title: "Success!",
 				message: "Appointment status changed successfully!",
+
+				confirmCallback: () => {
+					location.href = "/admin/dashboard?tab=" + type;
+				},
 			});
 			if (refetchArr.length) {
 				refetchArr.map((item) => item.refetch());
@@ -99,6 +103,10 @@ export default function TableDashboard({ type }) {
 				type: "success",
 				title: "Success!",
 				message: "Appointment status deleted successfully!",
+
+				confirmCallback: () => {
+					location.href = "/admin/dashboard?tab=" + type;
+				},
 			});
 			if (refetchArr.length) {
 				refetchArr.map((item) => item.refetch());
@@ -119,6 +127,7 @@ export default function TableDashboard({ type }) {
 	const filteredItems = React.useMemo(() => {
 		if (isLoading) return [];
 		if (isError) return [];
+		if (isSuccess && data.length === 0) return [];
 		let filteredAppointments = [];
 		if (type === "completed") {
 			filteredAppointments = data?.filter((item) => item.STATUS === "Completed");
@@ -127,8 +136,7 @@ export default function TableDashboard({ type }) {
 		}
 		//	limit to 5 items only
 		return filteredAppointments.slice(0, 5);
-	}, [type, data, isLoading, isSuccess, isError]);
-
+	}, [type, data, isLoading, isError]);
 	// paginate appointments
 	const items = React.useMemo(() => {
 		return filteredItems.slice(0, 5);
@@ -144,7 +152,6 @@ export default function TableDashboard({ type }) {
 			return sortDescriptor.direction === "descending" ? -cmp : cmp;
 		});
 	}, [sortDescriptor, items]);
-
 	// render cell
 	const renderCell = React.useCallback((appointment, columnKey) => {
 		const cellValue = appointment[columnKey];

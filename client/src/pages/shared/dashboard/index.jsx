@@ -46,6 +46,7 @@ import { CheckCheck } from "lucide-react";
 import { CalendarDays } from "lucide-react";
 import { Trash2 } from "lucide-react";
 import { sendEmail } from "@/services/email";
+import { useParams } from "react-router-dom";
 
 const AdminDashboard = () => {
 	const { setNewAppointmentModal } = useAppStore();
@@ -58,7 +59,7 @@ const AdminDashboard = () => {
 	const zoomedDevices = useMediaQuery({
 		query: "(min-device-width: 900px) and (max-device-width: 1600px)",
 	});
-	const [selected, setSelected] = useState("new-appointments");
+	const [selected, setSelected] = useState(new URLSearchParams(location.search).get("tab"));
 	const [filterSelected, setFilterSelected] = useState(new Set(["Monthly"]));
 
 	const { data, isSuccess, isLoading } = useQuery({
@@ -150,10 +151,10 @@ const AdminDashboard = () => {
 										"group-data-[selected=true]:text-darkText group-data-[selected=true]:font-bold",
 								}}
 							>
-								<Tab key="new-appointments" title="NEW APPOINTMENTS">
+								<Tab key="new" title="NEW APPOINTMENTS">
 									<TableDashboard type={"new"} />
 								</Tab>
-								<Tab key="completed-appointments" title="COMPLETED APPOINTMENTS">
+								<Tab key="completed" title="COMPLETED APPOINTMENTS">
 									<TableDashboard type={"completed"} />
 								</Tab>
 							</Tabs>
@@ -327,6 +328,10 @@ const AccordionSchedule = () => {
 				type: "success",
 				title: "Success!",
 				message: "Appointment status deleted successfully!",
+
+				confirmCallback: () => {
+					location.href = "/admin/dashboard?tab=new";
+				},
 			});
 			if (refetchArr.length) {
 				refetchArr.map((item) => item.refetch());
@@ -350,6 +355,10 @@ const AccordionSchedule = () => {
 				type: "success",
 				title: "Success!",
 				message: "Appointment status changed successfully!",
+
+				confirmCallback: () => {
+					location.href = "/admin/dashboard?tab=new";
+				},
 			});
 			if (refetchArr.length) {
 				refetchArr.map((item) => item.refetch());
