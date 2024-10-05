@@ -67,9 +67,18 @@ const Tasks = () => {
 				message: "Task deleted successfully.",
 			});
 		},
+		onError: (error) => {
+			refetch();
+			setAlertDialogDetails({
+				isOpen: true,
+				type: "danger",
+				title: "Error!",
+				message: error.message,
+			});
+		},
 	});
 
-	const { data, isSuccess, isLoading, refetch } = useQuery({
+	const { data, isSuccess, isLoading, refetch, isError } = useQuery({
 		queryKey: ["tasks", selectedKeys, hasSelectedFilter],
 		queryFn: () => {
 			if (selectedKeys.has("text") || !hasSelectedFilter) {
@@ -77,11 +86,12 @@ const Tasks = () => {
 			}
 			return TasksAPIManager.getTasks({ status: Array.from(selectedKeys)[0] });
 		},
+		retry: false,
 	});
 
 	useEffect(() => {
-		// console.log(selectedKeys);
-	}, [selectedKeys]);
+		// refetch();
+	}, [isError]);
 	const currentUser = location.pathname.includes("admin") ? "admin" : "staff";
 	return (
 		<div style={{ flex: 1 }} className="bg-[#f9f9f9]">
@@ -220,7 +230,7 @@ const Tasks = () => {
 											</div>
 										</div>
 									))}
-								{(data?.length === 0 || isLoading) && (
+								{(data?.length === 0 || isLoading || isError) && (
 									<div className="flex flex-col items-center justify-center h-full">
 										<p className="text-lg">No tasks available</p>
 									</div>

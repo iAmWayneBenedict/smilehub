@@ -33,6 +33,7 @@ export default function TasksModal() {
 
 	const user = decrypt(authToken);
 	useEffect(() => {
+		console.log(taskModal);
 		if (taskModal.isOpen) {
 			onOpen();
 
@@ -108,8 +109,12 @@ export default function TasksModal() {
 				isOpen={isOpen}
 				onClose={() => {
 					onClose();
-					setTaskModal({ isOpen: false });
-					reset();
+					setTaskModal({});
+					reset({
+						TITLE: "",
+						STATUS: "Pending",
+						DESCRIPTION: "",
+					});
 				}}
 				placement="top-center"
 				backdrop="blur"
