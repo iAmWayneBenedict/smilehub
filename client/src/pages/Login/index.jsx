@@ -282,14 +282,8 @@ const Login = () => {
 									</button>
 								}
 							/>
-							<div className="flex flex-row justify-between">
-								<Checkbox
-									classNames={{
-										label: "text-darkText font-semibold",
-									}}
-								>
-									Remember Me
-								</Checkbox>
+							<div className="flex flex-row justify-end">
+								
 								<Link href="#" className="font-semibold underline text-darkText">
 									Forgot Password?
 								</Link>

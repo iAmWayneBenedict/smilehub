@@ -98,15 +98,8 @@ const StaffLogin = () => {
 							/>
 						</div>
 						<Divider className="bg-gray-300" />
-						<div className="flex flex-row justify-between">
-							<Checkbox
-								color="default"
-								classNames={{
-									label: "text-white font-semibold",
-								}}
-							>
-								Remember Me
-							</Checkbox>
+						<div className="flex flex-row justify-end">
+							
 							<Link href="#" className="font-semibold text-white underline">
 								Forgot Password?
 							</Link>

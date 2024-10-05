@@ -55,7 +55,7 @@ const END_POINTS = {
 
 	// statistics
 	GET_TOTAL_PATIENTS_STATISTICS: () => "/GET/SHARED/STATISTICS/patients.php",
-	GET_PATIENT_VISITS: () => "/GET/SHARED/STATISTICS/VISITS.php",
+	GET_PATIENT_VISITS: () => "/GET/SHARED/STATISTICS/visits.php",
 
 	// tasks
 	POST_ADD_NEW_TASK: () => "/POST/SHARED/task.php",
