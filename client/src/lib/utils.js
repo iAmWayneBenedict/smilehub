@@ -61,6 +61,24 @@ export const sortTime = (timeArr, time) => {
 	const AMs = timeArrCopy.filter((t) => t.includes("AM"));
 	const PMs = timeArrCopy.filter((t) => t.includes("PM"));
 	const temp = [];
+
+	const convertTo24Hour = (time) => {
+		let [hour, period] = time.split(" ");
+		hour = parseInt(hour);
+
+		// Convert PM times to 24-hour
+		if (period === "PM" && hour !== 12) {
+			hour += 12;
+		}
+
+		// Convert 12 PM to 0 for easier comparison
+		if (period === "PM" && hour === 12) {
+			hour = 12;
+		}
+
+		return hour;
+	};
+
 	if (isAM) {
 		const unsorted = [];
 		unsorted.push(...AMs, time);
@@ -80,7 +98,7 @@ export const sortTime = (timeArr, time) => {
 		const bTime = b.split(" ")[0];
 		if (aTime === "12:00") return -1;
 		if (bTime === "12:00") return 1;
-		return aTime.localeCompare(bTime);
+		return convertTo24Hour(aTime) - convertTo24Hour(bTime);
 	}
 
 	return temp;

@@ -41,12 +41,11 @@ export default function ReschedModal() {
 		}
 
 		async function handleGetSelectedTimes() {
-			(await handleGetDate(
+			await handleGetDate(
 				parseDate(convertDateYYYYMMDD(newScheduleModal.data.APPOINTMENT_DATE))
-			)) || today(getLocalTimeZone(), false);
+			);
 			setTimeDropdownList((prev) => {
-				sortTime(prev, newScheduleModal.data.APPOINTMENT_TIME);
-				return sortTime(prev, newScheduleModal.data.APPOINTMENT_TIME);
+				return [...new Set(sortTime(prev, newScheduleModal.data.APPOINTMENT_TIME))];
 			});
 			reset({
 				APPOINTMENT_DATE:
@@ -95,7 +94,10 @@ export default function ReschedModal() {
 			const response = await AppointmentsAPIManager.getAppointmentDates({
 				APPOINTMENT_DATE: convertDateYYYYMMDD(date),
 			});
-			setTimeDropdownList(response.available_times || []);
+			setTimeDropdownList([
+				...response.available_times,
+				newScheduleModal.data.APPOINTMENT_TIME,
+			]);
 		} catch (error) {
 			if (!isForm)
 				setAlertDialogDetails({
