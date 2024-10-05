@@ -44,14 +44,15 @@ const AddPatient = () => {
 	});
 	const mutation = useMutation({
 		mutationFn: PatientsAPIManager.postAddPatient,
-		onSuccess: () => {
-			//			sendEmail({
-			//				type: "credentials",
-			//				name: `${getValues("FIRSTNAME")} ${getValues("LASTNAME")}`,
-			//				email: getValues("EMAIL"),
-			//				date: formatDate(new Date(convertDateYYYYMMDD(getValues("APPOINTMENT_DATE")))),
-			//				time: getValues("APPOINTMENT_TIME")?.split("-")[0]
-			//			})
+		onSuccess: (data) => {
+			sendEmail({
+				type: "credentials",
+				name: `${getValues("FIRSTNAME")} ${getValues("LASTNAME")}`,
+				email: getValues("EMAIL"),
+				date: formatDate(new Date(convertDateYYYYMMDD(getValues("APPOINTMENT_DATE")))),
+				time: getValues("APPOINTMENT_TIME")?.split("-")[0],
+				password: data.generated_password,
+			});
 			reset();
 			setAlertDialogDetails({
 				isOpen: true,
