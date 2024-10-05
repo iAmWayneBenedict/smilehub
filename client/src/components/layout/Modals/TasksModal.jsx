@@ -33,7 +33,6 @@ export default function TasksModal() {
 
 	const user = decrypt(authToken);
 	useEffect(() => {
-		console.log(taskModal);
 		if (taskModal.isOpen) {
 			onOpen();
 
