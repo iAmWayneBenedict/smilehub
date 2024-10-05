@@ -50,7 +50,8 @@ function login($conn, $email, $password) {
             $response['user'] = [
                 'fullname' => $user['FULLNAME'],
                 'email' => $user['EMAIL'],
-                'role' => $user['ROLE']
+                'role' => $user['ROLE'],
+                'id' => $user['ID']
             ];
         } else {
             $response['message'] = 'Invalid email or password';

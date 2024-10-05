@@ -104,8 +104,9 @@ Success (200 OK):
     "message": "Login successful",
     "user": {
         "fullname": "John Doe",
-        "email": "johndoe@example.com",
-        "role": "PATIENT"
+        "email": "john.doe@example.com",
+        "role": "PATIENT",
+        "id": 15
     }
 }
 ```
@@ -786,7 +787,69 @@ Error (500 Internal Server Error):
 }
 ```
 
-### 15. Fetch Appointments and Patient Data
+### 15. Update Patient Password
+
+- **Endpoints:**
+  - `POST /EDIT/PATIENT/password.php`  
+    - **Description:** Change password for patient Account.
+
+#### Request Body
+
+The request should be sent as JSON with the following structure:
+
+```json
+{
+    "ID": 1,
+    "PREVIOUS_PASSWORD": "OldPassword123!",
+    "NEW_PASSWORD": "NewSecurePassword456!"
+}
+```
+
+#### Response
+
+```json
+Success (200 OK):
+{
+    "message": "Password updated successfully."
+}
+```
+
+```json
+Error (400 Bad Request):
+{
+    "errors": {
+        "ID": "Employee ID is required.",
+        "PREVIOUS_PASSWORD": "Previous password is required.",
+        "PASSWORD": "Password is required"
+    }
+}
+Note: The exact error messages depend on which validations fail.
+```
+
+```json
+Error (400 Bad Request):
+{
+    "errors": {
+        "NEW_PASSWORD": "Password must be at least 8 characters long."
+    }
+}
+```
+
+```json
+Error (400 Bad Request):
+{
+    "message": "Previous password is incorrect."
+}
+```
+
+```json
+Error (500 Internal Server Error):
+{
+    "message": "Failed to update password."
+}
+```
+
+### 16. Fetch Appointments and Patient Data
 
 - **Endpoints:**
   - `GET /GET/SHARED/PATIENT/patientsWithAppointment.php`  
@@ -833,7 +896,7 @@ Error (404 Not Found):
 }
 ```
 
-### 16. Add New Dentist
+### 17. Add New Dentist
 
 - **Endpoints:**
   - `POST /POST/DENTIST/dentist.php`  
@@ -888,7 +951,7 @@ Error (500 Internal Server Error):
 }
 ```
 
-### 17. Fetch Dentist Details by ID
+### 18. Fetch Dentist Details by ID
 
 - **Endpoints:**
   - `GET /GET/SHARED/DENTIST/dentist.php`  
@@ -934,7 +997,7 @@ Error (404 Not Found):
 }
 ```
 
-### 18. Fetch All Dentist and Staff
+### 19. Fetch All Dentist and Staff
 
 - **Endpoints:**
   - `GET /GET/SHARED/EMPLOYEE/employees.php`  
@@ -974,7 +1037,7 @@ Error (404 Not Found):
 ```
 
 
-### 19. Update Dentist Information
+### 20. Update Dentist Information
 
 - **Endpoints:**
   - `POST /EDIT/SHARED/DENTIST/dentist.php`  
@@ -1029,7 +1092,7 @@ Error (500 Internal Server Error):
 }
 ```
 
-### 20. Update Dentist and Staff Password
+### 21. Update Dentist and Staff Password
 
 - **Endpoints:**
   - `POST /EDIT/SHARED/PASSWORD/password.php`  
@@ -1091,7 +1154,7 @@ Error (500 Internal Server Error):
 }
 ```
 
-### 21. Update Dentist and Staff Account Status
+### 22. Update Dentist and Staff Account Status
 
 - **Endpoints:**
   - `POST /EDIT/SHARED/EMPLOYEE/changeStatus.php`  
@@ -1136,7 +1199,7 @@ Error (500 Internal Server Error):
 }
 ```
 
-### 22. Fetch Total Patients Count
+### 23. Fetch Total Patients Count
 
 - **Endpoints:**
   - `GET /GET/SHARED/STATISTICS/patients.php`  
@@ -1162,7 +1225,7 @@ Error (500 Internal Server Error):
 }
 ```
 
-### 23. Fetch Completed Appointments Count (Filter by Month or Year)
+### 24. Fetch Completed Appointments Count (Filter by Month or Year)
 
 - **Endpoints:**
   - `GET /GET/SHARED/STATISTICS/visits.php`  
@@ -1234,7 +1297,7 @@ Error (400 Bad Request):
 Note: The exact error messages depend on which validations fail.
 ```
 
-### 24. Add New Task
+### 25. Add New Task
 
 - **Endpoints:**
   - `POST /POST/SHARED/task.php`  
@@ -1285,7 +1348,7 @@ Error (500 Internal Server Error):
 }
 ```
 
-### 25. Update Task
+### 26. Update Task
 
 - **Endpoints:**
   - `POST /EDIT/SHARED/TASK/task.php`  
@@ -1341,7 +1404,7 @@ Error (500 Internal Server Error):
 }
 ```
 
-### 26. Remove Task
+### 27. Remove Task
 
 - **Endpoints:**
   - `POST /DELETE/SHARED/TASK/task.php`  
@@ -1387,7 +1450,7 @@ Error (500 Internal Server Error):
 }
 ```
 
-### 27. Fetch All Tasks
+### 28. Fetch All Tasks
 
 - **Endpoints:**
   - `GET /GET/SHARED/TASK/tasks.php`  
@@ -1432,7 +1495,7 @@ Error (404 Not Found):
 }
 ```
 
-### 28. Fetch Task Details by ID
+### 29. Fetch Task Details by ID
 
 - **Endpoints:**
   - `GET /GET/SHARED/TASK/task.php`  
@@ -1479,7 +1542,7 @@ Error (404 Not Found):
 }
 ```
 
-### 29. Add New Item Group
+### 30. Add New Item Group
 
 - **Endpoints:**
   - `POST /POST/SHARED/inventoryItemGroup.php`  
@@ -1528,7 +1591,7 @@ Error (500 Internal Server Error):
 }
 ```
 
-### 30. Update Item Group
+### 31. Update Item Group
 
 - **Endpoints:**
   - `POST /EDIT/SHARED/INVENTORY/inventoryItemGroup.php`  
@@ -1579,7 +1642,7 @@ Error (500 Internal Server Error):
 }
 ```
 
-### 31. Remove Item Group
+### 32. Remove Item Group
 
 - **Endpoints:**
   - `POST /DELETE/SHARED/INVENTORY/inventoryItemGroup.php`  
@@ -1625,7 +1688,7 @@ Error (500 Internal Server Error):
 }
 ```
 
-### 32. Fetch All Item Group
+### 33. Fetch All Item Group
 
 - **Endpoints:**
   - `GET /GET/SHARED/INVENTORY/inventoryItemsGroup.php`  
@@ -1656,7 +1719,7 @@ Error (404 Not Found):
 }
 ```
 
-### 33. Fetch Inventory Groups with Quantities
+### 34. Fetch Inventory Groups with Quantities
 - **Endpoints:**
   - `GET /GET/SHARED/INVENTORY/inventoryItemsGroupWithQuantity.php`  
     - **Description:** Fetch all inventory groups along with their total quantities.
@@ -1686,7 +1749,7 @@ Error (404 Not Found):
 }
 ```
 
-### 34. Add New Item
+### 35. Add New Item
 
 - **Endpoints:**
   - `POST /POST/SHARED/inventoryItem.php`  
@@ -1742,7 +1805,7 @@ Error (500 Internal Server Error):
 }
 ```
 
-### 35. Update Item
+### 36. Update Item
 
 - **Endpoints:**
   - `POST /EDIT/SHARED/INVENTORY/inventoryItem.php`  
@@ -1802,7 +1865,7 @@ Error (500 Internal Server Error):
 }
 ```
 
-### 36. Remove Item
+### 37. Remove Item
 
 - **Endpoints:**
   - `POST /DELETE/SHARED/INVENTORY/inventoryItem.php`  
@@ -1848,7 +1911,7 @@ Error (500 Internal Server Error):
 }
 ```
 
-### 37. Fetch All Items
+### 38. Fetch All Items
 
 - **Endpoints:**
   - `GET /GET/SHARED/INVENTORY/inventoryItems.php`  
@@ -1908,7 +1971,7 @@ Error (404 Not Found):
 }
 ```
 
-### 38. Fetch Item Details by ID
+### 39. Fetch Item Details by ID
 
 - **Endpoints:**
   - `GET /GET/SHARED/INVENTORY/inventoryItem.php`  
@@ -1954,7 +2017,7 @@ Error (404 Not Found):
 }
 ```
 
-### 39. Add Progress Note
+### 40. Add Progress Note
 
 - **Endpoints:**
   - `POST /POST/DENTIST/progressNotes.php`  
@@ -2040,7 +2103,7 @@ Error (500 Internal Server Error):
 }
 ```
 
-### 40. Update Progress Note
+### 41. Update Progress Note
 
 - **Endpoints:**
   - `POST /EDIT/DENTIST/progressNotes.php`  
@@ -2128,7 +2191,7 @@ Error (500 Internal Server Error):
 }
 ```
 
-### 41. Remove Progress Note
+### 42. Remove Progress Note
 
 - **Endpoints:**
   - `POST /DELETE/DENTIST/progressNotes.php`  
@@ -2176,7 +2239,7 @@ Error (500 Internal Server Error):
 }
 ```
 
-### 42. Fetch All Progress Notes by Patient ID
+### 43. Fetch All Progress Notes by Patient ID
 
 - **Endpoints:**
   - `GET /GET/DENTIST/progressNotesByPatientId.php`  
@@ -2246,7 +2309,7 @@ Error (404 Not Found):
 }
 ```
 
-### 43. Fetch Specific Progress Notes by ID and Patient ID
+### 44. Fetch Specific Progress Notes by ID and Patient ID
 
 - **Endpoints:**
   - `GET /GET/DENTIST/progressNotesByPatientIdAndId.php`  
@@ -2301,7 +2364,7 @@ Error (404 Not Found):
 }
 ```
 
-### 44. Add New Assessment
+### 45. Add New Assessment
 
 - **Endpoints:**
   - `POST /POST/DENTIST/assessment.php`  
@@ -2362,7 +2425,7 @@ Error (500 Internal Server Error):
 }
 ```
 
-### 45. Update Assessment
+### 46. Update Assessment
 
 - **Endpoints:**
   - `POST /EDIT/DENTIST/assessment.php`  
@@ -2430,7 +2493,7 @@ Error (500 Internal Server Error):
 }
 ```
 
-### 46. Fetch Assessment by Patient ID and Tooth Number
+### 47. Fetch Assessment by Patient ID and Tooth Number
 
 - **Endpoints:**
   - `GET /GET/DENTIST/assessment.php`  
@@ -2492,7 +2555,7 @@ Error (500 Internal Server Error):
 }
 ```
 
-### 47. Uploading a File for Teeth Assessment
+### 48. Uploading a File for Teeth Assessment
 
 - **Endpoints:**
   - `POST /POST/DENTIST/teethAssessment.php`  
@@ -2534,7 +2597,7 @@ Error (500 Internal Server Error):
 }
 ```
 
-### 48. Update a File for Teeth Assessment
+### 49. Update a File for Teeth Assessment
 
 - **Endpoints:**
   - `POST /EDIT/DENTIST/teethAssessment.php`  
@@ -2574,7 +2637,7 @@ Error (500 Internal Server Error):
 }
 ```
 
-### 49. Fetching a File for Teeth Assessment
+### 50. Fetching a File for Teeth Assessment
 
 - **Endpoints:**
   - `GET /GET/DENTIST/teethAssessment.php`  
@@ -2616,7 +2679,7 @@ Error (404 Not Found):
 }
 ```
 
-### 50. Add New Patient Form
+### 51. Add New Patient Form
 
 - **Endpoints:**
   - `POST /POST/SHARED/patientForm.php`  
@@ -2710,7 +2773,7 @@ Error (500 Internal Server Error):
 }
 ```
 
-### 51. Update Patient Form
+### 52. Update Patient Form
 
 - **Endpoints:**
   - `POST /EDIT/SHARED/PATIENT/patientForm.php`  
@@ -2806,7 +2869,7 @@ Error (500 Internal Server Error):
 }
 ```
 
-### 52. Fetch Patient Details by PATIENT_ID
+### 53. Fetch Patient Details by PATIENT_ID
 
 - **Endpoints:**
   - `GET /GET/SHARED/PATIENT/patientForm.php`  
