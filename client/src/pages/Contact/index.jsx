@@ -120,12 +120,15 @@ const Contact = () => {
 				message: "Appointment booked successfully!",
 				actionLink: "/", // redirect to home page
 			});
+			const date = formatDate(new Date(convertDateYYYYMMDD(getValues("APPOINTMENT_DATE"))));
+			const time = getValues("APPOINTMENT_TIME")?.split("-")[0];
 			sendEmail({
 				type: "notification",
 				name: getValues("FULLNAME"),
 				email: getValues("EMAIL"),
-				date: formatDate(new Date(convertDateYYYYMMDD(getValues("APPOINTMENT_DATE")))),
-				time: getValues("APPOINTMENT_TIME")?.split("-")[0],
+
+				title: "Appointment Confirmation",
+				content: `Your appointment has been set on ${date} at ${time}. Please be at the clinic on or before the given time. `,
 			});
 		},
 		onError: (error) => {

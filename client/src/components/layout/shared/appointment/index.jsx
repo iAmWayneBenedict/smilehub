@@ -24,7 +24,8 @@ import AppointmentsAPIManager from "@/services/api/managers/appointments/Appoint
 import PatientsAPIManager from "@/services/api/managers/patients/PatientsAPIManager";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
-import { cn, days, months } from "@/lib/utils";
+import { cn, days, formatDate, months } from "@/lib/utils";
+import { sendEmail } from "@/services/email";
 
 const purposes = [
 	"Dental Bonding",
@@ -63,7 +64,7 @@ export default function AppointmentModal() {
 		}
 	}, [newAppointmentModal]);
 	// form hook
-	const { handleSubmit, setError, reset, control, clearErrors } = useForm({
+	const { handleSubmit, setError, reset, control, clearErrors, getValues } = useForm({
 		defaultValues: {
 			PATIENT_ID: "",
 
@@ -157,18 +158,34 @@ export default function AppointmentModal() {
 				refetchArr.map((item) => item.refetch());
 				setRefetchArr([]);
 			}
-			setNewAppointmentModal({});
+			const date = formatDate(new Date(convertDateYYYYMMDD(getValues("APPOINTMENT_DATE"))));
+			const time = getValues("APPOINTMENT_TIME")?.split("-")[0];
+			sendEmail({
+				type: "notification",
+				name: patients.find((patient) => patient.FULLNAME === getValues("PATIENT_ID"))
+					.FULLNAME,
+				email: patients.find((patient) => patient.FULLNAME === getValues("PATIENT_ID"))
+					.EMAIL,
+
+				title: "Appointment Confirmation",
+				content: `Your appointment has been set on ${date} at ${time}. Please be at the clinic on or before the given time. `,
+			});
 			setAlertDialogDetails({
+				dialogType: "",
 				isOpen: true,
 				type: "success",
 				title: "Success!",
 				message: data.message,
+
+				confirmCallback: () => {
+					onClose();
+					setNewAppointmentModal({});
+				},
 			});
 			setIsErrorDetails({
 				isError: false,
 				message: "",
 			});
-			onClose();
 		},
 		onError: (error) => {
 			setIsErrorDetails({

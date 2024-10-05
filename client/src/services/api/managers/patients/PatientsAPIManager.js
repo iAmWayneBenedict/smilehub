@@ -20,6 +20,9 @@ class PatientsAPIManager {
 	static async editAppointmentPatient(body = {}) {
 		return await APIMethods.post(END_POINTS.POST_EDIT_PATIENT(), body);
 	}
+	static async editAppointmentPatientPassword(body = {}) {
+		return await APIMethods.post(END_POINTS.POST_EDIT_PATIENT_PASSWORD(), body);
+	}
 	static async postChangeStatusPatient(body = {}) {
 		return await APIMethods.post(END_POINTS.POST_CHANGE_STATUS_PATIENT(), body);
 	}

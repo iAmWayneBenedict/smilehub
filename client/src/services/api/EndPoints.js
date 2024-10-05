@@ -38,6 +38,7 @@ const END_POINTS = {
 	GET_ALL_PATIENTS: () => "/GET/SHARED/PATIENT/patients.php",
 	POST_ADD_PATIENT: () => "/POST/SHARED/patient.php",
 	POST_EDIT_PATIENT: () => "/EDIT/SHARED/PATIENT/patient.php",
+	POST_EDIT_PATIENT_PASSWORD: () => "/EDIT/PATIENT/password.php",
 	POST_CHANGE_STATUS_PATIENT: () => "/EDIT/SHARED/PATIENT/changeStatus.php",
 	GET_DETAIL_PATIENT: () => "/GET/SHARED/PATIENT/patient.php",
 	GET_APPOINTMENT_PATIENT: () => "/GET/SHARED/PATIENT/patientsWithAppointment.php",

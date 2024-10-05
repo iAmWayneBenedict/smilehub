@@ -26,11 +26,13 @@ import {
 	CalendarDays,
 	Trash2,
 } from "lucide-react";
-import { capitalize } from "@/lib/utils";
+import { capitalize, formatDate } from "@/lib/utils";
 import { useAppStore } from "@/store/zustand";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import AppointmentsAPIManager from "@/services/api/managers/appointments/AppointmentsAPIManager";
 import PropTypes from "prop-types";
+import { sendEmail } from "@/services/email";
+import { convertDateYYYYMMDD } from "@/services/api/utils";
 
 //! change this based on the columns in the db
 const INITIAL_VISIBLE_COLUMNS = [
@@ -154,6 +156,8 @@ export default function TableAppointments({ type }) {
 	// renders the cell based on the column
 	const renderCell = React.useCallback((appointment, columnKey) => {
 		const cellValue = appointment[columnKey];
+		const date = formatDate(new Date(convertDateYYYYMMDD(appointment.APPOINTMENT_DATE)));
+		const time = appointment.APPOINTMENT_TIME.split("-")[0];
 		const handleAction = (key) => {
 			if (key === "reschedule") {
 				setNewScheduleModal({
@@ -187,6 +191,14 @@ export default function TableAppointments({ type }) {
 							ID: appointment.ID,
 							STATUS: "Cancelled",
 						});
+
+						sendEmail({
+							type: "notification",
+							name: appointment.FULLNAME,
+							email: appointment.EMAIL,
+							title: "Appointment Cancellation",
+							content: `Your appointment on ${date} at ${time} has been cancelled. Please contact the clinic for more information.`,
+						});
 					},
 				});
 			} else if (key === "on_going") {
@@ -201,6 +213,13 @@ export default function TableAppointments({ type }) {
 						changeStatusMutation.mutate({
 							ID: appointment.ID,
 							STATUS: "On-going",
+						});
+						sendEmail({
+							type: "notification",
+							name: appointment.FULLNAME,
+							email: appointment.EMAIL,
+							title: "Appointment Status Update",
+							content: `Your appointment on ${date} at ${time} is now on-going. Please be at the clinic on or before the given time. `,
 						});
 					},
 				});
@@ -217,6 +236,13 @@ export default function TableAppointments({ type }) {
 							ID: appointment.ID,
 							STATUS: "Completed",
 						});
+						sendEmail({
+							type: "notification",
+							name: appointment.FULLNAME,
+							email: appointment.EMAIL,
+							title: "Appointment Status Update",
+							content: `Your appointment on ${date} at ${time} is now completed. Thank you for choosing our clinic. `,
+						});
 					},
 				});
 			} else if (key === "pending") {
@@ -228,6 +254,13 @@ export default function TableAppointments({ type }) {
 					type: "info",
 					dialogType: "confirm",
 					confirmCallback: () => {
+						sendEmail({
+							type: "notification",
+							name: appointment.FULLNAME,
+							email: appointment.EMAIL,
+							title: "Appointment Status Update",
+							content: `Your appointment on ${date} at ${time} is now pending. Please wait for further updates. `,
+						});
 						changeStatusMutation.mutate({
 							ID: appointment.ID,
 							STATUS: "Pending",
@@ -315,6 +348,19 @@ export default function TableAppointments({ type }) {
 									type: "danger",
 									dialogType: "confirm",
 									confirmCallback: () => {
+										const date = formatDate(
+											new Date(
+												convertDateYYYYMMDD(appointment.APPOINTMENT_DATE)
+											)
+										);
+										const time = appointment.APPOINTMENT_TIME.split("-")[0];
+										sendEmail({
+											type: "notification",
+											name: appointment.FULLNAME,
+											email: appointment.EMAIL,
+											title: "Appointment Deletion",
+											content: `Your appointment on ${date} at ${time} has been deleted. Please contact the clinic for more information.`,
+										});
 										deleteAppointmentMutation.mutate({
 											ID: appointment.ID,
 										});

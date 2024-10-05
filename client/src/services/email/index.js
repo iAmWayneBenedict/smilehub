@@ -6,16 +6,16 @@ export const sendEmail = async ({
 	type = "notification",
 	name,
 	email,
-	date,
-	time,
+	title,
+	content,
 	password = null,
 }) => {
 	let template_params = {};
 	if (type === "notification") {
 		template_params = {
 			name,
-			date,
-			time,
+			title,
+			content,
 			reply_to: email,
 		};
 	} else {

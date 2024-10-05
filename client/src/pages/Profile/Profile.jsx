@@ -12,6 +12,7 @@ import { useParams } from "react-router-dom";
 import { useAppStore, useAuthTokenPersisted } from "@/store/zustand.js";
 import { Eye, EyeOff } from "lucide-react";
 import { decrypt } from "@/lib/utils";
+import PatientsAPIManager from "@/services/api/managers/patients/PatientsAPIManager";
 
 const PatientProfile = () => {
 	// controlled tabs
@@ -37,13 +38,19 @@ const PatientProfile = () => {
 						}}
 					>
 						<Tab key="view" title="Profile">
-							<ProfileForm isView selected={selected} setSelected={setSelected} />
+							<ProfileForm
+								isView
+								selected={selected}
+								setSelected={setSelected}
+								user={user}
+							/>
 						</Tab>
 						<Tab key="edit" title="Edit Profile">
 							<ProfileForm
 								isView={false}
 								selected={selected}
 								setSelected={setSelected}
+								user={user}
 							/>
 						</Tab>
 					</Tabs>
@@ -55,22 +62,22 @@ const PatientProfile = () => {
 
 export default PatientProfile;
 
-const ProfileForm = ({ isView, selected, setSelected }) => {
+const ProfileForm = ({ isView, selected, setSelected, user }) => {
 	const params = useParams();
 	const { setAlertDialogDetails } = useAppStore();
 
 	const onSubmitDetails = (data) => {
-		data.BIRTHDAY = convertDateYYYYMMDD(data.BIRTHDAY);
-		data.ID = params?.id;
-		// detailsMutation.mutate(data);
+		data.BIRTHDATE = convertDateYYYYMMDD(data.BIRTHDATE);
+		data.ID = user?.id;
+		detailsMutation.mutate(data);
 	};
-	// const { data, isSuccess, isLoading, refetch } = useQuery({
-	// 	queryKey: ["employee-detail"],
-	// 	queryFn: () =>
-	// 		EmployeesAPIManager.getEmployeeDetails({
-	// 			ID: params?.id,
-	// 		}),
-	// });
+	const { data, isSuccess, isLoading, refetch } = useQuery({
+		queryKey: ["employee-detail"],
+		queryFn: () =>
+			PatientsAPIManager.getDetailPatient({
+				ID: user?.id,
+			}),
+	});
 
 	const {
 		register,
@@ -81,48 +88,45 @@ const ProfileForm = ({ isView, selected, setSelected }) => {
 		setError,
 	} = useForm({
 		defaultValues: useMemo(() => {
-			// if (!data) {
+			if (!data) {
+				return {
+					FIRSTNAME: "",
+					LASTNAME: "",
+					BIRTHDATE: today(getLocalTimeZone()), // default date (today)
+					GENDER: "",
+					PHONE: "",
+					ROLE: "",
+					EMAIL: "",
+				};
+			}
 			return {
-				FIRSTNAME: "",
-				LASTNAME: "",
-				BIRTHDATE: today(getLocalTimeZone()), // default date (today)
-				GENDER: "",
-				PHONE: "",
-				ROLE: "",
-				EMAIL: "",
+				FIRSTNAME: data?.FIRSTNAME,
+				LASTNAME: data?.LASTNAME,
+				BIRTHDATE: data?.BIRTHDATE
+					? parseDate(convertDateYYYYMMDD(data?.BIRTHDATE))
+					: today(getLocalTimeZone()), // default date (today)
+				GENDER: data?.GENDER,
+				ROLE: data?.ROLE,
+				EMAIL: data?.EMAIL,
+				PHONE: data?.PHONE,
 			};
-			// }
-			// return {
-			// 	FULLNAME: data?.FULLNAME,
-			// 	BIRTHDAY: data?.BIRTHDAY
-			// 		? parseDate(convertDateYYYYMMDD(data?.BIRTHDAY))
-			// 		: today(getLocalTimeZone()), // default date (today)
-			// 	GENDER: data?.GENDER,
-			// 	ROLE: data?.ROLE,
-			// 	EMAIL: data?.EMAIL,
-			// };
 		}, []),
 	});
 
 	const detailsMutation = useMutation({
-		mutationFn: EmployeesAPIManager.postUpdateEmployeeInfo,
+		mutationFn: PatientsAPIManager.editAppointmentPatient,
 		onSuccess: (data) => {
 			reset();
-			// refetch();
-			const isStaff = location.pathname.includes("staff");
-			const isAdmin = location.pathname.includes("admin");
 
 			setAlertDialogDetails({
 				isOpen: true,
 				type: "success",
 				title: "Success!",
-				message: "Employee updated successfully",
+				message: "Patient updated successfully",
 				confirmCallback: () => {
 					setSelected("view");
 
-					if (isStaff || isAdmin) {
-						location.reload();
-					}
+					location.reload();
 				},
 			});
 		},
@@ -148,24 +152,29 @@ const ProfileForm = ({ isView, selected, setSelected }) => {
 			LASTNAME: "Lastname",
 			BIRTHDATE: today(getLocalTimeZone()), // default date (today)
 			GENDER: "Male",
-			ROLE: "PATIENT",
 			EMAIL: "test@patient.com",
 			PHONE: "09123456789",
 		});
 	}, []);
-	// useEffect(() => {
-	// 	if (!isSuccess) return;
+	useEffect(() => {
+		if (!isSuccess) return;
 
-	// 	reset({
-	// 		FULLNAME: data?.FULLNAME,
-	// 		BIRTHDAY: data?.BIRTHDAY
-	// 			? parseDate(convertDateYYYYMMDD(data?.BIRTHDAY))
-	// 			: today(getLocalTimeZone()), // default date (today)
-	// 		GENDER: data?.GENDER,
-	// 		ROLE: data?.ROLE,
-	// 		EMAIL: data?.EMAIL,
-	// 	});
-	// }, [data, isSuccess]);
+		reset({
+			// FULLNAME: data?.FULLNAME,
+			// BIRTHDAY: data?.BIRTHDAY
+			// 	? parseDate(convertDateYYYYMMDD(data?.BIRTHDAY))
+			// 	: today(getLocalTimeZone()), // default date (today)
+			// GENDER: data?.GENDER,
+			// ROLE: data?.ROLE,
+			// EMAIL: data?.EMAIL,
+			FIRSTNAME: data?.FIRSTNAME,
+			LASTNAME: data?.LASTNAME,
+			BIRTHDATE: parseDate(convertDateYYYYMMDD(data?.BIRTHDATE)),
+			GENDER: data?.GENDER,
+			EMAIL: data?.EMAIL,
+			PHONE: data?.PHONE,
+		});
+	}, [data, isSuccess]);
 
 	return (
 		<div>
@@ -184,10 +193,7 @@ const ProfileForm = ({ isView, selected, setSelected }) => {
 					{isView && (
 						<div>
 							<h1 className="text-3xl font-bold">
-								{
-									// data?.FULLNAME
-								}
-								Sample Name
+								{data?.FIRSTNAME} {data?.LASTNAME}
 							</h1>
 						</div>
 					)}
@@ -435,6 +441,7 @@ const ProfileForm = ({ isView, selected, setSelected }) => {
 						isView={isView}
 						selected={selected}
 						setSelected={setSelected}
+						user={user}
 						// refetch={refetch}
 					/>
 				</div>
@@ -447,9 +454,10 @@ ProfileForm.propTypes = {
 	selected: PropTypes.any,
 	setSelected: PropTypes.any,
 	setCurrentDisplay: PropTypes.any,
+	user: PropTypes.any,
 };
 
-const PasswordResetComponent = ({ isView, selected, setSelected }) => {
+const PasswordResetComponent = ({ isView, selected, setSelected, user }) => {
 	const params = useParams();
 	const { setAlertDialogDetails } = useAppStore();
 	const [isVisiblePassword, setIsVisiblePassword] = useState(false);
@@ -460,8 +468,7 @@ const PasswordResetComponent = ({ isView, selected, setSelected }) => {
 		setIsVisibleConfirmPassword(!isVisibleConfirmPassword);
 
 	const onSubmit = (data) => {
-		data.BIRTHDAY = convertDateYYYYMMDD(data.BIRTHDAY);
-		data.ID = params?.id;
+		data.ID = user?.id;
 		mutation.mutate(data);
 	};
 	const {
@@ -478,7 +485,7 @@ const PasswordResetComponent = ({ isView, selected, setSelected }) => {
 	});
 
 	const mutation = useMutation({
-		mutationFn: EmployeesAPIManager.postUpdateEmployeePassword,
+		mutationFn: PatientsAPIManager.editAppointmentPatientPassword,
 		onSuccess: (data) => {
 			reset();
 			// refetch();
@@ -608,4 +615,5 @@ PasswordResetComponent.propTypes = {
 	isView: PropTypes.bool,
 	selected: PropTypes.any,
 	setSelected: PropTypes.any,
+	user: PropTypes.any,
 };

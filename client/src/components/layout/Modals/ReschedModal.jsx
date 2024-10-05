@@ -19,18 +19,22 @@ import { useMutation } from "@tanstack/react-query";
 import CustomDatePicker from "@/components/ui/DatePicker";
 import { useMemo } from "react";
 import { parseDate } from "@internationalized/date";
-import { sortTime } from "@/lib/utils";
+import { formatDate, sortTime } from "@/lib/utils";
+import PatientsAPIManager from "@/services/api/managers/patients/PatientsAPIManager";
+import { sendEmail } from "@/services/email";
 
 export default function ReschedModal() {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const { newScheduleModal, setNewScheduleModal, setAlertDialogDetails } = useAppStore();
 	const [timeDropdownList, setTimeDropdownList] = useState([]);
+	const [patients, setPatients] = useState([]);
 	useEffect(() => {
 		if (newScheduleModal.isOpen) {
 			onOpen();
 
 			if (newScheduleModal.data) {
 				handleGetSelectedTimes();
+				handleGetPatients();
 			}
 		} else {
 			onClose();
@@ -53,8 +57,23 @@ export default function ReschedModal() {
 		}
 	}, [newScheduleModal]);
 
+	// get patients
+	const handleGetPatients = async () => {
+		try {
+			const response = await PatientsAPIManager.getAllPatients();
+			setPatients(response);
+		} catch (error) {
+			setAlertDialogDetails({
+				isOpen: true,
+				type: "danger",
+				title: "Error!",
+				message: error.message,
+			});
+		}
+	};
+
 	// Form hook
-	const { handleSubmit, control, reset } = useForm({
+	const { handleSubmit, control, reset, getValues } = useForm({
 		defaultValues: useMemo(() => {
 			if (newScheduleModal.data) {
 				return {
@@ -92,14 +111,27 @@ export default function ReschedModal() {
 		onSuccess: () => {
 			newScheduleModal.refetch();
 
+			const date = formatDate(new Date(convertDateYYYYMMDD(getValues("APPOINTMENT_DATE"))));
+			const time = getValues("APPOINTMENT_TIME")?.split("-")[0];
+
+			sendEmail({
+				type: "notification",
+				name: newScheduleModal.data.FULLNAME,
+				email: newScheduleModal.data.EMAIL,
+
+				title: "Appointment Reschedule Confirmation",
+				content: `Your appointment has been rescheduled on ${date} at ${time}. Please be at the clinic on or before the given time. `,
+			});
 			setAlertDialogDetails({
 				isOpen: true,
 				type: "success",
 				title: "Success!",
 				message: "Appointment schedule changed successfully!",
+				confirmCallback: () => {
+					setNewScheduleModal({});
+					onClose();
+				},
 			});
-
-			onClose();
 		},
 		onError: (error) => {
 			setAlertDialogDetails({

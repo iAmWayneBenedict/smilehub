@@ -23,7 +23,7 @@ import {
 	AccordionItem,
 	AccordionTrigger,
 } from "@/components/ui/accordion";
-import { cn } from "@/lib/utils";
+import { cn, formatDate } from "@/lib/utils";
 import "./styles.css";
 import { useMediaQuery } from "react-responsive";
 import {
@@ -45,6 +45,7 @@ import { Clock } from "lucide-react";
 import { CheckCheck } from "lucide-react";
 import { CalendarDays } from "lucide-react";
 import { Trash2 } from "lucide-react";
+import { sendEmail } from "@/services/email";
 
 const AdminDashboard = () => {
 	const { setNewAppointmentModal } = useAppStore();
@@ -232,37 +233,6 @@ const AdminDashboard = () => {
 
 export default AdminDashboard;
 
-const data = [
-	{
-		time: "9:00 AM - 10:00 AM",
-		date: "12th June 2021",
-		patient_name: "Bolaji Abdulraheem",
-		dentist: "Dr. Dwight",
-		purpose: "Palatal Expander",
-	},
-	{
-		time: "10:00 AM - 11:00 AM",
-		date: "12th June 2021",
-		patient_name: "Bolaji Abdulraheem",
-		dentist: "Dr. Dwight",
-		purpose: "Palatal Expander",
-	},
-	{
-		time: "1:00 PM - 2:30 PM",
-		date: "12th June 2021",
-		patient_name: "Bolaji Abdulraheem",
-		dentist: "Dr. Dwight",
-		purpose: "Palatal Expander",
-	},
-	{
-		time: "5:00 PM - 5:30 PM",
-		date: "12th June 2021",
-		patient_name: "Bolaji Abdulraheem",
-		dentist: "Dr. Dwight",
-		purpose: "Palatal Expander",
-	},
-];
-
 // AccordionSchedule component
 const AccordionSchedule = () => {
 	// const [selectedChapter, setSelectedChapter] = useState("");
@@ -398,6 +368,8 @@ const AccordionSchedule = () => {
 		},
 	});
 	const handleAction = (key, appointment) => {
+		const date = formatDate(new Date(convertDateYYYYMMDD(appointment.APPOINTMENT_DATE)));
+		const time = appointment.APPOINTMENT_TIME.split("-")[0];
 		if (key === "reschedule") {
 			setNewScheduleModal({
 				isOpen: true,
@@ -426,6 +398,13 @@ const AccordionSchedule = () => {
 				type: "warning",
 				dialogType: "confirm",
 				confirmCallback: () => {
+					sendEmail({
+						type: "notification",
+						name: appointment.FULLNAME,
+						email: appointment.EMAIL,
+						title: "Appointment Cancelled",
+						content: `Your appointment on ${date} at ${time} has been cancelled. Please contact the clinic for more information.`,
+					});
 					changeStatusMutation.mutate({
 						ID: appointment.ID,
 						STATUS: "Cancelled",
@@ -441,6 +420,13 @@ const AccordionSchedule = () => {
 				type: "info",
 				dialogType: "confirm",
 				confirmCallback: () => {
+					sendEmail({
+						type: "notification",
+						name: appointment.FULLNAME,
+						email: appointment.EMAIL,
+						title: "Appointment Status Update",
+						content: `Your appointment on ${date} at ${time} is now on-going. Please be at the clinic on or before the given time.`,
+					});
 					changeStatusMutation.mutate({
 						ID: appointment.ID,
 						STATUS: "On-going",
@@ -456,6 +442,13 @@ const AccordionSchedule = () => {
 				type: "info",
 				dialogType: "confirm",
 				confirmCallback: () => {
+					sendEmail({
+						type: "notification",
+						name: appointment.FULLNAME,
+						email: appointment.EMAIL,
+						title: "Appointment Status Update",
+						content: `Your appointment on ${date} at ${time} is now done. Please contact the clinic for more information.`,
+					});
 					changeStatusMutation.mutate({
 						ID: appointment.ID,
 						STATUS: "Completed",
@@ -471,6 +464,13 @@ const AccordionSchedule = () => {
 				type: "info",
 				dialogType: "confirm",
 				confirmCallback: () => {
+					sendEmail({
+						type: "notification",
+						name: appointment.FULLNAME,
+						email: appointment.EMAIL,
+						title: "Appointment Status Update",
+						content: `Your appointment on ${date} at ${time} is now pending. Please wait for further updates.`,
+					});
 					changeStatusMutation.mutate({
 						ID: appointment.ID,
 						STATUS: "Pending",
@@ -700,6 +700,24 @@ const AccordionSchedule = () => {
 																		type: "danger",
 																		dialogType: "confirm",
 																		confirmCallback: () => {
+																			const date = formatDate(
+																				new Date(
+																					convertDateYYYYMMDD(
+																						item.APPOINTMENT_DATE
+																					)
+																				)
+																			);
+																			const time =
+																				item.APPOINTMENT_TIME.split(
+																					"-"
+																				)[0];
+																			sendEmail({
+																				type: "notification",
+																				name: item.FULLNAME,
+																				email: item.EMAIL,
+																				title: "Appointment Deleted",
+																				content: `Your appointment on ${date} at ${time} has been deleted. Please contact the clinic for more information.`,
+																			});
 																			deleteAppointmentMutation.mutate(
 																				{
 																					ID: item.ID,

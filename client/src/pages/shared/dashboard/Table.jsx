@@ -21,6 +21,9 @@ import AppontmentsAPIManager from "@/services/api/managers/appointments/Appointm
 import { useAppStore } from "@/store/zustand.js";
 import AppointmentsAPIManager from "@/services/api/managers/appointments/AppointmentsAPIManager.js";
 import { useEffect } from "react";
+import { sendEmail } from "@/services/email";
+import { formatDate } from "@/lib/utils";
+import { convertDateYYYYMMDD } from "@/services/api/utils";
 
 const INITIAL_VISIBLE_COLUMNS = [
 	"APPOINTMENT_TIME",
@@ -145,6 +148,8 @@ export default function TableDashboard({ type }) {
 	// render cell
 	const renderCell = React.useCallback((appointment, columnKey) => {
 		const cellValue = appointment[columnKey];
+		const date = formatDate(new Date(convertDateYYYYMMDD(appointment.APPOINTMENT_DATE)));
+		const time = appointment.APPOINTMENT_TIME.split("-")[0];
 		const handleAction = (key) => {
 			if (key === "reschedule") {
 				setNewScheduleModal({
@@ -178,6 +183,13 @@ export default function TableDashboard({ type }) {
 							ID: appointment.ID,
 							STATUS: "Cancelled",
 						});
+						sendEmail({
+							type: "notification",
+							name: appointment.FULLNAME,
+							email: appointment.EMAIL,
+							title: "Appointment Cancellation",
+							content: `Your appointment on ${date} at ${time} has been cancelled. Please contact the clinic for more information.`,
+						});
 					},
 				});
 			} else if (key === "on_going") {
@@ -193,6 +205,13 @@ export default function TableDashboard({ type }) {
 							ID: appointment.ID,
 							STATUS: "On-going",
 						});
+						sendEmail({
+							type: "notification",
+							name: appointment.FULLNAME,
+							email: appointment.EMAIL,
+							title: "Appointment Status Update",
+							content: `Your appointment on ${date} at ${time} is now on-going. Please be at the clinic on or before the given time. `,
+						});
 					},
 				});
 			} else if (key === "done") {
@@ -207,6 +226,13 @@ export default function TableDashboard({ type }) {
 						changeStatusMutation.mutate({
 							ID: appointment.ID,
 							STATUS: "Completed",
+						});
+						sendEmail({
+							type: "notification",
+							name: appointment.FULLNAME,
+							email: appointment.EMAIL,
+							title: "Appointment Status Update",
+							content: `Your appointment on ${date} at ${time} is now completed. Thank you for choosing our clinic. `,
 						});
 					},
 				});
@@ -298,6 +324,18 @@ export default function TableDashboard({ type }) {
 							isIconOnly
 							aria-label="delete"
 							onClick={() => {
+								const date = formatDate(
+									new Date(convertDateYYYYMMDD(appointment.APPOINTMENT_DATE))
+								);
+								const time = appointment.APPOINTMENT_TIME.split("-")[0];
+								sendEmail({
+									type: "notification",
+									name: appointment.FULLNAME,
+									email: appointment.EMAIL,
+									title: "Appointment Deletion",
+									content: `Your appointment on ${date} at ${time} has been deleted. Please contact the clinic for more information.`,
+								});
+
 								// display the alert dialog
 								setAlertDialogDetails({
 									isOpen: true,
