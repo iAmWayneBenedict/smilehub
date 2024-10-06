@@ -21,9 +21,10 @@ import { useAppStore } from "@/store/zustand";
 import { useLocation } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import InventoryAPIManager from "@/services/api/managers/inventory/InventoryAPIManager";
+import { formatDate, formatDateByDayAndShortMonth } from "@/lib/utils";
 
 //! change this based on the columns in the db
-const INITIAL_VISIBLE_COLUMNS = ["NAME", "GROUP_NAME", "ITEM_NAME", "ACTION", "FROM", "TO"];
+const INITIAL_VISIBLE_COLUMNS = ["NAME", "DATE", "GROUP_NAME", "ITEM_NAME", "ACTION", "FROM", "TO"];
 
 export default function TableAppointments() {
 	const [filterValue, setFilterValue] = React.useState("");
@@ -93,6 +94,14 @@ export default function TableAppointments() {
 	const renderCell = React.useCallback((item, columnKey) => {
 		const cellValue = item[columnKey];
 		switch (columnKey) {
+			case "DATE":
+				return (
+					<div className="flex flex-col">
+						<p className="capitalize text-bold text-small">
+							{formatDate(new Date(cellValue))}
+						</p>
+					</div>
+				);
 			case "NAME":
 				return (
 					<div className="flex flex-col">

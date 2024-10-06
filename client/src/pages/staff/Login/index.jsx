@@ -98,12 +98,12 @@ const StaffLogin = () => {
 							/>
 						</div>
 						<Divider className="bg-gray-300" />
-						<div className="flex flex-row justify-end">
+						{/* <div className="flex flex-row justify-end">
 							
 							<Link href="#" className="font-semibold text-white underline">
 								Forgot Password?
 							</Link>
-						</div>
+						</div> */}
 						<Button
 							type="submit"
 							color="default"

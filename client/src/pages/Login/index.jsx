@@ -282,12 +282,12 @@ const Login = () => {
 									</button>
 								}
 							/>
-							<div className="flex flex-row justify-end">
+							{/* <div className="flex flex-row justify-end">
 								
 								<Link href="#" className="font-semibold underline text-darkText">
 									Forgot Password?
 								</Link>
-							</div>
+							</div> */}
 							<Button
 								type="submit"
 								color="primary"
