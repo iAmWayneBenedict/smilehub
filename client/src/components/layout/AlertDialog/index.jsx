@@ -67,6 +67,9 @@ const AlertDialog = () => {
 				if (alertDialogDetails?.actionLink) {
 					navigate(alertDialogDetails?.actionLink);
 				}
+				if (alertDialogDetails?.dialogType !== "confirm") {
+					alertDialogDetails?.confirmCallback();
+				}
 				onClose();
 			}}
 		>
