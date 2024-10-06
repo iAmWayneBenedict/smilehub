@@ -8,7 +8,7 @@ import {
 	useDisclosure,
 	Input,
 } from "@nextui-org/react";
-import { useAppStore } from "@/store/zustand.js";
+import { useAppStore, useAuthTokenPersisted } from "@/store/zustand.js";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { convertDateYYYYMMDD } from "@/services/api/utils";
@@ -17,10 +17,13 @@ import { useMutation } from "@tanstack/react-query";
 import { Search, Plus } from "lucide-react";
 import InventoryAPIManager from "@/services/api/managers/inventory/InventoryAPIManager";
 import { useMemo } from "react";
+import { decrypt } from "@/lib/utils";
 
 export default function AddGroup() {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const { addGroupModal, setAddGroupModal, setAlertDialogDetails } = useAppStore();
+	const { authToken } = useAuthTokenPersisted();
+	const user = decrypt(authToken);
 	useEffect(() => {
 		if (addGroupModal.isOpen) {
 			onOpen();
@@ -103,6 +106,9 @@ export default function AddGroup() {
 		},
 	});
 	const onSubmit = (data) => {
+		data.EMPLOYEE_NAME = user?.fullname;
+		data.EMPLOYEE_ID = user?.id;
+
 		if (addGroupModal.data) {
 			updateMutation.mutate({ ...data, ID: addGroupModal.data.ID });
 		} else mutation.mutate(data);

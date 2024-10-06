@@ -36,6 +36,11 @@ class InventoryAPIManager {
 	static async postDeleteGroup(body = {}) {
 		return await APIMethods.post(END_POINTS.POST_DELETE_GROUP(), body);
 	}
+
+	// inventory logs
+	static async getLogs(body = {}) {
+		return await APIMethods.post(END_POINTS.GET_LOGS(), body);
+	}
 }
 
 export default InventoryAPIManager;

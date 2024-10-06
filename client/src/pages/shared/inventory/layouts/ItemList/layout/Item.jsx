@@ -1,5 +1,6 @@
+import { decrypt } from "@/lib/utils";
 import InventoryAPIManager from "@/services/api/managers/inventory/InventoryAPIManager";
-import { useAppStore } from "@/store/zustand";
+import { useAppStore, useAuthTokenPersisted } from "@/store/zustand";
 import { Breadcrumbs, BreadcrumbItem, Button, Tabs, Tab } from "@nextui-org/react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Pencil, Trash } from "lucide-react";
@@ -16,6 +17,8 @@ const Item = () => {
 	const { setAlertDialogDetails } = useAppStore();
 	const params = useParams();
 	const navigate = useNavigate();
+	const { authToken } = useAuthTokenPersisted();
+	const user = decrypt(authToken);
 
 	const getMutation = useMutation({
 		mutationFn: InventoryAPIManager.getInventoryItem,
@@ -181,6 +184,8 @@ const Item = () => {
 												confirmCallback: () => {
 													deleteMutation.mutate({
 														ID: data.ID,
+														EMPLOYEE_ID: user.id,
+														NAME: user.fullname,
 													});
 												},
 											});

@@ -16,8 +16,8 @@ import {
 } from "@nextui-org/react";
 import { columns, itemsData } from "../data";
 import { Search, Plus, Trash } from "lucide-react";
-import { useAppStore } from "@/store/zustand";
-import { cn } from "@/lib/utils";
+import { useAppStore, useAuthTokenPersisted } from "@/store/zustand";
+import { cn, decrypt } from "@/lib/utils";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import InventoryAPIManager from "@/services/api/managers/inventory/InventoryAPIManager";
 import { useParams } from "react-router-dom";
@@ -42,6 +42,9 @@ export default function TableAppointments() {
 	const currentUser = location.pathname.includes("admin") ? "admin" : "staff";
 	const navigate = useNavigate();
 	const params = useParams();
+	const { authToken } = useAuthTokenPersisted();
+	const user = decrypt(authToken);
+
 	const {
 		setAddGroupItemModal,
 		setAlertDialogDetails,
@@ -207,6 +210,8 @@ export default function TableAppointments() {
 									confirmCallback: () => {
 										deleteItemMutation.mutate({
 											ID: item.ID,
+											EMPLOYEE_ID: user.id,
+											NAME: user.fullname,
 										});
 									},
 								});
@@ -391,6 +396,8 @@ export default function TableAppointments() {
 								confirmCallback: () => {
 									deleteGroupMutation.mutate({
 										ID: groupDetailData.ID,
+										EMPLOYEE_ID: user.id,
+										NAME: user.fullname,
 									});
 								},
 							});

@@ -77,6 +77,7 @@ const END_POINTS = {
 	POST_UPDATE_GROUP: () => "/EDIT/SHARED/INVENTORY/inventoryItemGroup.php",
 	POST_ADD_GROUP: () => "/POST/SHARED/inventoryItemGroup.php",
 	POST_DELETE_GROUP: () => "/DELETE/SHARED/INVENTORY/inventoryItemGroup.php",
+	GET_LOGS: () => "/GET/SHARED/INVENTORY/inventoryLogs.php",
 
 	// teeth diagram
 	POST_ADD_DIAGRAM: () => "/POST/DENTIST/teethAssessment.php",

@@ -24,7 +24,15 @@ import InventoryAPIManager from "@/services/api/managers/inventory/InventoryAPIM
 import { formatDate, formatDateByDayAndShortMonth } from "@/lib/utils";
 
 //! change this based on the columns in the db
-const INITIAL_VISIBLE_COLUMNS = ["NAME", "DATE", "GROUP_NAME", "ITEM_NAME", "ACTION", "FROM", "TO"];
+const INITIAL_VISIBLE_COLUMNS = [
+	"NAME",
+	"DATETIME",
+	"ITEM_GROUP",
+	"ITEM_NAME",
+	"ACTION",
+	"FROM_QTY",
+	"TO_QTY",
+];
 
 export default function TableAppointments() {
 	const [filterValue, setFilterValue] = React.useState("");
@@ -41,8 +49,8 @@ export default function TableAppointments() {
 	const { setAlertDialogDetails, setNewAppointmentModal, setNewScheduleModal } = useAppStore();
 
 	const { data, isLoading, isSuccess, refetch, isError } = useQuery({
-		queryKey: ["inventoryItems"],
-		queryFn: InventoryAPIManager.getInventoryItems,
+		queryKey: ["logs"],
+		queryFn: InventoryAPIManager.getLogs,
 		retry: false,
 	});
 
@@ -60,7 +68,7 @@ export default function TableAppointments() {
 	// filters the itemsData based on the search value
 	const filteredItems = React.useMemo(() => {
 		if (isLoading || !isSuccess || isError) return [];
-		let filteredItemsData = [...itemsData];
+		let filteredItemsData = [...data];
 
 		if (hasSearchFilter) {
 			filteredItemsData = filteredItemsData.filter((item) => {
@@ -94,7 +102,7 @@ export default function TableAppointments() {
 	const renderCell = React.useCallback((item, columnKey) => {
 		const cellValue = item[columnKey];
 		switch (columnKey) {
-			case "DATE":
+			case "DATETIME":
 				return (
 					<div className="flex flex-col">
 						<p className="capitalize text-bold text-small">
@@ -108,34 +116,34 @@ export default function TableAppointments() {
 						<p className="capitalize text-bold text-small">{cellValue}</p>
 					</div>
 				);
-			case "GROUP_NAME":
+			case "ITEM_GROUP":
 				return (
 					<div className="flex flex-col">
-						<p className="capitalize text-bold text-small">{cellValue}</p>
+						<p className=" text-bold text-small">{cellValue}</p>
 					</div>
 				);
 			case "ITEM_NAME":
 				return (
 					<div className="flex flex-col">
-						<p className="capitalize text-bold text-small">{cellValue}</p>
+						<p className=" text-bold text-small">{cellValue}</p>
 					</div>
 				);
 			case "ACTION":
 				return (
 					<div className="flex flex-col">
-						<p className="capitalize text-bold text-small">{cellValue}</p>
+						<p className=" text-bold text-small">{cellValue}</p>
 					</div>
 				);
-			case "FROM":
+			case "FROM_QTY":
 				return (
 					<div className="flex flex-col">
-						<p className="capitalize text-bold text-small">{cellValue}</p>
+						<p className=" text-bold text-small">{cellValue}</p>
 					</div>
 				);
-			case "TO":
+			case "TO_QTY":
 				return (
 					<div className="flex flex-col">
-						<p className="capitalize text-bold text-small">{cellValue}</p>
+						<p className=" text-bold text-small">{cellValue}</p>
 					</div>
 				);
 

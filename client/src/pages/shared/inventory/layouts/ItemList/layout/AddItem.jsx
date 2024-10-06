@@ -1,5 +1,6 @@
+import { decrypt } from "@/lib/utils";
 import InventoryAPIManager from "@/services/api/managers/inventory/InventoryAPIManager";
-import { useAppStore } from "@/store/zustand";
+import { useAppStore, useAuthTokenPersisted } from "@/store/zustand";
 import {
 	Breadcrumbs,
 	BreadcrumbItem,
@@ -19,6 +20,8 @@ const AddItem = () => {
 	const currentUser = location.pathname.includes("admin") ? "admin" : "staff";
 	const { alertDialogDetails, setAlertDialogDetails } = useAppStore();
 	const navigate = useNavigate();
+	const { authToken } = useAuthTokenPersisted();
+	const user = decrypt(authToken);
 
 	const { data: itemGroups } = useQuery({
 		queryKey: ["itemGroups"],
@@ -63,6 +66,8 @@ const AddItem = () => {
 		},
 	});
 	const onSubmit = (data) => {
+		data.EMPLOYEE_NAME = user.fullname;
+		data.EMPLOYEE_ID = user.id;
 		mutation.mutate(data);
 	};
 	return (

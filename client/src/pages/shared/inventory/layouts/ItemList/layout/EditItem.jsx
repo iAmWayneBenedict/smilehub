@@ -1,5 +1,6 @@
+import { decrypt } from "@/lib/utils";
 import InventoryAPIManager from "@/services/api/managers/inventory/InventoryAPIManager";
-import { useAppStore } from "@/store/zustand";
+import { useAppStore, useAuthTokenPersisted } from "@/store/zustand";
 import {
 	Breadcrumbs,
 	BreadcrumbItem,
@@ -23,6 +24,9 @@ const EditItem = () => {
 	const { alertDialogDetails, setAlertDialogDetails } = useAppStore();
 	const navigate = useNavigate();
 	const params = useParams();
+	const { authToken } = useAuthTokenPersisted();
+	const user = decrypt(authToken);
+
 	// Form hook
 	const {
 		register,
@@ -88,6 +92,8 @@ const EditItem = () => {
 	});
 
 	const onSubmit = (data) => {
+		data.EMPLOYEE_NAME = user.fullname;
+		data.EMPLOYEE_ID = user.id;
 		mutation.mutate(data);
 	};
 	return (

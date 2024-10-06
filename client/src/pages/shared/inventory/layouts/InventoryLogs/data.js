@@ -1,12 +1,12 @@
 import React from "react";
 const columns = [
-	{ name: "DATE", uid: "DATE", sortable: true },
+	{ name: "DATE", uid: "DATETIME", sortable: true },
 	{ name: "NAME", uid: "NAME", sortable: true },
-	{ name: "GROUP", uid: "GROUP_NAME", sortable: true },
+	{ name: "GROUP", uid: "ITEM_GROUP", sortable: true },
 	{ name: "ITEM", uid: "ITEM_NAME", sortable: true },
 	{ name: "ACTION", uid: "ACTION", sortable: true },
-	{ name: "FROM QTY", uid: "FROM" },
-	{ name: "TO QTY", uid: "TO" },
+	{ name: "FROM QTY", uid: "FROM_QTY" },
+	{ name: "TO QTY", uid: "TO_QTY" },
 ];
 
 const statusOptions = [

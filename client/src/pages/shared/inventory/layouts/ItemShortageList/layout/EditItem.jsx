@@ -1,5 +1,6 @@
+import { decrypt } from "@/lib/utils";
 import InventoryAPIManager from "@/services/api/managers/inventory/InventoryAPIManager";
-import { useAppStore } from "@/store/zustand";
+import { useAppStore, useAuthTokenPersisted } from "@/store/zustand";
 import {
 	Breadcrumbs,
 	BreadcrumbItem,
@@ -23,6 +24,9 @@ const EditItemShortage = () => {
 	const { alertDialogDetails, setAlertDialogDetails } = useAppStore();
 	const navigate = useNavigate();
 	const params = useParams();
+	const { authToken } = useAuthTokenPersisted();
+	const user = decrypt(authToken);
+
 	// Form hook
 	const {
 		register,
@@ -81,13 +85,15 @@ const EditItemShortage = () => {
 			setAlertDialogDetails({
 				isOpen: true,
 				title: "Error",
-				message: error?.response?.data?.message || "An error occurred",
+				message: error?.message || "An error occurred",
 				type: "danger",
 			});
 		},
 	});
 
 	const onSubmit = (data) => {
+		data.EMPLOYEE_NAME = user.fullname;
+		data.EMPLOYEE_ID = user.id;
 		mutation.mutate(data);
 	};
 	return (
@@ -199,7 +205,7 @@ const EditItemShortage = () => {
 											errorMessage={errors.QUANTITY?.message}
 											label={"Quantity in number"}
 											placeholder={" "}
-											type="text"
+											type="number"
 											variant="bordered"
 											color="primary"
 											radius="sm"

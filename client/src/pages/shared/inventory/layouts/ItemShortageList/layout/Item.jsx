@@ -1,5 +1,6 @@
+import { decrypt } from "@/lib/utils";
 import InventoryAPIManager from "@/services/api/managers/inventory/InventoryAPIManager";
-import { useAppStore } from "@/store/zustand";
+import { useAppStore, useAuthTokenPersisted } from "@/store/zustand";
 import { Breadcrumbs, BreadcrumbItem, Button, Tabs, Tab } from "@nextui-org/react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Pencil, Trash } from "lucide-react";
@@ -16,6 +17,8 @@ const ItemShortage = () => {
 	const { setAlertDialogDetails } = useAppStore();
 	const params = useParams();
 	const navigate = useNavigate();
+	const { authToken } = useAuthTokenPersisted();
+	const user = decrypt(authToken);
 
 	const getMutation = useMutation({
 		mutationFn: InventoryAPIManager.getInventoryItem,
@@ -36,7 +39,7 @@ const ItemShortage = () => {
 				message: "Item deleted successfully",
 				type: "success",
 				confirmCallback: () => {
-					navigate(`/${currentUser}/inventory/item-list`);
+					navigate(`/${currentUser}/inventory/item-list-shortage`);
 				},
 			});
 		},
@@ -44,7 +47,7 @@ const ItemShortage = () => {
 			setAlertDialogDetails({
 				isOpen: true,
 				title: "Error",
-				message: error?.response?.data?.message || "An error occurred",
+				message: error?.message || "An error occurred",
 				type: "danger",
 			});
 		},
@@ -181,6 +184,8 @@ const ItemShortage = () => {
 												confirmCallback: () => {
 													deleteMutation.mutate({
 														ID: data.ID,
+														EMPLOYEE_ID: user.id,
+														NAME: user.fullname,
 													});
 												},
 											});
