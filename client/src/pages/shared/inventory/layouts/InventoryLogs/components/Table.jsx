@@ -23,7 +23,7 @@ import { useQuery } from "@tanstack/react-query";
 import InventoryAPIManager from "@/services/api/managers/inventory/InventoryAPIManager";
 
 //! change this based on the columns in the db
-const INITIAL_VISIBLE_COLUMNS = ["NAME", "ID", "ITEM_GROUP", "QUANTITY", "actions"];
+const INITIAL_VISIBLE_COLUMNS = ["NAME", "GROUP_NAME", "ITEM_NAME", "ACTION", "FROM", "TO"];
 
 export default function TableAppointments() {
 	const [filterValue, setFilterValue] = React.useState("");
@@ -39,7 +39,7 @@ export default function TableAppointments() {
 	const currentUser = location.pathname.includes("admin") ? "admin" : "staff";
 	const { setAlertDialogDetails, setNewAppointmentModal, setNewScheduleModal } = useAppStore();
 
-	const { data, isLoading, isSuccess, refetch } = useQuery({
+	const { data, isLoading, isSuccess, refetch, isError } = useQuery({
 		queryKey: ["inventoryItems"],
 		queryFn: InventoryAPIManager.getInventoryItems,
 	});
@@ -57,8 +57,8 @@ export default function TableAppointments() {
 
 	// filters the itemsData based on the search value
 	const filteredItems = React.useMemo(() => {
-		if (isLoading || !isSuccess) return [];
-		let filteredItemsData = [...data.all_items];
+		if (isLoading || !isSuccess || isError) return [];
+		let filteredItemsData = [...itemsData];
 
 		if (hasSearchFilter) {
 			filteredItemsData = filteredItemsData.filter((item) => {
@@ -67,7 +67,7 @@ export default function TableAppointments() {
 		}
 
 		return filteredItemsData;
-	}, [data, filterValue, statusFilter, isLoading, isSuccess]);
+	}, [data, filterValue, statusFilter, isLoading, isSuccess, isError]);
 
 	// paginates the filtered items
 	const items = React.useMemo(() => {
@@ -91,33 +91,6 @@ export default function TableAppointments() {
 	// renders the cell based on the column
 	const renderCell = React.useCallback((item, columnKey) => {
 		const cellValue = item[columnKey];
-		const handleAction = (key) => {
-			if (key === "reschedule") {
-				setNewScheduleModal({
-					isOpen: true,
-					title: "Change Status",
-					data: null,
-				});
-			} else if (key === "delete") {
-				// display the alert dialog
-				setAlertDialogDetails({
-					isOpen: true,
-					title: "Delete Appointment",
-					message: "Are you sure you want to delete this item?",
-					type: "danger",
-					dialogType: "confirm",
-				});
-			} else if (key === "cancel") {
-				// display the alert dialog
-				setAlertDialogDetails({
-					isOpen: true,
-					title: "Cancel Appointment",
-					message: "Are you sure you want to cancel this item?",
-					type: "warning",
-					dialogType: "confirm",
-				});
-			}
-		};
 		switch (columnKey) {
 			case "NAME":
 				return (
@@ -125,56 +98,37 @@ export default function TableAppointments() {
 						<p className="capitalize text-bold text-small">{cellValue}</p>
 					</div>
 				);
-			case "ID":
+			case "GROUP_NAME":
 				return (
 					<div className="flex flex-col">
 						<p className="capitalize text-bold text-small">{cellValue}</p>
 					</div>
 				);
-			case "ITEM_GROUP":
+			case "ITEM_NAME":
 				return (
 					<div className="flex flex-col">
 						<p className="capitalize text-bold text-small">{cellValue}</p>
 					</div>
 				);
-			case "QUANTITY":
+			case "ACTION":
 				return (
 					<div className="flex flex-col">
 						<p className="capitalize text-bold text-small">{cellValue}</p>
 					</div>
 				);
-			case "actions":
+			case "FROM":
 				return (
-					<div className="relative flex items-center justify-start gap-2">
-						<Button
-							as={Link}
-							href={`/${currentUser}/inventory/item-list/${item.ID}`}
-							variant="light"
-							className="data-[hover=true]:bg-transparent"
-							endContent={<ChevronsRight />}
-						>
-							View Full Detail
-						</Button>
+					<div className="flex flex-col">
+						<p className="capitalize text-bold text-small">{cellValue}</p>
 					</div>
 				);
-			// case "options":
-			// 	return (
-			// 		<div className="relative flex items-end justify-end gap-2 max-w-24">
-			// 			<Dropdown>
-			// 				<DropdownTrigger>
-			// 					<Button isIconOnly size="sm" variant="light">
-			// 						<EllipsisVertical className="text-default-300" />
-			// 					</Button>
-			// 				</DropdownTrigger>
-			// 				<DropdownMenu onAction={handleAction}>
-			// 					<DropdownItem key={"reschedule"}>Reschedule</DropdownItem>
-			// 					<DropdownItem key={"delete"} className="text-danger" color="danger">
-			// 						Delete
-			// 					</DropdownItem>
-			// 				</DropdownMenu>
-			// 			</Dropdown>
-			// 		</div>
-			// 	);
+			case "TO":
+				return (
+					<div className="flex flex-col">
+						<p className="capitalize text-bold text-small">{cellValue}</p>
+					</div>
+				);
+
 			default:
 				return cellValue;
 		}
@@ -231,17 +185,6 @@ export default function TableAppointments() {
 						onClear={() => onClear()}
 						onValueChange={onSearchChange}
 					/>
-					<div className="flex gap-3">
-						<Button
-							aria-label="New Appointment"
-							color="primary"
-							as={Link}
-							href={`/${currentUser}/inventory/item-list/add`}
-							startContent={<Plus />}
-						>
-							Add new item
-						</Button>
-					</div>
 				</div>
 				<div className="flex items-center justify-between">
 					<span className="text-default-400 text-small">

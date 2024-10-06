@@ -237,7 +237,7 @@ const Form = ({ data, params, refetch }) => {
 				isOpen: true,
 				type: "success",
 				title: "Success!",
-				message: "Patient added successfully",
+				message: "Patient updated successfully",
 				actionLink: `/${currentUserType}/patients/info/${params?.id}`,
 			});
 		},
@@ -541,13 +541,22 @@ const Form = ({ data, params, refetch }) => {
 					/>
 				</div>
 			</div>
-			{!location.pathname.includes("info") && <DropFileInput onFileChange={onFileChange} />}
 
 			<br />
 			{!location.pathname.includes("info") && (
-				<Button type="submit" color="primary" size="lg" className="self-end w-fit">
-					Submit
-				</Button>
+				<div className="flex items-center max-w-4xl">
+					<div style={{ flex: 1 }} className="text-darkText"></div>
+					<div style={{ flex: 3 }} className="flex justify-end">
+						<Button
+							type="submit"
+							color="primary"
+							size="lg"
+							className="self-center w-fit"
+						>
+							Submit
+						</Button>
+					</div>
+				</div>
 			)}
 		</form>
 	);

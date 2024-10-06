@@ -101,17 +101,17 @@ const AddItem = () => {
 										label: "text-darkText font-semibold ",
 										inputWrapper:
 											"rounded-lg h-full bg-[#e3ebf3] border-1 border-[#1D242E]",
-										mainWrapper: "h-[4rem]",
+										mainWrapper: "min-h-[4rem]",
 									}}
 									placeholder=" "
 									labelPlacement={"outside"}
 								/>
 							</div>
-							<div className="flex flex-row gap-7">
+							<div className="flex flex-row items-start gap-7">
 								<Controller
 									name="ITEM_GROUP"
 									control={control}
-									rules={{ required: "Time is required" }}
+									rules={{ required: "Group is required" }}
 									render={({ field, formState: { errors } }) => (
 										<Select
 											{...field}
@@ -166,8 +166,8 @@ const AddItem = () => {
 									classNames={{
 										label: "text-darkText font-semibold ",
 										inputWrapper:
-											"rounded-lg h-full bg-[#e3ebf3] border-1 border-[#1D242E]",
-										mainWrapper: "h-[4rem]",
+											"rounded-lg min-h-[4rem] bg-[#e3ebf3] border-1 border-[#1D242E]",
+										mainWrapper: "min-h-[4rem]",
 									}}
 									placeholder=" "
 									labelPlacement={"outside"}

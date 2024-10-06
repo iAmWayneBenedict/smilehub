@@ -69,6 +69,12 @@ export default function TasksModal() {
 			message: "Task added successfully!",
 		});
 
+		reset({
+			TITLE: "",
+			STATUS: "Pending",
+			DESCRIPTION: "",
+		});
+
 		onClose();
 	};
 	const onError = (error) => {
@@ -232,7 +238,11 @@ export default function TasksModal() {
 									variant="flat"
 									onPress={() => {
 										onClose();
-										reset();
+										reset({
+											TITLE: "",
+											STATUS: "Pending",
+											DESCRIPTION: "",
+										});
 										setTaskModal({});
 									}}
 								>

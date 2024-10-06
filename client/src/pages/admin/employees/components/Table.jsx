@@ -77,7 +77,7 @@ export default function TableEmployees({ type }) {
 				isOpen: true,
 				type: "success",
 				title: "Success!",
-				message: "Employee archived successfully",
+				message: "Employee status updated successfully",
 			});
 			refetch();
 		},
@@ -145,7 +145,7 @@ export default function TableEmployees({ type }) {
 				setAlertDialogDetails({
 					isOpen: true,
 					type: "warning",
-					title: "Archive Patient",
+					title: "Archive Employee",
 					message: "Are you sure you want to archive this employee?",
 					dialogType: "confirm",
 					confirmCallback: () => {
@@ -157,7 +157,7 @@ export default function TableEmployees({ type }) {
 				setAlertDialogDetails({
 					isOpen: true,
 					type: "warning",
-					title: "Activate Patient",
+					title: "Activate Employee",
 					message: "Are you sure you want to activate this employee?",
 					dialogType: "confirm",
 					confirmCallback: () => {
@@ -169,7 +169,7 @@ export default function TableEmployees({ type }) {
 				setAlertDialogDetails({
 					isOpen: true,
 					type: "warning",
-					title: "Archive Patient",
+					title: "Archive Employee",
 					message: "Are you sure you want to change the status of this employee?",
 					dialogType: "confirm",
 					confirmCallback: () => {
@@ -181,7 +181,7 @@ export default function TableEmployees({ type }) {
 				setAlertDialogDetails({
 					isOpen: true,
 					type: "warning",
-					title: "Archive Patient",
+					title: "Archive Employee",
 					message: "Are you sure you want to change the status of this employee?",
 					dialogType: "confirm",
 					confirmCallback: () => {
@@ -325,15 +325,17 @@ export default function TableEmployees({ type }) {
 			<div className="flex flex-col gap-2">
 				<div className="flex items-center justify-between gap-3">
 					<h1 className="text-xl font-semibold">List of Employees</h1>
-					<div className="flex gap-3">
-						<Button
-							color="primary"
-							onClick={() => navigate(`/${currentUser}/employees/registration`)}
-							startContent={<UserRoundPlus size={20} />}
-						>
-							Add new employee
-						</Button>
-					</div>
+					{currentUser === "admin" && (
+						<div className="flex gap-3">
+							<Button
+								color="primary"
+								onClick={() => navigate(`/${currentUser}/employees/registration`)}
+								startContent={<UserRoundPlus size={20} />}
+							>
+								Add new employee
+							</Button>
+						</div>
+					)}
 				</div>
 				<div className="flex items-center justify-between mt-3">
 					<span className="text-default-400 text-small" style={{ flex: 1 }}>

@@ -67,9 +67,10 @@ export default function TableAppointments({ type }) {
 	}, [visibleColumns]);
 	const queryClient = useQueryClient();
 
-	const { data, isLoading, isSuccess, refetch } = useQuery({
+	const { data, isLoading, isSuccess, isError, refetch } = useQuery({
 		queryKey: ["allAppointments"],
 		queryFn: AppointmentsAPIManager.getPatientAppointments,
+		retry: false,
 	});
 
 	const changeStatusMutation = useMutation({
@@ -118,6 +119,7 @@ export default function TableAppointments({ type }) {
 	// filters the appointments based on the search value
 	const filteredItems = React.useMemo(() => {
 		if (isLoading) return [];
+		if (isError) return [];
 		let filteredAppointments = [];
 		if (type === "completed") {
 			filteredAppointments = data?.filter((item) => item.STATUS === "Completed");
@@ -132,7 +134,7 @@ export default function TableAppointments({ type }) {
 		}
 
 		return filteredAppointments;
-	}, [filterValue, statusFilter, data, isSuccess]);
+	}, [filterValue, statusFilter, data, isSuccess, isError]);
 
 	// paginates the filtered items
 	const items = React.useMemo(() => {

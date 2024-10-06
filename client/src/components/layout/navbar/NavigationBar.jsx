@@ -20,7 +20,7 @@ import { useEffect, useRef, useState } from "react";
 import "./styles.css";
 import { useLocation } from "react-router-dom";
 import { useAppStore, useAuthTokenPersisted } from "@/store/zustand";
-import { decrypt } from "@/lib/utils";
+import { cn, decrypt } from "@/lib/utils";
 const NavigationBar = () => {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const nav = useRef(null);
@@ -28,6 +28,13 @@ const NavigationBar = () => {
 	const { setAlertDialogDetails } = useAppStore();
 	const location = useLocation();
 	const { authToken, setAuthToken } = useAuthTokenPersisted();
+	const [activeLink, setActiveLink] = useState(location.pathname);
+
+	useEffect(() => {
+		// close menu on route change
+		setIsMenuOpen(false);
+		setActiveLink(location.pathname);
+	}, [location.pathname]);
 
 	const user = decrypt(authToken);
 	useEffect(() => {
@@ -69,7 +76,6 @@ const NavigationBar = () => {
 	}, []);
 
 	// navigation menu items
-	const menuItems = ["Home", "Services", "Blogs", "About", "Contact", "Log Out"];
 	const navItems = [
 		{ name: "Home", href: "/" },
 		{ name: "Services", href: "/services" },
@@ -119,14 +125,22 @@ const NavigationBar = () => {
 			>
 				{navItems.map((item, index) => (
 					<NavbarItem key={index}>
-						<Link
-							className="font-medium"
-							color="foreground"
-							href={item.href}
-							aria-current="page"
-						>
-							{item.name}
-						</Link>
+						<div className="relative">
+							<Link
+								className="font-medium"
+								color={activeLink === item.href ? "primary" : "foreground"}
+								href={item.href}
+								aria-current="page"
+							>
+								{item.name}
+							</Link>
+							<div
+								className={cn(
+									"absolute w-0 h-0 -translate-x-1/2 rounded-full -bottom-2 bg-primary left-1/2 transition-all ease duration-400",
+									activeLink === item.href && "w-1.5 h-1.5"
+								)}
+							/>
+						</div>
 					</NavbarItem>
 				))}
 			</NavbarContent>

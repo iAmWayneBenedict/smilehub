@@ -40,7 +40,7 @@ const Tasks = () => {
 	const getMutation = useMutation({
 		mutationFn: TasksAPIManager.getTask,
 		onSuccess: (data) => {
-			setTaskModal({ isOpen: false });
+			setTaskModal({});
 			setTaskData(data);
 			refetch();
 		},
@@ -49,7 +49,7 @@ const Tasks = () => {
 	const updateMutation = useMutation({
 		mutationFn: TasksAPIManager.postEditTask,
 		onSuccess: (data) => {
-			setTaskModal({ isOpen: false });
+			setTaskModal({});
 			refetch();
 		},
 	});
@@ -58,6 +58,7 @@ const Tasks = () => {
 		mutationFn: TasksAPIManager.postDeleteTask,
 		onSuccess: () => {
 			refetch();
+			setTaskModal({});
 			setSelectedTask(null);
 			setIsSelectedCheckbox({});
 			setAlertDialogDetails({
@@ -90,8 +91,8 @@ const Tasks = () => {
 	});
 
 	useEffect(() => {
-		// refetch();
-	}, [isError]);
+		setTaskModal({});
+	}, []);
 	const currentUser = location.pathname.includes("admin") ? "admin" : "staff";
 	return (
 		<div style={{ flex: 1 }} className="bg-[#f9f9f9]">
@@ -107,7 +108,7 @@ const Tasks = () => {
 						<div className="flex items-center justify-between py-3 bg-white px-7">
 							<div>
 								<h3 className="~text-lg/2xl font-semibold">
-									To be completed <span>({data?.length || 0})</span>
+									To be completed <span>({isError ? 0 : data?.length || 0})</span>
 								</h3>
 							</div>
 							<div className="flex gap-3">

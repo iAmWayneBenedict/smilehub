@@ -51,6 +51,7 @@ import ItemListShortage from "./pages/shared/inventory/layouts/ItemShortageList"
 import ItemShortage from "./pages/shared/inventory/layouts/ItemShortageList/layout/Item";
 import PatientDetails from "./pages/shared/patients/components/PatientDetails";
 import PatientProfile from "./pages/Profile/Profile";
+import InventoryLogs from "./pages/shared/inventory/layouts/InventoryLogs";
 
 function App() {
 	const navigate = useNavigate();
@@ -200,6 +201,10 @@ function App() {
 									path="item-list-shortage/:item"
 									element={<LayoutWrapper child={<ItemShortage />} />}
 								/>
+								<Route
+									path="inventory-logs"
+									element={<LayoutWrapper child={<InventoryLogs />} />}
+								/>
 							</Route>
 							<Route path="tasks" element={<LayoutWrapper child={<Tasks />} />} />
 						</Route>
@@ -300,6 +305,10 @@ function App() {
 								<Route
 									path="item-list-shortage/:item"
 									element={<LayoutWrapper child={<ItemShortage />} />}
+								/>
+								<Route
+									path="inventory-logs"
+									element={<LayoutWrapper child={<InventoryLogs />} />}
 								/>
 							</Route>
 							<Route path="Employees">

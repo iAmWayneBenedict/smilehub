@@ -227,7 +227,7 @@ export default function TableAppointments() {
 							}}
 							startContent={<Plus />}
 						>
-							Add new item
+							Add new group
 						</Button>
 					</div>
 				</div>

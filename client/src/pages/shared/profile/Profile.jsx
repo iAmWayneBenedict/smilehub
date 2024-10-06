@@ -53,7 +53,7 @@ const Profile = () => {
 								/>
 							</Tab>
 						)}
-						{currentUser === "admin" && (
+						{currentDisplay === user.email && currentUser === "admin" && (
 							<Tab key="edit" title="Edit Profile">
 								<ProfileForm
 									isView={false}

@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import InventoryAPIManager from "@/services/api/managers/inventory/InventoryAPIManager";
 import { useState } from "react";
 import { useEffect } from "react";
+import { FileClock } from "lucide-react";
 
 const Inventory = () => {
 	const location = useLocation();
@@ -117,6 +118,26 @@ const Inventory = () => {
 									endContent={<ChevronsRight size={20} />}
 								>
 									Resolve Now
+								</Button>
+							</div>
+						</div>
+						<div className="flex flex-col items-center border-2 border-orange-300 rounded-lg w-72">
+							<div className="flex flex-col items-center justify-center h-full">
+								<FileClock color="orange" width={57} height={57} />
+								<div className="flex flex-col items-center mt-2">
+									<h6 className="text-lg font-semibold">Inventory Logs</h6>
+								</div>
+							</div>
+							<div className="flex flex-col items-center w-full mt-5 border-t-2 border-orange-300 bg-orange-500/30">
+								<Button
+									as={Link}
+									variant="flat"
+									disableRipple
+									className="bg-transparent"
+									href={`/${currentUser}/inventory/inventory-logs`}
+									endContent={<ChevronsRight size={20} />}
+								>
+									View Logs
 								</Button>
 							</div>
 						</div>
