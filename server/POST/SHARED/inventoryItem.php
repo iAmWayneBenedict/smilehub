@@ -31,6 +31,16 @@ function validateInventoryItemData($data) {
         $errors['QUANTITY'] = "Quantity is required.";
     }
 
+    // Validate EMPLOYEE_NAME
+    if (empty($data->EMPLOYEE_NAME)) {
+        $errors['EMPLOYEE_NAME'] = "EMPLOYEE_NAME is required.";
+    }
+    
+    // Validate EMPLOYEE_ID
+    if (empty($data->EMPLOYEE_ID)) {
+        $errors['EMPLOYEE_ID'] = "EMPLOYEE_ID is required.";
+    }
+
     return $errors;
 }
 
@@ -83,6 +93,26 @@ function insertInventoryItem($conn, $data) {
     return $result;
 }
 
+/**
+ * Function to log the creation of an inventory group
+ *
+ * @param mysqli $conn The database connection object
+ * @param object $data The request data containing group details
+ * @return bool True if the log insertion is successful, false otherwise
+ */
+function logInventoryGroupAction($conn, $data) {
+    $action = 'Added a new item in inventory group';
+
+    $query = "INSERT INTO inventory_logs_table (EMPLOYEE_ID, NAME, ITEM_GROUP, ITEM_NAME, ACTION) 
+              VALUES (?, ?, ?, ?, ?)";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param('sssss', $data->EMPLOYEE_ID, $data->EMPLOYEE_NAME, $data->ITEM_GROUP, $data->NAME, $action);
+    $result = $stmt->execute();
+    $stmt->close();
+
+    return $result;
+}
+
 // Get the request data
 $data = json_decode(file_get_contents("php://input"));
 
@@ -103,6 +133,13 @@ if (itemExists($conn, $data)) {
 
 // Attempt to insert the inventory item
 if (insertInventoryItem($conn, $data)) {
+    // Log the action of creating a new inventory group
+    if (!logInventoryGroupAction($conn, $data)) {
+        http_response_code(500);
+        echo json_encode(array("message" => "Failed to log the inventory group action."));
+        exit;
+    }
+    
     http_response_code(200);
     echo json_encode(array(
         "message" => "Item added to inventory successfully."

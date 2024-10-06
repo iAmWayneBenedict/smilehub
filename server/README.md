@@ -1546,7 +1546,7 @@ Error (404 Not Found):
 
 - **Endpoints:**
   - `POST /POST/SHARED/inventoryItemGroup.php`  
-    - **Description:** Add a new inventory item group to the system.
+    - **Description:** Add a new inventory item group to the system. This action is logged, capturing the details of the employee who created the group, the group name, and the action performed.
 
 #### Request Body
 
@@ -1555,7 +1555,9 @@ The request should be sent as JSON with the following structure:
 ```json
 Note: Ensure that the NAME provided is unique. The system will not allow adding a group with a name that already exists.
 {
-    "NAME": "Dental Care Equipment"
+    "NAME": "Dental Care Equipment",
+    "EMPLOYEE_NAME": "John Doe",
+    "EMPLOYEE_ID": "12345"
 }
 ```
 
@@ -1572,9 +1574,12 @@ Success (200 OK):
 Error (400 Bad Request):
 {
     "errors": {
-        "NAME": "Group name is required."
+        "NAME": "Group name is required.",
+        "EMPLOYEE_NAME": "EMPLOYEE_NAME is required.",
+        "EMPLOYEE_ID": "EMPLOYEE_ID is required."
     }
 }
+Note: The exact error messages depend on which validations fail.
 ```
 
 ```json
@@ -1595,7 +1600,7 @@ Error (500 Internal Server Error):
 
 - **Endpoints:**
   - `POST /EDIT/SHARED/INVENTORY/inventoryItemGroup.php`  
-    - **Description:** Update an existing inventory group in the system.
+    - **Description:** Update an existing inventory group in the system and log the action performed by the employee.
 
 #### Request Body
 
@@ -1604,7 +1609,9 @@ The request should be sent as JSON with the following structure:
 ```json
 {
     "ID": 1,
-    "NAME": "Updated Group Name"
+    "NAME": "Updated Group Name",
+    "EMPLOYEE_ID": "12345",
+    "EMPLOYEE_NAME": "John Doe"
 }
 ```
 
@@ -1622,7 +1629,9 @@ Error (400 Bad Request):
 {
     "errors": {
         "ID": "Group ID is required.",
-        "NAME": "Group name is required."
+        "NAME": "Group name is required.",
+        "EMPLOYEE_ID": "EMPLOYEE_ID is required.",
+        "EMPLOYEE_NAME": "EMPLOYEE_NAME is required."
     }
 }
 Note: The exact error messages depend on which validations fail.
@@ -1646,13 +1655,15 @@ Error (500 Internal Server Error):
 
 - **Endpoints:**
   - `POST /DELETE/SHARED/INVENTORY/inventoryItemGroup.php`  
-    - **Description:** Delete an existing inventory group from the system.
+    - **Description:** Delete an existing inventory group from the system and log the action in the inventory_logs_table.
 
 #### Request Body
 
 ```json
 {
-    "ID": 1
+    "ID": "1",
+    "EMPLOYEE_ID": "12345",
+    "NAME": "John Doe"
 }
 ```
 
@@ -1669,15 +1680,25 @@ Success (200 OK):
 Error (400 Bad Request):
 {
     "errors": {
-        "ID": "Group ID is required."
+        "ID": "Group ID is required.",
+        "EMPLOYEE_ID": "EMPLOYEE_ID is required.",
+        "NAME": "NAME is required."
     }
 }
+Note: The exact error messages depend on which validations fail.
 ```
 
 ```json
 Error (404 Not Found):
 {
     "message": "Inventory group not found."
+}
+```
+
+```json
+Error (404 Not Found):
+{
+    "message": "Item group not found."
 }
 ```
 
@@ -1753,7 +1774,7 @@ Error (404 Not Found):
 
 - **Endpoints:**
   - `POST /POST/SHARED/inventoryItem.php`  
-    - **Description:** Add a new item to the inventory.
+    - **Description:** Add a new item to the inventory system. This endpoint requires information about the item, including its name, group, location, and quantity. Additionally, it logs the action of adding the item for auditing purposes.
 
 #### Request Body
 
@@ -1765,7 +1786,9 @@ Note: Ensure that the NAME provided is unique. The system will not allow adding 
     "NAME": "Item Name",
     "ITEM_GROUP": "Dental Care Equipment",
     "LOCATION": "Storage Room A",
-    "QUANTITY": 10
+    "QUANTITY": 10,
+    "EMPLOYEE_NAME": "John Doe",
+    "EMPLOYEE_ID": "12345"
 }
 ```
 
@@ -1785,7 +1808,9 @@ Error (400 Bad Request):
         "NAME": "Item name is required.",
         "ITEM_GROUP": "Item group is required.",
         "LOCATION": "Location is required.",
-        "QUANTITY": "Quantity is required and must be a number."
+        "QUANTITY": "Quantity is required.",
+        "EMPLOYEE_NAME": "EMPLOYEE_NAME is required.",
+        "EMPLOYEE_ID": "EMPLOYEE_ID is required."
     }
 }
 Note: The exact error messages depend on which validations fail.
@@ -1809,7 +1834,7 @@ Error (500 Internal Server Error):
 
 - **Endpoints:**
   - `POST /EDIT/SHARED/INVENTORY/inventoryItem.php`  
-    - **Description:** Update an existing inventory item.
+    - **Description:** Update an existing inventory item. Logs the action if the item quantity is changed.
 
 #### Request Body
 
@@ -1822,9 +1847,10 @@ Note: Ensure that the NAME provided is unique. The system will not allow adding 
     "NAME": "New Item Name",
     "ITEM_GROUP": "Dental Care Product",
     "LOCATION": "Storage Room A",
-    "QUANTITY": 20
+    "QUANTITY": "20",
+    "EMPLOYEE_NAME": "John Doe",
+    "EMPLOYEE_ID": "12345"
 }
-
 ```
 
 #### Response
@@ -1845,6 +1871,8 @@ Error (400 Bad Request):
         "ITEM_GROUP": "Item group is required.",
         "LOCATION": "Location is required.",
         "QUANTITY": "Quantity is required.",
+        "EMPLOYEE_NAME": "EMPLOYEE_NAME is required.",
+        "EMPLOYEE_ID": "EMPLOYEE_ID is required.",
         "NAME": "Item with the same name and group already exists."
     }
 }
@@ -1869,13 +1897,15 @@ Error (500 Internal Server Error):
 
 - **Endpoints:**
   - `POST /DELETE/SHARED/INVENTORY/inventoryItem.php`  
-    - **Description:** Delete an existing inventory item.
+    - **Description:** Delete an existing inventory item from the system and log the action in inventory_logs_table.
 
 #### Request Body
 
 ```json
 {
-    "ID": 1
+    "ID": "1",
+    "EMPLOYEE_ID": "10",
+    "NAME": "John Doe"
 }
 ```
 
@@ -1892,9 +1922,12 @@ Success (200 OK):
 Error (400 Bad Request):
 {
     "errors": {
-        "ID": "Item ID is required."
+        "ID": "Item ID is required.",
+        "EMPLOYEE_ID": "EMPLOYEE_ID is required.",
+        "NAME": "NAME is required."
     }
 }
+Note: The exact error messages depend on which validations fail.
 ```
 
 ```json

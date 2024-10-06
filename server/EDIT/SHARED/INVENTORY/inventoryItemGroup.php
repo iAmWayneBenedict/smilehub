@@ -21,6 +21,16 @@ function validateEditInventoryGroupData($data) {
         $errors['NAME'] = "Group name is required.";
     }
 
+    // Validate EMPLOYEE_NAME
+    if (empty($data->EMPLOYEE_NAME)) {
+        $errors['EMPLOYEE_NAME'] = "EMPLOYEE_NAME is required.";
+    }
+
+    // Validate EMPLOYEE_ID
+    if (empty($data->EMPLOYEE_ID)) {
+        $errors['EMPLOYEE_ID'] = "EMPLOYEE_ID is required.";
+    }
+
     return $errors;
 }
 
@@ -57,6 +67,26 @@ function getOldGroupName($conn, $id) {
     $row = $result->fetch_assoc();
     
     return $row ? $row['NAME'] : null;
+}
+
+/**
+ * Function to log the delete action into the inventory_logs_table
+ *
+ * @param mysqli $conn The database connection object
+ * @param object $data The request data containing EMPLOYEE_ID, EMPLOYEE_NAME and NAME
+ * @return bool True if the log insertion is successful, false otherwise
+ */
+function logInventoryAction($conn, $data, $oldGroupName) {
+    $action = 'Updated a group from ' . $oldGroupName . ' to ' . $data->NAME;
+
+    $query = "INSERT INTO inventory_logs_table (EMPLOYEE_ID, NAME, ITEM_GROUP, ACTION) 
+              VALUES (?, ?, ?, ?)";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param('ssss', $data->EMPLOYEE_ID, $data->EMPLOYEE_NAME, $data->NAME, $action);
+    $result = $stmt->execute();
+    $stmt->close();
+
+    return $result;
 }
 
 /**
@@ -110,6 +140,13 @@ if ($oldGroupName === null) {
 if (!inventoryGroupExists($conn, $data->ID)) {
     http_response_code(404);
     echo json_encode(array("message" => "Inventory group not found."));
+    exit;
+}
+
+// Log the deletion action
+if (!logInventoryAction($conn, $data, $oldGroupName)) {
+    http_response_code(500);
+    echo json_encode(array("message" => "Failed to log the inventory action."));
     exit;
 }
 
