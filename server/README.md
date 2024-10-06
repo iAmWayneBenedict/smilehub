@@ -1709,7 +1709,37 @@ Error (500 Internal Server Error):
 }
 ```
 
-### 33. Fetch All Item Group
+### 33. Fetch All Inventory Logs
+
+- **Endpoints:**
+  - `GET /GET/SHARED/INVENTORY/inventoryLogs.php`  
+    - **Description:** Fetch all inventory logs from the database, ordered by the date and time of creation.
+
+#### Response
+
+```json
+Success (200 OK):
+[
+    {
+        "EMPLOYEE_ID": "123",
+        "NAME": "John Doe",
+        "ITEM_GROUP": "Dental Care Equipment",
+        "ITEM_NAME": "Toothbrush",
+        "ACTION": "Added a new item in inventory group",
+        "DATETIME": "2024-10-06 12:34:56"
+    }
+]
+```
+
+```json
+Error (404 Not Found):
+{
+    "message": "No inventory logs found."
+}
+
+```
+
+### 34. Fetch All Item Group
 
 - **Endpoints:**
   - `GET /GET/SHARED/INVENTORY/inventoryItemsGroup.php`  
@@ -1740,7 +1770,7 @@ Error (404 Not Found):
 }
 ```
 
-### 34. Fetch Inventory Groups with Quantities
+### 35. Fetch Inventory Groups with Quantities
 - **Endpoints:**
   - `GET /GET/SHARED/INVENTORY/inventoryItemsGroupWithQuantity.php`  
     - **Description:** Fetch all inventory groups along with their total quantities.
@@ -1770,7 +1800,7 @@ Error (404 Not Found):
 }
 ```
 
-### 35. Add New Item
+### 36. Add New Item
 
 - **Endpoints:**
   - `POST /POST/SHARED/inventoryItem.php`  
@@ -1830,7 +1860,7 @@ Error (500 Internal Server Error):
 }
 ```
 
-### 36. Update Item
+### 37. Update Item
 
 - **Endpoints:**
   - `POST /EDIT/SHARED/INVENTORY/inventoryItem.php`  
@@ -1893,7 +1923,7 @@ Error (500 Internal Server Error):
 }
 ```
 
-### 37. Remove Item
+### 38. Remove Item
 
 - **Endpoints:**
   - `POST /DELETE/SHARED/INVENTORY/inventoryItem.php`  
@@ -1944,7 +1974,7 @@ Error (500 Internal Server Error):
 }
 ```
 
-### 38. Fetch All Items
+### 39. Fetch All Items
 
 - **Endpoints:**
   - `GET /GET/SHARED/INVENTORY/inventoryItems.php`  
@@ -2004,7 +2034,7 @@ Error (404 Not Found):
 }
 ```
 
-### 39. Fetch Item Details by ID
+### 40. Fetch Item Details by ID
 
 - **Endpoints:**
   - `GET /GET/SHARED/INVENTORY/inventoryItem.php`  
@@ -2050,7 +2080,7 @@ Error (404 Not Found):
 }
 ```
 
-### 40. Add Progress Note
+### 41. Add Progress Note
 
 - **Endpoints:**
   - `POST /POST/DENTIST/progressNotes.php`  
@@ -2136,7 +2166,7 @@ Error (500 Internal Server Error):
 }
 ```
 
-### 41. Update Progress Note
+### 42. Update Progress Note
 
 - **Endpoints:**
   - `POST /EDIT/DENTIST/progressNotes.php`  
@@ -2224,7 +2254,7 @@ Error (500 Internal Server Error):
 }
 ```
 
-### 42. Remove Progress Note
+### 43. Remove Progress Note
 
 - **Endpoints:**
   - `POST /DELETE/DENTIST/progressNotes.php`  
@@ -2272,7 +2302,7 @@ Error (500 Internal Server Error):
 }
 ```
 
-### 43. Fetch All Progress Notes by Patient ID
+### 44. Fetch All Progress Notes by Patient ID
 
 - **Endpoints:**
   - `GET /GET/DENTIST/progressNotesByPatientId.php`  
@@ -2342,7 +2372,7 @@ Error (404 Not Found):
 }
 ```
 
-### 44. Fetch Specific Progress Notes by ID and Patient ID
+### 45. Fetch Specific Progress Notes by ID and Patient ID
 
 - **Endpoints:**
   - `GET /GET/DENTIST/progressNotesByPatientIdAndId.php`  
@@ -2397,7 +2427,7 @@ Error (404 Not Found):
 }
 ```
 
-### 45. Add New Assessment
+### 46. Add New Assessment
 
 - **Endpoints:**
   - `POST /POST/DENTIST/assessment.php`  
@@ -2458,7 +2488,7 @@ Error (500 Internal Server Error):
 }
 ```
 
-### 46. Update Assessment
+### 47. Update Assessment
 
 - **Endpoints:**
   - `POST /EDIT/DENTIST/assessment.php`  
@@ -2526,7 +2556,7 @@ Error (500 Internal Server Error):
 }
 ```
 
-### 47. Fetch Assessment by Patient ID and Tooth Number
+### 48. Fetch Assessment by Patient ID and Tooth Number
 
 - **Endpoints:**
   - `GET /GET/DENTIST/assessment.php`  
@@ -2588,7 +2618,7 @@ Error (500 Internal Server Error):
 }
 ```
 
-### 48. Uploading a File for Teeth Assessment
+### 49. Uploading a File for Teeth Assessment
 
 - **Endpoints:**
   - `POST /POST/DENTIST/teethAssessment.php`  
@@ -2630,7 +2660,7 @@ Error (500 Internal Server Error):
 }
 ```
 
-### 49. Update a File for Teeth Assessment
+### 50. Update a File for Teeth Assessment
 
 - **Endpoints:**
   - `POST /EDIT/DENTIST/teethAssessment.php`  
@@ -2670,7 +2700,7 @@ Error (500 Internal Server Error):
 }
 ```
 
-### 50. Fetching a File for Teeth Assessment
+### 51. Fetching a File for Teeth Assessment
 
 - **Endpoints:**
   - `GET /GET/DENTIST/teethAssessment.php`  
@@ -2712,7 +2742,7 @@ Error (404 Not Found):
 }
 ```
 
-### 51. Add New Patient Form
+### 52. Add New Patient Form
 
 - **Endpoints:**
   - `POST /POST/SHARED/patientForm.php`  
@@ -2806,7 +2836,7 @@ Error (500 Internal Server Error):
 }
 ```
 
-### 52. Update Patient Form
+### 53. Update Patient Form
 
 - **Endpoints:**
   - `POST /EDIT/SHARED/PATIENT/patientForm.php`  
@@ -2902,7 +2932,7 @@ Error (500 Internal Server Error):
 }
 ```
 
-### 53. Fetch Patient Details by PATIENT_ID
+### 54. Fetch Patient Details by PATIENT_ID
 
 - **Endpoints:**
   - `GET /GET/SHARED/PATIENT/patientForm.php`  
