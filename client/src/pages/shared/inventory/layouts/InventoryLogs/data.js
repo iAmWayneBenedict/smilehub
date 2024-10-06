@@ -1,5 +1,6 @@
 import React from "react";
 const columns = [
+	{ name: "DATE", uid: "DATE", sortable: true },
 	{ name: "NAME", uid: "NAME", sortable: true },
 	{ name: "GROUP", uid: "GROUP_NAME", sortable: true },
 	{ name: "ITEM", uid: "ITEM_NAME", sortable: true },
@@ -17,6 +18,7 @@ const statusOptions = [
 const itemsData = [
 	{
 		ID: 1,
+		DATE: "2021-09-01",
 		NAME: "Test Admin",
 		ITEM_NAME: "DENT-001",
 		GROUP_NAME: "Dental Care Equipment",
@@ -26,6 +28,7 @@ const itemsData = [
 	},
 	{
 		ID: 2,
+		DATE: "2021-09-01",
 		NAME: "Test Admin",
 		ITEM_NAME: "DENT-001",
 		GROUP_NAME: "Dental Care Equipment",
@@ -35,6 +38,7 @@ const itemsData = [
 	},
 	{
 		ID: 3,
+		DATE: "2021-09-01",
 		NAME: "Test Admin",
 		ITEM_NAME: "",
 		GROUP_NAME: "Dental Care Equipment",
@@ -44,6 +48,7 @@ const itemsData = [
 	},
 	{
 		ID: 4,
+		DATE: "2021-09-01",
 		NAME: "Test Admin",
 		ITEM_NAME: "DENT-001",
 		GROUP_NAME: "Dental Care Equipment",
@@ -53,6 +58,7 @@ const itemsData = [
 	},
 	{
 		ID: 5,
+		DATE: "2021-09-01",
 		NAME: "Test Admin",
 		ITEM_NAME: "DENT-001",
 		GROUP_NAME: "Dental Care Equipment",
@@ -62,6 +68,7 @@ const itemsData = [
 	},
 	{
 		ID: 6,
+		DATE: "2021-09-01",
 		NAME: "Test Admin",
 		ITEM_NAME: "",
 		GROUP_NAME: "Dental Care Equipment",
