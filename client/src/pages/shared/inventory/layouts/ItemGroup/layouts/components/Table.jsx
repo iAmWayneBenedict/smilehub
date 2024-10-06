@@ -48,9 +48,10 @@ export default function TableAppointments() {
 		setNewAppointmentModal,
 		setNewScheduleModal,
 	} = useAppStore();
-	const { data, isSuccess, isLoading, refetch } = useQuery({
+	const { data, isSuccess, isLoading, refetch, isError } = useQuery({
 		queryKey: ["group-items"],
 		queryFn: InventoryAPIManager.getInventoryItems,
+		retry: false,
 	});
 
 	const { data: groupsData, isSuccess: isSuccessGroupData } = useQuery({
@@ -126,7 +127,7 @@ export default function TableAppointments() {
 
 	// filters the itemsData based on the search value
 	const filteredItems = React.useMemo(() => {
-		if (isLoading || !isSuccess || !groupDetailData) return [];
+		if (isLoading || !isSuccess || !groupDetailData || isError) return [];
 		const items = data.all_items.filter((item) => item.ITEM_GROUP === groupDetailData.NAME);
 		let filteredItemsData = [...items];
 
@@ -137,7 +138,7 @@ export default function TableAppointments() {
 		}
 
 		return filteredItemsData;
-	}, [data, isSuccess, isLoading, filterValue, statusFilter, groupDetailData]);
+	}, [data, isSuccess, isLoading, filterValue, statusFilter, groupDetailData, isError]);
 
 	// paginates the filtered items
 	const items = React.useMemo(() => {

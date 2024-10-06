@@ -42,6 +42,7 @@ export default function TableAppointments() {
 	const { data, isLoading, isSuccess, refetch, isError } = useQuery({
 		queryKey: ["inventoryItems"],
 		queryFn: InventoryAPIManager.getInventoryItems,
+		retry: false,
 	});
 
 	const [page, setPage] = React.useState(1);
