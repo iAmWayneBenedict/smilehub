@@ -17,18 +17,25 @@ const Inventory = () => {
 	const [shortageInventory, setShortageInventory] = useState(null);
 
 	const getInventoryData = async () => {
-		const inventory = await InventoryAPIManager.getInventoryItems();
-		const group = await InventoryAPIManager.getInventoryGroups();
+		try {
+			const inventory = await InventoryAPIManager.getInventoryItems();
 
-		return Promise.all([inventory, group]);
+			setItemsInventory(inventory.all_items);
+			setShortageInventory(inventory.items_shortage);
+		} catch (error) {
+			console.log(error);
+		}
+		try {
+			const group = await InventoryAPIManager.getInventoryGroups();
+
+			setGroupInventory(group);
+		} catch (error) {
+			console.log(error);
+		}
 	};
 
 	useEffect(() => {
-		getInventoryData().then((data) => {
-			setItemsInventory(data[0].all_items);
-			setShortageInventory(data[0].items_shortage);
-			setGroupInventory(data[1]);
-		});
+		getInventoryData();
 	}, []);
 
 	return (

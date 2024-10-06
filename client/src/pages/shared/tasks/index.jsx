@@ -50,6 +50,7 @@ const Tasks = () => {
 		mutationFn: TasksAPIManager.postEditTask,
 		onSuccess: (data) => {
 			setTaskModal({});
+			setSelectedTask(null);
 			refetch();
 		},
 	});
