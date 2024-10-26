@@ -58,8 +58,8 @@ const Inventory = () => {
 							</Button>
 						</div>
 					</div>
-					<div className="flex flex-row flex-wrap gap-5 mt-10">
-						<div className="rounded-lg border-2 border-[#03A9F5] flex flex-col items-center w-72">
+					<div className=" gap-5 mt-10 grid grid-cols-2 xl:grid-cols-4">
+						<div className="rounded-lg border-2 border-[#03A9F5] flex flex-col items-center">
 							<div className="flex flex-col items-center mt-5">
 								<MedicalIcon color="#03A9F5" width={57} height={57} />
 								<div className="flex flex-col items-center mt-2">
@@ -82,7 +82,7 @@ const Inventory = () => {
 								</Button>
 							</div>
 						</div>
-						<div className="rounded-lg border-2 border-[#01A768] flex flex-col items-center w-72">
+						<div className="rounded-lg border-2 border-[#01A768] flex flex-col items-center">
 							<div className="flex flex-col items-center mt-5">
 								<MedicalIcon color="#01A768" width={57} height={57} />
 								<div className="flex flex-col items-center mt-2">
@@ -105,7 +105,7 @@ const Inventory = () => {
 								</Button>
 							</div>
 						</div>
-						<div className="rounded-lg border-2 border-[#F0483E] flex flex-col items-center w-72">
+						<div className="rounded-lg border-2 border-[#F0483E] flex flex-col items-center">
 							<div className="flex flex-col items-center mt-5">
 								<MedicalIcon color="#F0483E" width={57} height={57} />
 								<div className="flex flex-col items-center mt-2">
@@ -128,7 +128,7 @@ const Inventory = () => {
 								</Button>
 							</div>
 						</div>
-						<div className="flex flex-col items-center border-2 border-orange-300 rounded-lg w-72">
+						<div className="flex flex-col items-center border-2 border-orange-300 rounded-lg">
 							<div className="flex flex-col items-center justify-center h-full">
 								<FileClock color="orange" width={57} height={57} />
 								<div className="flex flex-col items-center mt-2">

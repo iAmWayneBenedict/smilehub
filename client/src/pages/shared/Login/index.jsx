@@ -189,7 +189,7 @@ const SharedLogin = () => {
 						>
 							Log in
 						</Button>
-						<div className="flex flex-row justify-center">
+						{/* <div className="flex flex-row justify-center">
 							<Link
 								href={
 									location.pathname.includes("admin")
@@ -200,7 +200,7 @@ const SharedLogin = () => {
 							>
 								Not member yet? Create an account
 							</Link>
-						</div>
+						</div> */}
 					</form>
 				</div>
 			</div>

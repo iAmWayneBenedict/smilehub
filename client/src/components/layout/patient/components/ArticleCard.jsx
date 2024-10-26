@@ -3,7 +3,7 @@ import { Card, CardHeader, CardBody, Image } from "@nextui-org/react";
 import PropTypes from "prop-types";
 import "./styles.css";
 
-const ArticleCard = ({ image, classNames, alt = false }) => {
+const ArticleCard = ({ data, classNames, alt = false }) => {
 	return (
 		<Card
 			className={cn(
@@ -20,21 +20,24 @@ const ArticleCard = ({ image, classNames, alt = false }) => {
 						removeWrapper
 						alt="Card background"
 						className="object-cover w-full rounded-xl"
-						src={image}
+						src={data?.urlToImage}
 					/>
 				</div>
 			</CardHeader>
 			<CardBody className="flex flex-col gap-3 py-2 mt-3 overflow-visible">
-				<div className="flex flex-col items-center justify-between w-full gap-2 md:gap-0 md:flex-row">
-					<div className="w-full p-2 px-6 text-center text-white rounded-md bg-primary md:w-fit">
-						Self Care
-					</div>
-					{alt && <small className="font-bold text-right">~ Anita Jackson</small>}
-				</div>
-				<h4 className="font-bold text-large">Care of your teeth</h4>
-				<p>Lorem ipsum dolor sit amet consectetur.</p>
-				{!alt && <small className="font-bold text-right">~ Anita Jackson</small>}
+				<h4 className="font-bold text-large">{data?.title}</h4>
+				<p>{data?.description}</p>
+				{!alt && <small className="font-bold text-right">~ {data?.author || "No author available"}</small>}
+
 			</CardBody>
+			<div className="w-full px-2">
+				<button 
+					className="w-full p-2 px-6 text-center text-white rounded-md bg-primary hover:opacity-90" 
+					onClick={() => window.open(data?.url, '_blank')}
+				>
+					Read More
+				</button>
+			</div>
 		</Card>
 	);
 };

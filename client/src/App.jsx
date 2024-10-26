@@ -52,6 +52,7 @@ import ItemShortage from "./pages/shared/inventory/layouts/ItemShortageList/layo
 import PatientDetails from "./pages/shared/patients/components/PatientDetails";
 import PatientProfile from "./pages/Profile/Profile";
 import InventoryLogs from "./pages/shared/inventory/layouts/InventoryLogs";
+import { ScrollToTop } from "./hooks/ScrollToTop";
 
 function App() {
 	const navigate = useNavigate();
@@ -64,6 +65,7 @@ function App() {
 	return (
 		<NextUIProvider navigate={navigate}>
 			<QueryClientProvider client={queryClient}>
+				<ScrollToTop/>
 				<Routes>
 					<Route path="/" element={<LayoutWrapper child={<Home />} />} />
 

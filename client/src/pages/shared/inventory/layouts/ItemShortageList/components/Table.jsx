@@ -344,7 +344,7 @@ export default function TableAppointments() {
 					</TableColumn>
 				)}
 			</TableHeader>
-			<TableBody emptyContent={"No itemsData found"} items={sortedItems}>
+			<TableBody emptyContent={"No items data found"} items={sortedItems}>
 				{(item) => (
 					<TableRow key={item.ID}>
 						{(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}

@@ -455,7 +455,7 @@ export default function ProgressNoteModal() {
 											{addProgressNoteModal?.data?.X_RAY_FILE && (
 												<small>
 													Current file:{" "}
-													{addProgressNoteModal?.data?.X_RAY_FILE}{" "}
+													<p className="break-all">{addProgressNoteModal?.data?.X_RAY_FILE}{" "}</p>
 													<Link
 														href={
 															import.meta.env.VITE_SERVER_URL +
@@ -639,7 +639,7 @@ export default function ProgressNoteModal() {
 											{addProgressNoteModal?.data?.SIGNATURE && (
 												<small>
 													Current file:{" "}
-													{addProgressNoteModal?.data?.SIGNATURE}{" "}
+													<p className="break-all">{addProgressNoteModal?.data?.SIGNATURE}{" "}</p>
 													<Link
 														href={
 															import.meta.env.VITE_SERVER_URL +

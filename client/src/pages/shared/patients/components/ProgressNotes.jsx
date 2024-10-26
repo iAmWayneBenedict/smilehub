@@ -96,10 +96,10 @@ const ProgressNotes = () => {
 								{progressNotes &&
 									progressNotes.map((item, i) => (
 										<tr key={i}>
-											<td className="border border-[#5B5B5B] h-10 px-4 border-r-0 border-t-0">
-												{item.DIAGNOSIS}
+											<td className="border border-[#5B5B5B] h-[7rem] px-4 border-r-0 border-t-0">
+												<p className="line-clamp-3">{item.DIAGNOSIS}</p>			
 											</td>
-											<td className="border border-[#5B5B5B] h-10 px-4 flex justify-between items-center border-t-0">
+											<td className="border border-[#5B5B5B] h-[7rem] px-4 flex justify-between items-center border-t-0">
 												{formatDate(new Date(item.DATE))}
 												<div className="flex gap-1">
 													<Button
