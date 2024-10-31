@@ -28,14 +28,29 @@ import { cn, days, formatDate, months } from "@/lib/utils";
 import { sendEmail } from "@/services/email";
 
 const purposes = [
-	"Dental Bonding",
-	"Teeth Whitening",
-	"Dental Crowns",
-	"Bridgework",
-	"Invisalign",
-	"Dentures",
-	"Dental Sealants",
-	"Tooth Extractions",
+	"Extraction",
+	"Oral Prophylaxis",
+	"Temporary Filling",
+	"Pit & Fissure Sealant",
+	"Flouride Treatment",
+	"Root Canal Therapy",
+	"Impaction/Surgery",
+	"Inlay",
+	"Stainless Steel Crown",
+	"Retainer",
+	"Retainer w/ pontics",
+	"Denture Repair",
+	"Rebase",
+	"Reline",
+	"X-Rax",
+	"Laminates",
+	"Jacket Crown/Bridge",
+	"Bleaching",
+	"Otho-Braces",
+	"Mayobrace/Trainer for kids",
+	"Veneer",
+	"Denture",
+	"Fixed Bridge"
 ];
 
 export default function AppointmentModal() {

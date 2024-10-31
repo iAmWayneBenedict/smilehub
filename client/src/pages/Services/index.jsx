@@ -30,7 +30,7 @@ const Services = () => {
 						classes: "w-[110%]",
 					},
 					description:
-						"We use only the best quality materials on the market in order to provide the best products to our patients.",
+						"Our experienced and compassionate dental team is dedicated to providing you with the highest quality care.",
 				}}
 				slidesPerView={
 					isSmallerDesktop ? (isTablet ? (isMobile ? "1.9" : "2.5") : "3.75") : "4.5"
@@ -38,7 +38,7 @@ const Services = () => {
 				type="specialists"
 			/>
 			<FAQ />
-			<OutroHomepageSection className="bg-[#011632]" />
+			{/* <OutroHomepageSection className="bg-[#011632]" /> */}
 		</>
 	);
 };

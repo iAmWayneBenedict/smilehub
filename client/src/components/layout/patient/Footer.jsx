@@ -12,7 +12,7 @@ const Footer = () => {
 						Home
 					</Link>
 					<Link href="#" className="text-[--dark-text]">
-						Service
+						Services
 					</Link>
 					<Link href="#" className="text-[--dark-text]">
 						Blogs
@@ -34,8 +34,8 @@ const Footer = () => {
 					</Link>
 				</div>
 				<div className="flex gap-3 mt-6 sm:mt-0">
-					<Image src={facebook} alt="facebook" />
-					<Image src={instagram} alt="instagram" />
+					<Image src={facebook} className="cursor-pointer" alt="facebook" onClick={() => window.open("https://web.facebook.com/BajarDentalClinic?mibextid=ZbWKwL&_rdc=1&_rdr", "_blank")}/>
+					<Image src={instagram} className="cursor-pointer" alt="instagram" onClick={() => window.open("https://www.instagram.com/bajar_dentalclinic/?igsh=azlub243NjI0MjJm#", "_blank")} />
 				</div>
 			</div>
 			<br />

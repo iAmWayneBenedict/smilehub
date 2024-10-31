@@ -42,7 +42,7 @@ export default function AssessmentPatient() {
 		defaultValues: useMemo(() => {
 			if (assessmentData?.message) {
 				return {
-					TOOTH_NO: "1",
+					TOOTH_NO: "",
 					COLOR: "",
 					TEXTURE: [],
 					GUM_HEALTH: [],
@@ -81,7 +81,7 @@ export default function AssessmentPatient() {
 		if (!assessmentPatientModal.isOpen) return;
 		getMutation.mutate({
 			PATIENT_ID: assessmentPatientModal.data?.id,
-			TOOTH_NO: toothNum || 1,
+			TOOTH_NO: toothNum || "",
 		});
 	}, [toothNum, assessmentPatientModal]);
 
@@ -103,7 +103,7 @@ export default function AssessmentPatient() {
 
 		onError: (error) => {
 			reset({
-				TOOTH_NO: toothNum || 1,
+				TOOTH_NO: toothNum || "",
 				COLOR: "",
 				TEXTURE: [],
 				GUM_HEALTH: [],
@@ -220,7 +220,7 @@ export default function AssessmentPatient() {
 										<Controller
 											name="COLOR"
 											control={control}
-											rules={{ required: "Color is required" }}
+											rules={{ required: "Treatment is required" }}
 											render={({ field, formState: { errors } }) => (
 												<Select
 													{...field}
@@ -236,8 +236,8 @@ export default function AssessmentPatient() {
 													isInvalid={!!errors.COLOR}
 													errorMessage={errors.COLOR?.message}
 													labelPlacement={"outside"}
-													placeholder="Select Color"
-													label="Color"
+													placeholder="Select treatment"
+													label="Treatment"
 													size="lg"
 													variant="bordered"
 													color="primary"
@@ -510,4 +510,35 @@ export default function AssessmentPatient() {
 	);
 }
 
-const colors = ["Yellow", "Brown", "Black", "White"];
+const colors = [
+	"Prophylaxis",
+	"Fluoride Application",
+	"Dental Sealants",
+	"Composite Filling",
+	"Amalgam Filling",
+	"Inlay Restoration",
+	"Onlay Restoration",
+	"Filling Replacement",
+	"Marginal Repair",
+	"Restoration Resealing",
+	"Pulpectomy",
+	"Canal Debridement",
+	"Apical Seal Placement",
+	"Dental Implant Placement",
+	"Fixed Bridge Placement",
+	"Removable Partial Denture",
+	"Surgical Extraction",
+	"Orthodontic Exposure and Alignment",
+	"Operculectomy",
+	"Crown Cementation",
+	"Crown Replacement",
+	"Crown Adjustment",
+	"Dental Bonding",
+	"Root Canal with Post and Core",
+	"Simple Extraction",
+	"Alveolar Ridge Preservation",
+	"Implant Placement Surgery",
+	"Abutment Connection",
+	"Prosthetic Crown Placement"
+  ];
+  

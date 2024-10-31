@@ -14,7 +14,7 @@ const RequestAppointment = () => {
 					<SectionHeader
 						firstSeriesText="Leave your worries at the door and enjoy a healthier, more "
 						textUnderlined="Precise Smile"
-						description="We use only the best quality materials on the market in order to provide the best products to our patients."
+						description=""
 						customUnderlineOptions={{
 							color: "white",
 							isLarge: false,
@@ -26,9 +26,6 @@ const RequestAppointment = () => {
 							childClasses: "text-white text-center",
 						}}
 					/>
-					<Button color="primary" className="mt-10 font-semibold p-7 w-fit">
-						Learn More
-					</Button>
 				</div>
 				{/* <div style={{ flex: 7 }} className="flex items-center justify-end">
 					<div className="max-w-none mt-14 lg:mt-0 lg:max-w-[35rem] w-full p-4 py-7 md:p-10 rounded-3xl bg-white">

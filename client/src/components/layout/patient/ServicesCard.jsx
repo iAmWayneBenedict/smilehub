@@ -12,17 +12,6 @@ export default function ServicesCard({ icon, href, title, description }) {
 				<h2 className="text-xl font-semibold text-center">{title}</h2>
 				<p className="text-center">{description}</p>
 			</CardBody>
-			<CardFooter className="flex flex-col justify-center">
-				<Button
-					as={Link}
-					className="font-semibold text-[--dark-text] bg-transparent text-md hover:bg-transparent"
-					underline="always"
-					href={href}
-					endContent={<ArrowRightCircle />}
-				>
-					Learn More
-				</Button>
-			</CardFooter>
 		</Card>
 	);
 }

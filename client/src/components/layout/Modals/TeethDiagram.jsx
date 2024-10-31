@@ -24,7 +24,7 @@ const TeethDiagram = () => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const [brushSize, setBrushSize] = useState(25);
 	const [color, setColor] = useState("#000000");
-	const [alpha, setAlpha] = useState(10);
+	const [alpha, setAlpha] = useState(40);
 	const [initialImage, setInitialImage] = useState();
 	const [loading, setLoading] = useState(false);
 	const [showDownload, setShowDownload] = useState(false);
@@ -165,6 +165,7 @@ const TeethDiagram = () => {
 			ctx.drawImage(image, 0, 0);
 		};
 	};
+	console.log(initialImage)
 	const handleSaveDB = async (blob) => {
 		const file = new File([blob], "teeth-diagram.png", { type: "image/png" });
 
@@ -277,19 +278,47 @@ const TeethDiagram = () => {
 														Clear
 													</Button>
 												</div>
+												
+												{/* Color legends */}
+												<p className="text-sm font-bold">Color legends</p>
+												<div className="flex flex-wrap gap-3 mt-[-1rem]">
+													<p className="text-sm"><strong>Healthy:</strong> Light blue</p>
+													<p className="text-sm"><strong>Cavity:</strong> Dark brown</p>
+													<p className="text-sm"><strong>Filling:</strong> Silver</p>
+													<p className="text-sm"><strong>Root canal:</strong> Red</p>
+													<p className="text-sm"><strong>Missing:</strong> Black</p>
+													<p className="text-sm"><strong>Impacted tooth:</strong> Yellow</p>
+													<p className="text-sm"><strong>Crown:</strong> Gold</p>
+													<p className="text-sm"><strong>Fractured:</strong> Orange</p>
+													<p className="text-sm"><strong>Tooth extraction planned:</strong> Green</p>
+													<p className="text-sm"><strong>Implant:</strong> Dark blue</p>
+												</div>
+
 												<div className="flex flex-row items-center gap-4">
-													<label htmlFor="color-picker">
-														Color picker:{" "}
-													</label>
-													<input
-														id="color-picker"
-														type="color"
-														onChange={(e) => {
-															setBrushColor(e.target.value + alpha);
-															setColor(e.target.value);
-														}}
-														disabled={currentUser === "staff"}
-													/>
+												  <label htmlFor="color-picker">Color picker:{" "}</label>
+												  <select
+												    id="color-picker"
+												    onChange={(e) => {
+												      setBrushColor(e.target.value + alpha);
+												      setColor(e.target.value);
+												    }}
+												    disabled={currentUser === "staff"}
+												    className="p-2 border rounded"
+												  >
+												    <option value="" disabled>
+												      Select a color
+												    </option>
+												    <option value="#0088B4">Light Blue</option>
+												    <option value="#692600">Dark Brown</option>
+												    <option value="#C0C0C0">Silver</option>
+												    <option value="#FF0000">Red</option>
+												    <option value="#000000" selected>Black</option>
+												    <option value="#FFFF00">Yellow</option>
+												    <option value="#FFD700">Gold</option>
+												    <option value="#FFA500">Orange</option>
+												    <option value="#008000">Green</option>
+												    <option value="#00008B">Dark Blue</option>
+												  </select>
 												</div>
 												<Slider
 													label="Brush Size"

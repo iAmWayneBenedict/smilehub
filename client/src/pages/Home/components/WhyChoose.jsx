@@ -19,7 +19,7 @@ const WhyChoose = () => {
 					<h2 className="~text-3xl/55xl font-semibold leading-[1.25] capitalize">
 						Why choose{" "}
 						<CustomUnderline isLarge={false} childClassName="w-[130%] h-[100]">
-							Smile
+						Bajar
 						</CustomUnderline>{" "}
 						for all your dental treatments?
 					</h2>
@@ -49,7 +49,7 @@ const WhyChoose = () => {
 						<div className="flex gap-3">
 							<Image src={shieldDone} removeWrapper />
 							<p className="~text-base/lg text-secondaryText font-[500]">
-								Enrollment is quick and easy
+							Appointment is quick and easy
 							</p>
 						</div>
 					</div>

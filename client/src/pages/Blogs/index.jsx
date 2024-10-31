@@ -73,7 +73,7 @@ export const Blogs = () => {
 			/>
 			<PlaylistSection />
 			<FAQ />
-			<OutroHomepageSection bgColor="bg-[#011632]" />
+			{/* <OutroHomepageSection bgColor="bg-[#011632]" /> */}
 		</>
 	);
 };

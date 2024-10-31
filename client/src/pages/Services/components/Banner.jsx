@@ -11,7 +11,7 @@ const Banner = () => {
 				<div className="flex flex-col items-center justify-center mt-36">
 					<SectionHeader
 						textUnderlined="Services"
-						description="We use only the best quality materials on the market in order to provide the best products to our patients."
+						description="We are committed to providing exceptional dental care using state-of-the-art equipment and techniques."
 						customUnderlineOptions={{
 							color: "#011632",
 							isLarge: false,

@@ -45,7 +45,7 @@ const Home = () => {
 			<SwiperSection
 				sectionHeaderOptions={{
 					firstSeriesText: "Meet our",
-					textUnderlined: "specialist",
+					textUnderlined: "specialists",
 					customUnderLineOptions: {
 						isLarge: false,
 						classes: "w-[110%]",
@@ -89,7 +89,7 @@ const Home = () => {
 				}}
 			/>
 			<FAQ />
-			<OutroHomepageSection />
+			{/* <OutroHomepageSection /> */}
 		</div>
 	);
 };

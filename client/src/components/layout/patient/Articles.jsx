@@ -5,24 +5,16 @@ import { Button } from "@nextui-org/react";
 import ArticleCard from "./components/ArticleCard";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
+import { newsArray } from "./data/news";
 
 const Articles = ({ align = "left", showButton = true, customUnderline }) => {
-	// Fetching from Api
-	const fetchNewsData = async () => {
-		const response = await fetch("https://newsapi.org/v2/everything?q=dental&apiKey=47ec10196594404f887e518b2650de3b");
-		if (!response.ok) {
-			throw new Error("Network response was not ok");
-		}
-		return response.json();
-	};
 
-	// Fetch using tanstack query
-	const {
-		data, isLoading
-	} = useQuery({
-		queryKey: ["all-new"],
-		queryFn: fetchNewsData,
-	});
+	const proxyUrl = "http://smilehub.online/"
+	const apiKey = "47ec10196594404f887e518b2650de3b";
+
+	console.log(newsArray)
+
+	const data = newsArray
 
 	// Map Slicer
     const [visibleCount, setVisibleCount] = useState(12);
@@ -57,9 +49,7 @@ const Articles = ({ align = "left", showButton = true, customUnderline }) => {
 					</div>
 				</div>
 				<div className="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-					{isLoading ?
-						"Please wait..."
-					:
+					{
 						data?.articles.slice(0, visibleCount).map((item) => (
                 	    <ArticleCard key={item.urlToImage} data={item} />
                 	))}

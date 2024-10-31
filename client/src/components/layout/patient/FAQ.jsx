@@ -77,52 +77,82 @@ const FAQ = () => {
 						data-accordion-item="1"
 						className="~px-6/10 ~text-base/lg pt-2 ~pb-3/7"
 						indicator={({ isOpen }) => (isOpen ? <CircleMinus /> : <CirclePlus />)}
-						aria-label="• Can I see who reads my email campaigns?"
-						title="• Can I see who reads my email campaigns?"
+						aria-label="• What dental services do you offer? "
+						title="• What dental services do you offer? "
 					>
-						Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-						tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-						quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-						consequat.
+						<p>We offer a comprehensive range of dental services, including:</p>
+						<div className="grid grid-cols-3 mt-2">
+							<li className="text-base">Extractions</li>
+							<li className="text-base">Oral Prophylaxis (Teeth Cleaning)</li>
+							<li className="text-base">Temporary Fillings</li>
+							<li className="text-base">Pit & Fissure Sealants </li>
+							<li className="text-base">Fluoride Treatments</li>
+							<li className="text-base">Root Canal Therapy</li>
+							<li className="text-base">Impaction/Surgery</li>
+							<li className="text-base">Inlays</li>
+							<li className="text-base">Stainless Steel Crowns</li>
+							<li className="text-base">Retainers (with or without Pontics) </li>
+							<li className="text-base">Denture Repair</li>
+							<li className="text-base">Rebase/Reline</li>
+							<li className="text-base">X-rays</li>
+							<li className="text-base">Laminates</li>
+							<li className="text-base">Jacket Crowns/Bridges</li>
+							<li className="text-base">Bleaching</li>
+							<li className="text-base">Orthodontics (Braces)</li>
+							<li className="text-base">Myobrace/Trainer for Kids</li>
+							<li className="text-base">Veneers</li>
+							<li className="text-base">Dentures</li>
+							<li className="text-base">Fixed Bridges</li>
+							<li className="text-base">General Check-ups </li>
+						</div>
 					</AccordionItem>
 					<AccordionItem
 						key="2"
 						data-accordion-item="2"
 						className="~px-6/10 ~text-base/lg pt-2 ~pb-3/7"
 						indicator={({ isOpen }) => (isOpen ? <CircleMinus /> : <CirclePlus />)}
-						aria-label="• Do you offer non-profit discounts?"
-						title="• Do you offer non-profit discounts?"
+						aria-label="• What are your hours of operation?"
+						title="• What are your hours of operation?"
 					>
-						Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-						tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-						quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-						consequat.
+						<p>Our office is open during the following hours:</p>
+						<li>Monday: 9:00 AM – 5:00 PM</li>
+						<li>Tuesday: 9:00 AM – 5:00 PM </li>
+						<li>Wednesday: 9:00 AM – 5:00 PM</li>
+						<li>Thursday: 9:00 AM – 5:00 PM</li>
+						<li>Friday: 9:00 AM – 5:00 PM</li>
+						<li>Saturday: 9:00 AM – 5:00 PM</li>
+						<li>Sunday: Closed</li>
 					</AccordionItem>
 					<AccordionItem
 						key="3"
 						data-accordion-item="3"
 						className="~px-6/10 ~text-base/lg pt-2 ~pb-3/7"
 						indicator={({ isOpen }) => (isOpen ? <CircleMinus /> : <CirclePlus />)}
-						aria-label="• Can I see who reads my email campaigns?"
-						title="• Can I see who reads my email campaigns?"
+						aria-label="• Is your clinic child-friendly?"
+						title="• Is your clinic child-friendly?"
 					>
-						Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-						tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-						quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-						consequat.
+						Absolutely! We are committed to making dental visits comfortable and enjoyable for children of all ages. Our
+						staff is trained to provide a positive, fun experience for kids. 
 					</AccordionItem>
 					<AccordionItem
 						key="4"
 						data-accordion-item="4"
 						className="~px-6/10 ~text-base/lg pt-2 ~pb-3/7"
 						indicator={({ isOpen }) => (isOpen ? <CircleMinus /> : <CirclePlus />)}
-						aria-label="• Can I see who reads my email campaigns?"
-						title="• Can I see who reads my email campaigns?"
+						aria-label="• What payment methods do you accept?"
+						title="• What payment methods do you accept?"
 					>
-						Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-						tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-						quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-						consequat.
+						We accept the following payment options: Cash MasterCard Visa GCash 
+					</AccordionItem>
+					<AccordionItem
+						key="5"
+						data-accordion-item="5"
+						className="~px-6/10 ~text-base/lg pt-2 ~pb-3/7"
+						indicator={({ isOpen }) => (isOpen ? <CircleMinus /> : <CirclePlus />)}
+						aria-label="• How can I book an appointment?"
+						title="• How can I book an appointment?"
+					>
+						Booking an appointment is easy! You can schedule by calling us, walking in, or booking online through our website. Simply click the "Book Appointment" button in the upper right corner of our webpage. Walk-ins are also welcome!
 					</AccordionItem>
 				</Accordion>
 			</div>

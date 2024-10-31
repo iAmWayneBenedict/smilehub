@@ -171,9 +171,6 @@ const AdminDashboard = () => {
 						<div className="p-4 pb-10 bg-white rounded-lg shadow-md h-fit">
 							<div className="flex justify-between">
 								<h2 className="text-2xl font-semibold">Total Patients</h2>
-								<Button isIconOnly variant="light">
-									<Ellipsis />
-								</Button>
 							</div>
 							<div className="flex items-center pl-5 mt-2">
 								<div style={{ flex: 2 }}>

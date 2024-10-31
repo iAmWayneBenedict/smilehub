@@ -38,14 +38,29 @@ const contactAddressCard = [
 	},
 ];
 const purpose = [
-	"Dental Bonding",
-	"Teeth Whitening",
-	"Dental Crowns",
-	"Bridgework",
-	"Invisalign",
-	"Dentures",
-	"Dental Sealants",
-	"Tooth Extractions",
+	"Extraction",
+	"Oral Prophylaxis",
+	"Temporary Filling",
+	"Pit & Fissure Sealant",
+	"Flouride Treatment",
+	"Root Canal Therapy",
+	"Impaction/Surgery",
+	"Inlay",
+	"Stainless Steel Crown",
+	"Retainer",
+	"Retainer w/ pontics",
+	"Denture Repair",
+	"Rebase",
+	"Reline",
+	"X-Rax",
+	"Laminates",
+	"Jacket Crown/Bridge",
+	"Bleaching",
+	"Otho-Braces",
+	"Mayobrace/Trainer for kids",
+	"Veneer",
+	"Denture",
+	"Fixed Bridge"
 ];
 
 const Contact = () => {
@@ -151,7 +166,7 @@ const Contact = () => {
 					<div className="flex flex-col items-center justify-center mt-36">
 						<SectionHeader
 							textUnderlined="Get in touch"
-							description="Book an Appointment to treat your teeth right now."
+							description="Ready to Take the Next Step? Book Now. "
 							customUnderlineOptions={{
 								isLarge: true,
 								classes: "w-[105%]",
@@ -162,7 +177,7 @@ const Contact = () => {
 						<div style={{ flex: 5 }} className="flex flex-col gap-4">
 							<div className="overflow-hidden border-2 w-full rounded-lg border-[#25b4f8]">
 								<iframe
-									src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3856.854912889698!2d120.86322007617271!3d14.833398771332538!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3396531ddf41a599%3A0xdae91f79b3364056!2sDental%20Cafe%20by%20Bajar%20Dental%20Clinic%20and%20One%20Scoop%20Cookies!5e0!3m2!1sen!2sph!4v1721551841017!5m2!1sen!2sph"
+									src="https://www.google.com/maps/embed?pb=!1m23!1m12!1m3!1d123410.16470318209!2d120.73229478019636!3d14.849504021368226!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m8!3e6!4m0!4m5!1s0x339653d1f49646f9%3A0x4ef570235fe479c6!2sPaseo%20del%20Congreso%20St%2C%20Malolos%2C%203000%20Bulacan!3m2!1d14.849518699999999!2d120.81469659999999!5e0!3m2!1sen!2sph!4v1730034506716!5m2!1sen!2sph"
 									className="w-full h-96"
 									style={{ border: 0 }}
 									allowFullScreen=""
@@ -231,6 +246,7 @@ const Contact = () => {
 											}}
 											placeholder="Full Name"
 											labelPlacement={"outside"}
+											readOnly
 										/>
 										{/* <Input
 											{...register("last_name", {
@@ -278,6 +294,7 @@ const Contact = () => {
 										}}
 										placeholder="you@gmail.com"
 										labelPlacement={"outside"}
+										readOnly
 									/>
 									<Input
 										{...register("PHONE", {
