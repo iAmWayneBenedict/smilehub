@@ -8,26 +8,23 @@ import { useState } from "react";
 import { newsArray } from "./data/news";
 
 const Articles = ({ align = "left", showButton = true, customUnderline }) => {
-
-	const proxyUrl = "http://smilehub.online/"
+	const proxyUrl = "http://smilehub.online/";
 	const apiKey = "47ec10196594404f887e518b2650de3b";
 
-	console.log(newsArray)
-
-	const data = newsArray
+	const data = newsArray;
 
 	// Map Slicer
-    const [visibleCount, setVisibleCount] = useState(12);
-    const [showingAll, setShowingAll] = useState(false);
+	const [visibleCount, setVisibleCount] = useState(12);
+	const [showingAll, setShowingAll] = useState(false);
 
-    const toggleVisibility = () => {
-        if (showingAll) {
-            setVisibleCount(12);
-        } else {
-            setVisibleCount(50);
-        }
-        setShowingAll(!showingAll);
-    };
+	const toggleVisibility = () => {
+		if (showingAll) {
+			setVisibleCount(12);
+		} else {
+			setVisibleCount(50);
+		}
+		setShowingAll(!showingAll);
+	};
 
 	return (
 		<ContainerWrapper className="mt-36">
@@ -49,14 +46,17 @@ const Articles = ({ align = "left", showButton = true, customUnderline }) => {
 					</div>
 				</div>
 				<div className="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-					{
-						data?.articles.slice(0, visibleCount).map((item) => (
-                	    <ArticleCard key={item.urlToImage} data={item} />
-                	))}
+					{data?.articles.slice(0, visibleCount).map((item) => (
+						<ArticleCard key={item.urlToImage} data={item} />
+					))}
 				</div>
 			</div>
 			<div className="flex items-center justify-center mt-16">
-				<Button color="primary" className="font-semibold p-7 w-fit" onClick={toggleVisibility}>
+				<Button
+					color="primary"
+					className="font-semibold p-7 w-fit"
+					onClick={toggleVisibility}
+				>
 					{showingAll ? "See Less" : "Check out more"}
 				</Button>
 			</div>

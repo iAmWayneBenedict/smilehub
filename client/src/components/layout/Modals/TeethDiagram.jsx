@@ -165,7 +165,6 @@ const TeethDiagram = () => {
 		canvas.width = 700;
 		const ctx = canvas.getContext("2d");
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
-		console.log(canvas.width, canvas.height);
 		//redraw the image
 		// setInitialImage(teethDiagramImg);
 		const image = new Image();

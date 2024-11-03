@@ -8,7 +8,11 @@ export function CustomSheet() {
 	return (
 		<Sheet>
 			<SheetTrigger asChild>
-				<Button className="min-w-0 border-1" variant="bordered" radius="sm">
+				<Button
+					className="min-w-0 border-1 sheet-trigger-side-nav"
+					variant="bordered"
+					radius="sm"
+				>
 					<Menu size={24} />
 				</Button>
 			</SheetTrigger>

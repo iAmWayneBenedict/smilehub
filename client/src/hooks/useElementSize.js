@@ -7,7 +7,7 @@ function useElementSize(elementId) {
 		// Function to update the size based on the element's current dimensions
 		const updateSize = () => {
 			const element = window.getComputedStyle(document.querySelector("body"));
-			console.log(element);
+
 			if (element) {
 				setSize({
 					width: Number(element.width.replace("px", "")),

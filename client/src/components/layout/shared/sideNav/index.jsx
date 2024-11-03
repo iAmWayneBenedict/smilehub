@@ -43,7 +43,6 @@ const SideNav = ({ isCustom = false }) => {
 		if (isSuccess) {
 			const filteredUser = data?.find((employee) => employee.EMAIL === user?.email);
 			setCurrentUser(filteredUser);
-			console.log(filteredUser);
 		}
 	}, [data, isSuccess]);
 
@@ -193,6 +192,7 @@ const SideNav = ({ isCustom = false }) => {
 							startContent={<LogOut size={20} />}
 							isIconOnly
 							onClick={() => {
+								document.querySelector(".sheet-trigger-side-nav")?.click();
 								// display the alert dialog
 								setAlertDialogDetails({
 									type: "danger",
