@@ -1,4 +1,3 @@
-import React from "react";
 import {
 	LayoutDashboard,
 	Calendar,
@@ -6,20 +5,48 @@ import {
 	ClipboardCheck,
 	Package,
 	CalendarPlus,
-	Settings,
 	MessageCircleQuestion,
+	User as UserIcon,
+	LogOut,
 } from "lucide-react";
 import { cn, decrypt } from "@/lib/utils";
 import { useLocation } from "react-router-dom";
-import { Link, Divider } from "@nextui-org/react";
+import { Link, Divider, Button, User } from "@nextui-org/react";
 import "./styles.css";
-import { useAuthTokenPersisted } from "@/store/zustand";
+import { useAppStore, useAuthTokenPersisted } from "@/store/zustand";
+import PropTypes from "prop-types";
+import { useQuery } from "@tanstack/react-query";
+import EmployeesAPIManager from "@/services/api/managers/employees/EmployeesAPIManager";
+import React, { useEffect, useState } from "react";
+import { useMediaQuery } from "react-responsive";
 
-const SideNav = () => {
+const SideNav = ({ isCustom = false }) => {
 	const location = useLocation();
-	const { authToken } = useAuthTokenPersisted();
+	const { setAuthToken, authToken } = useAuthTokenPersisted();
 	const user = decrypt(authToken);
 	const userRole = user?.role?.toLowerCase();
+
+	const { setAlertDialogDetails } = useAppStore();
+
+	const [currentUser, setCurrentUser] = useState(null);
+
+	const smallScreen = useMediaQuery({
+		query: "(max-width: 1000px)",
+	});
+
+	const { data, isSuccess } = useQuery({
+		queryKey: ["patients-nav"],
+		queryFn: EmployeesAPIManager.getAllEmployee,
+	});
+
+	useEffect(() => {
+		if (isSuccess) {
+			const filteredUser = data?.find((employee) => employee.EMAIL === user?.email);
+			setCurrentUser(filteredUser);
+			console.log(filteredUser);
+		}
+	}, [data, isSuccess]);
+
 	// update this based on the menu links
 	const menuLinks = [
 		{
@@ -80,6 +107,11 @@ const SideNav = () => {
 	// update this based on the general links
 	const generalLinks = [
 		{
+			name: "My Profile",
+			icon: <UserIcon />,
+			href: `/${userRole}/profile/${currentUser?.ID}`,
+		},
+		{
 			name: "Terms and Conditions",
 			icon: <MessageCircleQuestion />,
 			href: "/terms-and-privacy-policy",
@@ -88,8 +120,14 @@ const SideNav = () => {
 	const activeLinkClasses =
 		"text-primary font-semibold before:absolute before:content-[''] before:top-0 before:left-0 before:h-full before:w-1 before:rounded-tr-lg before:rounded-br-lg before:bg-primary";
 	return (
-		<div id="sideNav" className="h-[calc(100vh-5.3rem)] border-gray-300 border-r-1">
-			<div className="~mt-5/10">
+		<div
+			id={isCustom ? "fullSideNav" : "sideNav"}
+			className={cn(
+				`h-[calc(93vh-5.3rem)] lg:h-[calc(100vh-5.3rem)] border-gray-300 border-r-1`,
+				isCustom && "border-none"
+			)}
+		>
+			<div className="~mt-5/10 h-full">
 				<small className="px-4 text-lightText">MENU</small>
 				<div className="flex flex-col gap-3 mt-4">
 					{menuLinks.map((item, index) => {
@@ -113,36 +151,78 @@ const SideNav = () => {
 				</div>
 				<br />
 				<div className="flex justify-center w-full">
-					<Divider className="w-9/12" />
+					<Divider className="w-full lg:w-9/12" />
 				</div>
 				<br />
 				<small className="px-4 text-lightText">GENERAL</small>
 				<div className="flex flex-col gap-3 mt-4">
-					{generalLinks.map((item, index) => (
-						<React.Fragment key={index}>
-							<Link
-								href={item.href}
-								className={cn(
-									"relative text-lightText flex items-center gap-5 px-5 text-base py-2",
+					{generalLinks.map((item, index) => {
+						if (item.name === "My Profile" && !smallScreen) {
+							return null;
+						}
 
-									// if current route then, make it active state
-									location.pathname === item.href && activeLinkClasses
-								)}
-							>
-								<div>{item.icon}</div>
-								<span>{item.name}</span>
-							</Link>
-						</React.Fragment>
-					))}
+						return (
+							<React.Fragment key={index}>
+								<Link
+									href={item.href}
+									className={cn(
+										"relative text-lightText flex items-center gap-5 px-5 text-base py-2",
+
+										// if current route then, make it active state
+										location.pathname === item.href && activeLinkClasses
+									)}
+								>
+									<div>{item.icon}</div>
+									<span>{item.name}</span>
+								</Link>
+							</React.Fragment>
+						);
+					})}
 				</div>
 				<br />
 				<div className="flex justify-center w-full">
-					<Divider className="w-9/12" />
+					<Divider className="w-full lg:w-9/12" />
 				</div>
 				<br />
+				{isCustom && (
+					<div className="flex justify-between w-full">
+						<User name={currentUser?.FULLNAME} description={currentUser?.ROLE} />
+						<Button
+							color="danger"
+							variant="flat"
+							startContent={<LogOut size={20} />}
+							isIconOnly
+							onClick={() => {
+								// display the alert dialog
+								setAlertDialogDetails({
+									type: "danger",
+									message: "Are you sure you want to logout?",
+									isOpen: true,
+									dialogType: "confirm",
+									confirmCallback: () => {
+										// log out user
+										setAuthToken(false);
+										setTimeout(() => {
+											setAlertDialogDetails({
+												isOpen: true,
+												type: "success",
+												title: "Success!",
+												message: "You have been successfully logged out.",
+												actionLink: "/",
+											});
+										}, 1000);
+									},
+								});
+							}}
+						/>
+					</div>
+				)}
 			</div>
 		</div>
 	);
+};
+SideNav.propTypes = {
+	isCustom: PropTypes.bool,
 };
 
 export default SideNav;

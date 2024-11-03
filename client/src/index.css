@@ -21,13 +21,13 @@
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+	-webkit-appearance: none;
+	margin: 0;
 }
 
 /* Firefox */
-input[type=number] {
-  -moz-appearance: textfield;
+input[type="number"] {
+	-moz-appearance: textfield;
 }
 
 @layer base {
@@ -127,4 +127,25 @@ input[type=number] {
 	body {
 		@apply text-foreground;
 	}
+}
+
+html,
+body {
+	overflow-x: hidden;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+	width: 8px; /* width of the entire scrollbar */
+}
+.custom-scrollbar::-webkit-scrollbar-track,
+.custom-scrollbar-vertical::-webkit-scrollbar-track {
+	background: transparent; /* color of the tracking area */
+}
+.custom-scrollbar::-webkit-scrollbar-thumb,
+.custom-scrollbar-vertical::-webkit-scrollbar-thumb {
+	background-color: #5777bd; /* color of the scroll thumb */
+	border-radius: 20px; /* roundness of the scroll thumb */
+}
+.custom-scrollbar-vertical::-webkit-scrollbar {
+	height: 8px; /* width of the entire scrollbar */
 }

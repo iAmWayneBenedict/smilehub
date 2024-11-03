@@ -20,7 +20,9 @@ const LayoutWrapper = ({ child }) => {
 			{/* if admin show the admin panel */}
 			{isAdminRoutes && (
 				<div className="flex">
-					<SideNav />
+					<div className="hidden lg:flex">
+						<SideNav />
+					</div>
 					{child}
 				</div>
 			)}

@@ -1,11 +1,11 @@
-/** @type {import('tailwindcss').Config} */
 import tailwindCSSAnimate from "tailwindcss-animate";
-import { nextui } from "@nextui-org/react";
+import { nextui } from "@nextui-org/theme";
 import fluid, { extract, screens, fontSize } from "fluid-tailwind";
 export const darkMode = ["class"];
 export const content = {
 	files: [
 		"./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
+		"./node_modules/@nextui-org/theme/dist/components/(accordion|autocomplete|breadcrumbs|button|chip|divider|dropdown|input|modal|select|slider|tabs|user|ripple|spinner|listbox|popover|scroll-shadow|menu|avatar).js",
 		"./pages/**/*.{js,jsx}",
 		"./components/**/*.{js,jsx}",
 		"./app/**/*.{js,jsx}",

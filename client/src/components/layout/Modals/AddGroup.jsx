@@ -114,53 +114,51 @@ export default function AddGroup() {
 		} else mutation.mutate(data);
 	};
 	return (
-		<>
-			<Modal
-				isOpen={isOpen}
-				onClose={() => {
-					onClose();
-					setAddGroupModal({ isOpen: false });
-				}}
-				placement="top-center"
-				backdrop="blur"
-			>
-				<ModalContent>
-					{(onClose) => (
-						<form onSubmit={handleSubmit(onSubmit)}>
-							<ModalHeader className="flex flex-col gap-1">
-								{addGroupModal.title}
-							</ModalHeader>
-							<ModalBody>
-								<Input
-									{...register("NAME", {
-										required: "Item is required",
-									})}
-									isInvalid={!!errors.NAME}
-									errorMessage={errors.NAME?.message}
-									key={"f_name"}
-									type="text"
-									size="lg"
-									variant="bordered"
-									color="primary"
-									className="w-full"
-									classNames={{
-										label: "text-darkText font-semibold ",
-										inputWrapper: "rounded-lg h-full bg-white",
-										mainWrapper: "h-[4rem]",
-									}}
-									placeholder="Enter Item Name or Item ID"
-									endContent={<Search />}
-								/>
-							</ModalBody>
-							<ModalFooter className="justify-start">
-								<Button startContent={<Plus />} color="primary" type="submit">
-									{addGroupModal?.data ? "Edit" : "Add"} Group
-								</Button>
-							</ModalFooter>
-						</form>
-					)}
-				</ModalContent>
-			</Modal>
-		</>
+		<Modal
+			isOpen={isOpen}
+			onClose={() => {
+				onClose();
+				setAddGroupModal({ isOpen: false });
+			}}
+			placement="center"
+			backdrop="blur"
+		>
+			<ModalContent>
+				{(onClose) => (
+					<form onSubmit={handleSubmit(onSubmit)}>
+						<ModalHeader className="flex flex-col gap-1">
+							{addGroupModal.title}
+						</ModalHeader>
+						<ModalBody>
+							<Input
+								{...register("NAME", {
+									required: "Item is required",
+								})}
+								isInvalid={!!errors.NAME}
+								errorMessage={errors.NAME?.message}
+								key={"f_name"}
+								type="text"
+								size="lg"
+								variant="bordered"
+								color="primary"
+								className="w-full"
+								classNames={{
+									label: "text-darkText font-semibold ",
+									inputWrapper: "rounded-lg h-full bg-white",
+									mainWrapper: "h-[4rem]",
+								}}
+								placeholder="Enter Item Name or Item ID"
+								endContent={<Search />}
+							/>
+						</ModalBody>
+						<ModalFooter className="justify-start">
+							<Button startContent={<Plus />} color="primary" type="submit">
+								{addGroupModal?.data ? "Edit" : "Add"} Group
+							</Button>
+						</ModalFooter>
+					</form>
+				)}
+			</ModalContent>
+		</Modal>
 	);
 }

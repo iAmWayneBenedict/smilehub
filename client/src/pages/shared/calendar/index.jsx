@@ -6,7 +6,6 @@ import {
 	ViewDirective,
 	Day,
 	TimelineViews,
-	Resize,
 	DragAndDrop,
 	Print,
 } from "@syncfusion/ej2-react-schedule";
@@ -261,31 +260,32 @@ const Calendar = () => {
 	};
 	const SchedulerElement = useCallback(() => {
 		return (
-			<ScheduleComponent
-				eventSettings={{
-					dataSource: weeklyAppointmentsData,
-				}}
-				showHeaderBar={false}
-				selectedDate={new Date()}
-				workDays={[1, 2, 3, 4, 5]}
-				workHours={{ start: "08:00", end: "18:00" }}
-				showWeekend={false}
-				cssClass="event-template"
-				startHour="08:00"
-				endHour="18:00"
-				readonly={true}
-				ref={scheduleObj}
-				dateHeaderTemplate={dateHeaderTemplate}
-				eventRendered={onEventRendered}
-			>
-				<ViewsDirective>
-					<ViewDirective
-						option={Browser.isDevice ? "Day" : "Week"}
-						eventTemplate={eventTemplate}
-					/>
-				</ViewsDirective>
-				<Inject services={[Day, Week, TimelineViews, Resize, DragAndDrop, Print]} />
-			</ScheduleComponent>
+			<div className="overflow-x-scroll max-w-[100vw] lg:max-w-[80vw]">
+				<div className="min-w-[80rem] lg:min-w-[60rem]">
+					<ScheduleComponent
+						eventSettings={{
+							dataSource: weeklyAppointmentsData,
+						}}
+						showHeaderBar={false}
+						selectedDate={new Date()}
+						workDays={[1, 2, 3, 4, 5]}
+						workHours={{ start: "08:00", end: "18:00" }}
+						showWeekend={false}
+						cssClass="event-template"
+						startHour="08:00"
+						endHour="18:00"
+						readonly={true}
+						ref={scheduleObj}
+						dateHeaderTemplate={dateHeaderTemplate}
+						eventRendered={onEventRendered}
+					>
+						<ViewsDirective>
+							<ViewDirective option={"Week"} eventTemplate={eventTemplate} />
+						</ViewsDirective>
+						<Inject services={[Week, Print]} />
+					</ScheduleComponent>
+				</div>
+			</div>
 		);
 	}, [weeklyAppointmentsData]);
 	return (
@@ -293,7 +293,7 @@ const Calendar = () => {
 			<div className="flex flex-col w-full h-full">
 				<div className="p-5">
 					<h3 className="text-lg font-darkText">Schedule</h3>
-					<div className="flex flex-wrap items-center justify-between ~px-6/14">
+					<div className="flex flex-wrap items-center justify-between px-0 mt-5 sm:~px-6/14">
 						<div>
 							<h6 className="~text-lg/xl font-medium">
 								Weekly schedule from {monday.day + getOrdinalSuffix(monday.day)} to{" "}
@@ -301,7 +301,7 @@ const Calendar = () => {
 								{currentYear}
 							</h6>
 						</div>
-						<div className="flex gap-3">
+						<div className="flex gap-3 mt-3 sm:mt-0">
 							<Dropdown closeOnSelect={false}>
 								<DropdownTrigger>
 									<Button isIconOnly variant="bordered" size="lg">

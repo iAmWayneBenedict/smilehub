@@ -65,7 +65,7 @@ function App() {
 	return (
 		<NextUIProvider navigate={navigate}>
 			<QueryClientProvider client={queryClient}>
-				<ScrollToTop/>
+				<ScrollToTop />
 				<Routes>
 					<Route path="/" element={<LayoutWrapper child={<Home />} />} />
 
@@ -337,7 +337,7 @@ function App() {
 				<AlertDialog />
 
 				{/* Invalid Screen Size for ADMIN and STAFF routes */}
-				<InvalidSmallScreen />
+				{/* <InvalidSmallScreen /> */}
 			</QueryClientProvider>
 		</NextUIProvider>
 	);

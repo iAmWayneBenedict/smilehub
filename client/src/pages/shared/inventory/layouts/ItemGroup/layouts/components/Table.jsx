@@ -416,7 +416,10 @@ export default function TableAppointments() {
 			isHeaderSticky={false}
 			bottomContentPlacement="outside"
 			classNames={{
-				wrapper: "w-full shadow-none",
+				th: "bg-primary text-white data-[hover=true]:text-gray-300",
+				table: "min-w-[40rem]",
+				wrapper:
+					"min-h-96 bg-gray-50 custom-scrollbar-vertical p-0 shadow-none w-fit md:w-full overflow-x-scroll max-w-[89vw] sm:max-w-[96vw] lg:max-w-[80vw] 2xl:max-w-none",
 			}}
 			selectedKeys={selectedKeys}
 			sortDescriptor={sortDescriptor}

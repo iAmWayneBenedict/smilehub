@@ -27,13 +27,13 @@ const Patients = () => {
 	const [totalPatients, setTotalPatients] = useState(0);
 
 	return (
-		<div style={{ flex: 1 }} className="bg-[#f9f9f9]">
+		<div style={{ flex: 1 }} className="bg-[#f9f9f9] h-[calc(100vh-5.3rem)]">
 			<div className="w-full h-full p-5">
 				<h3 className="text-lg font-darkText">Patient Info</h3>
 				<div className="flex flex-col gap-3">
 					<div
 						style={{ flex: 1 }}
-						className="flex items-center justify-between p-4 mt-5 bg-white rounded-lg shadow-md"
+						className="flex flex-col items-start justify-between p-4 mt-5 bg-white rounded-lg shadow-md sm:items-center sm:flex-row"
 					>
 						<h3 className="text-2xl font-medium" style={{ flex: 1 }}>
 							Total Patients <span className="text-lightText">({totalPatients})</span>
@@ -44,7 +44,7 @@ const Patients = () => {
 								variant="bordered"
 								as={Link}
 								href={`/${currentUser}/patients/add`}
-								size="lg"
+								size="md"
 							>
 								<Plus />
 							</Button>
@@ -54,13 +54,13 @@ const Patients = () => {
 								}
 								isIconOnly
 								variant="bordered"
-								size="lg"
+								size="md"
 							>
 								<Search />
 							</Button>
 							<Dropdown closeOnSelect={false}>
 								<DropdownTrigger>
-									<Button isIconOnly variant="bordered" size="lg">
+									<Button isIconOnly variant="bordered" size="md">
 										<Filter />
 									</Button>
 								</DropdownTrigger>

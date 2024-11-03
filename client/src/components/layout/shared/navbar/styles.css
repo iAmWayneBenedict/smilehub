@@ -9,3 +9,9 @@
 		min-width: 14rem;
 	}
 }
+@media screen and (max-width: 1000px) {
+	#logoNav {
+		width: fit-content;
+		min-width: unset;
+	}
+}

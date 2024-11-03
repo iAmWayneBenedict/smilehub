@@ -84,7 +84,7 @@ const AddPatient = () => {
 	};
 	const currentUser = location.pathname.includes("admin") ? "admin" : "staff";
 	return (
-		<div style={{ flex: 1 }} className="bg-[#f9f9f9]">
+		<div style={{ flex: 1 }} className="bg-[#f9f9f9] h-[calc(100vh-5.3rem)]">
 			<div className="w-full h-full p-5">
 				<h3 className="text-lg font-darkText">
 					<Breadcrumbs>
@@ -98,7 +98,7 @@ const AddPatient = () => {
 					<div className="flex flex-col gap-3">
 						<div
 							style={{ flex: 1 }}
-							className="flex items-center justify-between p-4 mt-5 bg-white rounded-lg shadow-md"
+							className="flex flex-col items-start justify-between gap-5 p-4 mt-5 bg-white rounded-lg shadow-md sm:gap-0 sm:items-center sm:flex-row"
 						>
 							<h3 className="text-2xl font-medium" style={{ flex: 1 }}>
 								Add New Patient
@@ -139,7 +139,7 @@ export default AddPatient;
 const Form = ({ register, control, errors }) => {
 	return (
 		<div className="flex flex-col gap-6">
-			<div className="flex">
+			<div className="flex flex-col items-start w-full md:items-center md:flex-row">
 				<div style={{ flex: 1 }} className="text-darkText">
 					Record Number
 				</div>
@@ -147,11 +147,11 @@ const Form = ({ register, control, errors }) => {
 					Record number will be assigned automatically when you save.
 				</div>
 			</div>
-			<div className="flex items-center">
+			<div className="flex flex-col items-start w-full md:items-center md:flex-row">
 				<div style={{ flex: 1 }} className="text-darkText">
 					First name
 				</div>
-				<div style={{ flex: 3 }}>
+				<div style={{ flex: 3 }} className="w-full md:w-fit" className="w-full md:w-fit">
 					<Input
 						{...register("FIRSTNAME", {
 							required: "First name is required",
@@ -173,11 +173,11 @@ const Form = ({ register, control, errors }) => {
 					/>
 				</div>
 			</div>
-			<div className="flex items-center">
+			<div className="flex flex-col items-start w-full md:items-center md:flex-row">
 				<div style={{ flex: 1 }} className="text-darkText">
 					Last name
 				</div>
-				<div style={{ flex: 3 }}>
+				<div style={{ flex: 3 }} className="w-full md:w-fit">
 					<Input
 						{...register("LASTNAME", {
 							required: "Last name is required",
@@ -199,11 +199,11 @@ const Form = ({ register, control, errors }) => {
 					/>
 				</div>
 			</div>
-			<div className="flex items-center">
+			<div className="flex flex-col items-start w-full md:items-center md:flex-row">
 				<div style={{ flex: 1 }} className="text-darkText">
 					Date of Birth
 				</div>
-				<div style={{ flex: 3 }}>
+				<div style={{ flex: 3 }} className="w-full md:w-fit">
 					{/* <DatePicker label="Birth Date" variant="bordered" showMonthAndYearPickers /> */}
 					<Controller
 						name="BIRTHDATE"
@@ -230,11 +230,11 @@ const Form = ({ register, control, errors }) => {
 					/>
 				</div>
 			</div>
-			<div className="flex items-center">
+			<div className="flex flex-col items-start w-full md:items-center md:flex-row">
 				<div style={{ flex: 1 }} className="text-darkText">
 					Gender
 				</div>
-				<div style={{ flex: 3 }}>
+				<div style={{ flex: 3 }} className="w-full md:w-fit">
 					<Controller
 						name="GENDER"
 						control={control}
@@ -269,11 +269,11 @@ const Form = ({ register, control, errors }) => {
 					/>
 				</div>
 			</div>
-			<div className="flex items-center">
+			<div className="flex flex-col items-start w-full md:items-center md:flex-row">
 				<div style={{ flex: 1 }} className="text-darkText">
 					Email
 				</div>
-				<div style={{ flex: 3 }}>
+				<div style={{ flex: 3 }} className="w-full md:w-fit">
 					<Input
 						{...register("EMAIL", {
 							required: "Email is required",
@@ -298,11 +298,11 @@ const Form = ({ register, control, errors }) => {
 					/>
 				</div>
 			</div>
-			<div className="flex items-center">
+			<div className="flex flex-col items-start w-full md:items-center md:flex-row">
 				<div style={{ flex: 1 }} className="text-darkText">
 					Phone Number
 				</div>
-				<div style={{ flex: 3 }}>
+				<div style={{ flex: 3 }} className="w-full md:w-fit">
 					<Input
 						{...register("PHONE", {
 							required: "Phone Number is required",

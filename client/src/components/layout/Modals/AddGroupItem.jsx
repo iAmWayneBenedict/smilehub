@@ -60,53 +60,51 @@ export default function AddGroupItem() {
 		mutation.mutate(data);
 	};
 	return (
-		<>
-			<Modal
-				isOpen={isOpen}
-				onClose={() => {
-					onClose();
-					setAddGroupItemModal({ isOpen: false });
-				}}
-				placement="top-center"
-				backdrop="blur"
-			>
-				<ModalContent>
-					{(onClose) => (
-						<>
-							<ModalHeader className="flex flex-col gap-1">
-								{addGroupItemModal.title}
-							</ModalHeader>
-							<ModalBody>
-								<Input
-									{...register("ITEM", {
-										required: "Item is required",
-									})}
-									isInvalid={!!errors.ITEM}
-									errorMessage={errors.ITEM?.message}
-									key={"f_name"}
-									type="text"
-									size="lg"
-									variant="bordered"
-									color="primary"
-									className="w-full"
-									classNames={{
-										label: "text-darkText font-semibold ",
-										inputWrapper: "rounded-lg h-full bg-white",
-										mainWrapper: "h-[4rem]",
-									}}
-									placeholder="Enter Item Name or Item ID"
-									endContent={<Search />}
-								/>
-							</ModalBody>
-							<ModalFooter className="justify-start">
-								<Button startContent={<Plus />} color="primary" onPress={onClose}>
-									Add Item to the Group
-								</Button>
-							</ModalFooter>
-						</>
-					)}
-				</ModalContent>
-			</Modal>
-		</>
+		<Modal
+			isOpen={isOpen}
+			onClose={() => {
+				onClose();
+				setAddGroupItemModal({ isOpen: false });
+			}}
+			placement="center"
+			backdrop="blur"
+		>
+			<ModalContent>
+				{(onClose) => (
+					<>
+						<ModalHeader className="flex flex-col gap-1">
+							{addGroupItemModal.title}
+						</ModalHeader>
+						<ModalBody>
+							<Input
+								{...register("ITEM", {
+									required: "Item is required",
+								})}
+								isInvalid={!!errors.ITEM}
+								errorMessage={errors.ITEM?.message}
+								key={"f_name"}
+								type="text"
+								size="lg"
+								variant="bordered"
+								color="primary"
+								className="w-full"
+								classNames={{
+									label: "text-darkText font-semibold ",
+									inputWrapper: "rounded-lg h-full bg-white",
+									mainWrapper: "h-[4rem]",
+								}}
+								placeholder="Enter Item Name or Item ID"
+								endContent={<Search />}
+							/>
+						</ModalBody>
+						<ModalFooter className="justify-start">
+							<Button startContent={<Plus />} color="primary" onPress={onClose}>
+								Add Item to the Group
+							</Button>
+						</ModalFooter>
+					</>
+				)}
+			</ModalContent>
+		</Modal>
 	);
 }

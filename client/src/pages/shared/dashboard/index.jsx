@@ -94,21 +94,23 @@ const AdminDashboard = () => {
 			setVisitData(chartData);
 		},
 	});
-
+	const mobileScreen = useMediaQuery({
+		query: "(max-width: 640px)",
+	});
 	return (
-		<div style={{ flex: 1 }} className="bg-[#f9f9f9]">
+		<div style={{ flex: 1 }} className="bg-[#f9f9f9] overflow-x-hidden sm:overflow-x-auto">
 			<div className="w-full h-full p-5">
 				<h3 className="text-lg font-darkText">Dashboard</h3>
 				<div className="flex flex-col gap-3 xl:flex-row">
 					<div style={{ flex: 1 }} className="flex flex-col gap-5">
 						{/* top chart */}
 						<div style={{ flex: 1 }} className="p-4 bg-white rounded-lg shadow-md">
-							<div className="flex justify-between">
+							<div className="flex flex-col justify-between gap-2 sm:flex-row sm:gap-0">
 								<h3 className="text-xl font-medium" style={{ flex: 1 }}>
 									Patient Visit
 								</h3>
 								<div
-									className="flex items-center justify-end gap-3"
+									className="flex items-center justify-start gap-3 sm:justify-end"
 									style={{ flex: 1 }}
 								>
 									<span className="text-lightText">Sort by</span>
@@ -148,13 +150,16 @@ const AdminDashboard = () => {
 								color="primary"
 								classNames={{
 									tabContent:
-										"group-data-[selected=true]:text-darkText group-data-[selected=true]:font-bold",
+										"group-data-[selected=true]:text-darkText group-data-[selected=true]:font-bold px-0",
 								}}
 							>
-								<Tab key="new" title="NEW APPOINTMENTS">
+								<Tab key="new" title={mobileScreen ? "NEW" : "NEW APPOINTMENTS"}>
 									<TableDashboard type={"new"} />
 								</Tab>
-								<Tab key="completed" title="COMPLETED APPOINTMENTS">
+								<Tab
+									key="completed"
+									title={mobileScreen ? "COMPLETED" : "COMPLETED APPOINTMENTS"}
+								>
 									<TableDashboard type={"completed"} />
 								</Tab>
 							</Tabs>
@@ -172,7 +177,7 @@ const AdminDashboard = () => {
 							<div className="flex justify-between">
 								<h2 className="text-2xl font-semibold">Total Patients</h2>
 							</div>
-							<div className="flex items-center pl-5 mt-2">
+							<div className="flex items-center pl-0 mt-2 sm:pl-5">
 								<div style={{ flex: 2 }}>
 									<h1 className="text-6xl font-bold text-end xl:text-start">
 										{data?.total_patients || 0}
@@ -193,7 +198,7 @@ const AdminDashboard = () => {
 							</div>
 						</div>
 						<div className="p-4 pb-10 bg-white rounded-lg shadow-md">
-							<div className="flex items-center justify-between">
+							<div className="flex flex-row items-center justify-between">
 								<h2 className="~text-lg/xl font-semibold">Upcoming schedule</h2>
 								<Button
 									variant="light"
@@ -208,7 +213,7 @@ const AdminDashboard = () => {
 										})
 									}
 								>
-									<span className="~text-sm/base font-semibold">
+									<span className="~text-sm/base hidden sm:flex font-semibold">
 										New Appointment
 									</span>
 									<span className="p-1 rounded-md border-1">

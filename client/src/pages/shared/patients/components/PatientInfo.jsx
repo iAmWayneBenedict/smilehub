@@ -56,7 +56,7 @@ const PatientInfo = () => {
 								{(data?.FIRSTNAME || "") + " " + (data?.LASTNAME || "")}
 							</h2>
 						</div>
-						<div className="flex">
+						<div className="flex flex-col gap-5 lg:gap-0 lg:flex-row">
 							<div style={{ flex: 3 }}>
 								{!isLoading && (
 									<Form data={data} params={params} refetch={refetch} />
@@ -128,20 +128,20 @@ const PatientInfo = () => {
 							</div>
 							<div
 								style={{ flex: 1 }}
-								className="flex flex-col items-end gap-5 mr-10"
+								className="flex flex-col items-end gap-5 mr-0 lg:mr-10 sm:flex-row lg:flex-col"
 							>
 								<Button
 									as={Link}
 									href={`/${currentUser}/patients/progress-notes/` + params?.id}
 									variant="bordered"
-									className="~w-32/56 py-2 pr-6 text-base font-bold text-primary h-fit"
+									className="w-full md:~w-48/56 lg:~w-36/56 py-2 pr-6 text-base font-bold text-primary h-fit"
 									startContent={<Image src={noteImg} removeWrapper alt="notes" />}
 								>
 									Progress Notes
 								</Button>
 								<Button
 									variant="bordered"
-									className="~w-32/56 py-2 pr-6 text-base font-bold text-primary h-fit"
+									className="w-full md:~w-48/56 lg:~w-36/56 py-2 pr-6 text-base font-bold text-primary h-fit"
 									startContent={
 										<Image src={teethImg} removeWrapper alt="notes" />
 									}
@@ -157,7 +157,7 @@ const PatientInfo = () => {
 								</Button>
 								<Button
 									variant="bordered"
-									className="~w-32/56 py-3 pr-6 text-base font-bold text-primary h-fit"
+									className="w-full md:~w-48/56 lg:~w-36/56 py-3 pr-6 text-base font-bold text-primary h-fit"
 									startContent={
 										<div className="rounded-xl bg-[#c8dfff] p-1 mr-3">
 											<HeartPulse className="w-[40px] h-[40px] text-[#549bff]" />
@@ -286,7 +286,7 @@ const Form = ({ data, params, refetch }) => {
 	};
 	return (
 		<form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
-			<div className="flex items-center max-w-4xl ">
+			<div className="flex flex-col justify-start max-w-4xl lg:items-center md:flex-row ">
 				<div style={{ flex: 1 }} className="text-darkText">
 					Record Number
 				</div>
@@ -312,7 +312,7 @@ const Form = ({ data, params, refetch }) => {
 					/>
 				</div>
 			</div>
-			<div className="flex items-center max-w-4xl ">
+			<div className="flex flex-col justify-start max-w-4xl lg:items-center md:flex-row ">
 				<div style={{ flex: 1 }} className="text-darkText">
 					First Name
 				</div>
@@ -348,7 +348,7 @@ const Form = ({ data, params, refetch }) => {
 					/>
 				</div>
 			</div>
-			<div className="flex items-center max-w-4xl">
+			<div className="flex flex-col justify-start max-w-4xl lg:items-center md:flex-row">
 				<div style={{ flex: 1 }} className="text-darkText">
 					Last Name
 				</div>
@@ -383,7 +383,7 @@ const Form = ({ data, params, refetch }) => {
 					/>
 				</div>
 			</div>
-			<div className="flex items-center max-w-4xl">
+			<div className="flex flex-col justify-start max-w-4xl lg:items-center md:flex-row">
 				<div style={{ flex: 1 }} className="text-darkText">
 					Date of Birth
 				</div>
@@ -413,7 +413,7 @@ const Form = ({ data, params, refetch }) => {
 					/>
 				</div>
 			</div>
-			<div className="flex items-center max-w-4xl">
+			<div className="flex flex-col justify-start max-w-4xl lg:items-center md:flex-row">
 				<div style={{ flex: 1 }} className="text-darkText">
 					Gender
 				</div>
@@ -459,7 +459,7 @@ const Form = ({ data, params, refetch }) => {
 					/>
 				</div>
 			</div>
-			<div className="flex items-center max-w-4xl">
+			<div className="flex flex-col justify-start max-w-4xl lg:items-center md:flex-row">
 				<div style={{ flex: 1 }} className="text-darkText">
 					Email
 				</div>
@@ -500,7 +500,7 @@ const Form = ({ data, params, refetch }) => {
 					/>
 				</div>
 			</div>
-			<div className="flex items-center max-w-4xl">
+			<div className="flex flex-col justify-start max-w-4xl lg:items-center md:flex-row">
 				<div style={{ flex: 1 }} className="text-darkText">
 					Phone Number
 				</div>
@@ -544,7 +544,7 @@ const Form = ({ data, params, refetch }) => {
 
 			<br />
 			{!location.pathname.includes("info") && (
-				<div className="flex items-center max-w-4xl">
+				<div className="flex flex-col justify-start max-w-4xl lg:items-center md:flex-row">
 					<div style={{ flex: 1 }} className="text-darkText"></div>
 					<div style={{ flex: 3 }} className="flex justify-end">
 						<Button

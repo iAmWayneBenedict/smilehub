@@ -21,7 +21,7 @@ const Profile = () => {
 	const currentUser = location.pathname.includes("admin") ? "admin" : "staff";
 	const user = decrypt(authToken);
 	return (
-		<div style={{ flex: 1 }} className="px-10 mt-10">
+		<div style={{ flex: 1 }} className="px-0 mt-10 md:px-10">
 			<div style={{ flex: 1 }} className="relative p-4 bg-white">
 				<div>
 					<Tabs

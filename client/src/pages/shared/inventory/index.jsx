@@ -40,7 +40,7 @@ const Inventory = () => {
 
 	return (
 		<div style={{ flex: 1 }} className="">
-			<div style={{ flex: 1 }} className="relative p-10 bg-white">
+			<div style={{ flex: 1 }} className="relative p-2 bg-white md:p-10">
 				<div className="w-full h-full p-5">
 					<div className="flex items-center justify-between w-full">
 						<div>
@@ -58,7 +58,7 @@ const Inventory = () => {
 							</Button>
 						</div>
 					</div>
-					<div className=" gap-5 mt-10 grid grid-cols-2 xl:grid-cols-4">
+					<div className="grid gap-5 mt-10 gir-cols-1 md:grid-cols-2 xl:grid-cols-4">
 						<div className="rounded-lg border-2 border-[#03A9F5] flex flex-col items-center">
 							<div className="flex flex-col items-center mt-5">
 								<MedicalIcon color="#03A9F5" width={57} height={57} />

@@ -3,10 +3,14 @@ import { useState } from "react";
 import TableAppointments from "./components/Table";
 import AppointmentModal from "@/components/layout/shared/appointment";
 import ReschedModal from "@/components/layout/Modals/ReschedModal";
+import { useMediaQuery } from "react-responsive";
 
 const Appointments = () => {
 	// controlled tabs
 	const [selected, setSelected] = useState("new-appointments");
+	const mobileScreen = useMediaQuery({
+		query: "(max-width: 640px)",
+	});
 	return (
 		<div style={{ flex: 1 }} className="mt-10">
 			<div style={{ flex: 1 }} className="relative p-4 bg-white">
@@ -22,10 +26,16 @@ const Appointments = () => {
 								"group-data-[selected=true]:text-darkText group-data-[selected=true]:font-bold",
 						}}
 					>
-						<Tab key="new-appointments" title="NEW APPOINTMENTS">
+						<Tab
+							key="new-appointments"
+							title={mobileScreen ? "NEW" : "NEW APPOINTMENTS"}
+						>
 							<TableAppointments type={"new"} />
 						</Tab>
-						<Tab key="completed-appointments" title="COMPLETED APPOINTMENTS">
+						<Tab
+							key="completed-appointments"
+							title={mobileScreen ? "COMPLETED" : "COMPLETED APPOINTMENTS"}
+						>
 							<TableAppointments type={"completed"} />
 						</Tab>
 					</Tabs>

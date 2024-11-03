@@ -322,8 +322,8 @@ export default function TableEmployees({ type }) {
 	// table top content with search and new appointment button
 	const topContent = React.useMemo(() => {
 		return (
-			<div className="flex flex-col gap-2">
-				<div className="flex items-center justify-between gap-3">
+			<div className="flex flex-col gap-2 mt-5 md:mt-0">
+				<div className="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
 					<h1 className="text-xl font-semibold">List of Employees</h1>
 					{currentUser === "admin" && (
 						<div className="flex gap-3">
@@ -337,12 +337,12 @@ export default function TableEmployees({ type }) {
 						</div>
 					)}
 				</div>
-				<div className="flex items-center justify-between mt-3">
+				<div className="flex flex-col-reverse items-start justify-between gap-5 mt-3 sm:gap-0 sm:items-center sm:flex-row">
 					<span className="text-default-400 text-small" style={{ flex: 1 }}>
 						{filteredItems?.length || 0} available employee(s)
 					</span>
-					<div className="flex justify-end gap-4" style={{ flex: 1 }}>
-						<div className="flex flex-col w-full max-w-xs gap-2">
+					<div className="flex justify-end w-full gap-4" style={{ flex: 1 }}>
+						<div className="flex flex-col w-full max-w-full gap-2 sm:max-w-xs">
 							<Select
 								label="Filter by role"
 								size="sm"
@@ -412,7 +412,10 @@ export default function TableEmployees({ type }) {
 			isHeaderSticky={false}
 			bottomContentPlacement="outside"
 			classNames={{
-				wrapper: "w-full shadow-none",
+				th: "bg-primary text-white data-[hover=true]:text-gray-300",
+				table: "min-w-[55rem]",
+				wrapper:
+					"min-h-96 bg-gray-50 p-0 w-full shadow-none  overflow-x-scroll max-w-[93vw] md:max-w-[96vw] lg:max-w-[80vw] 2xl:max-w-none",
 			}}
 			selectedKeys={selectedKeys}
 			sortDescriptor={sortDescriptor}

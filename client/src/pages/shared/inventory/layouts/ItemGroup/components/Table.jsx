@@ -264,14 +264,8 @@ export default function TableAppointments() {
 	// table bottom content with pagination
 	const bottomContent = React.useMemo(() => {
 		return (
-			<div className="flex items-center justify-between px-2 py-2">
-				<span className="w-[30%] text-small text-default-400">
-					{/* {selectedKeys === "all"
-						? "All items selected"
-						: `${selectedKeys.size} of ${filteredItems.length} selected`} */}
-				</span>
-
-				<div className="hidden sm:flex w-[30%] justify-end gap-2">
+			<div className="flex items-center justify-end px-2 py-2">
+				<div className="flex justify-end gap-2 w-fit">
 					<Button
 						aria-label="Previous Page"
 						isDisabled={page === 1}
@@ -310,7 +304,10 @@ export default function TableAppointments() {
 			isHeaderSticky={false}
 			bottomContentPlacement="outside"
 			classNames={{
-				wrapper: "w-full shadow-none",
+				th: "bg-primary text-white data-[hover=true]:text-gray-300",
+				table: "min-w-[40rem]",
+				wrapper:
+					"min-h-96 bg-gray-50 custom-scrollbar-vertical p-0 shadow-none w-fit md:w-full overflow-x-scroll max-w-[89vw] sm:max-w-[96vw] lg:max-w-[80vw] 2xl:max-w-none",
 			}}
 			selectedKeys={selectedKeys}
 			sortDescriptor={sortDescriptor}

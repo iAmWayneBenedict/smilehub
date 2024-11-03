@@ -20,6 +20,9 @@ const InvalidSmallScreen = () => {
 		if ((isAdminPage || isStaffPage) && isNotLoginPage && isNotRegisterPage && !isMinWidth) {
 			document.body.style.overflow = "hidden";
 			setIsInvalidScreen(true);
+		} else {
+			document.body.style.overflow = "visible";
+			setIsInvalidScreen(false);
 		}
 	}, [location.pathname, isMinWidth]);
 	if (!isInvalidScreen) return null;

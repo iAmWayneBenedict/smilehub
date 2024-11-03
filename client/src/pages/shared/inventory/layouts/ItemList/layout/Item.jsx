@@ -104,8 +104,8 @@ const Item = () => {
 										</Button>
 									</div>
 								</div>
-								<div className="flex flex-col w-full gap-10 mt-10">
-									<div className="flex flex-row gap-10">
+								<div className="flex flex-col w-full gap-5 mt-10 md:gap-10">
+									<div className="flex flex-col gap-5 md:gap-10 md:flex-row">
 										<div
 											style={{ flex: 1 }}
 											className="flex flex-col border-2 rounded-md border-[#bcbec1]"

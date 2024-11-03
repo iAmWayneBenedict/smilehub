@@ -3,11 +3,12 @@ import { Search, LogOut } from "lucide-react";
 import logoText from "../../../../assets/icons/SMILEHUB.png";
 import { useAppStore, useAuthTokenPersisted } from "@/store/zustand";
 import "./styles.css";
-import { decrypt } from "@/lib/utils";
+import { cn, decrypt } from "@/lib/utils";
 import { useLocation } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import EmployeesAPIManager from "@/services/api/managers/employees/EmployeesAPIManager.js";
+import { CustomSheet } from "../../Sheet/Sheet";
 
 const SharedNavBar = () => {
 	const { setAlertDialogDetails } = useAppStore();
@@ -29,17 +30,28 @@ const SharedNavBar = () => {
 	}, [data, isSuccess]);
 	return (
 		<div className="flex items-center border-gray-300 border-b-1">
-			<div id="logoNav" className="flex justify-center px-5 border-gray-300 py-7 border-r-1">
-				<div className="">
-					<Link href={"/"}>
-						<Image src={logoText} removeWrapper className="rounded-none" />
-					</Link>
+			<div className={cn(`flex justify-between w-full lg:w-fit item-center ~px-5/8 lg:px-0`)}>
+				<div style={{ flex: 1 }} className={cn(`flex lg:hidden items-center`)}>
+					<CustomSheet />
+				</div>
+				<div
+					id="logoNav"
+					className="flex justify-center px-0 border-0 border-gray-300 lg:px-5 py-7 lg:border-r-1"
+				>
+					<div>
+						<Link href={"/"}>
+							<Image
+								src={logoText}
+								removeWrapper
+								className="rounded-none w-36 md:w-fit"
+							/>
+						</Link>
+					</div>
 				</div>
 			</div>
-			<div style={{ flex: 1 }} className="flex justify-end px-5">
+			<div style={{ flex: 1 }} className="justify-end hidden px-5 lg:flex">
 				<div style={{ flex: 1 }} className="flex justify-evenly max-w-[40rem]">
 					<div>
-						{/* TODO: make this dynamic */}
 						<h5>{currentUser?.FULLNAME}</h5>
 						<h6 className="text-sm font-bold">{currentUser?.ROLE}</h6>
 					</div>

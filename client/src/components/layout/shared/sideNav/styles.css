@@ -2,6 +2,10 @@
 	width: 16rem;
 	min-width: 16rem;
 }
+#fullSideNav {
+	width: 100%;
+	min-width: 100%;
+}
 
 @media only screen and (min-device-width: 900px) and (max-device-width: 1600px) {
 	#sideNav {

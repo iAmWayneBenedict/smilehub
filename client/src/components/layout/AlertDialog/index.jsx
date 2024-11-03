@@ -63,6 +63,7 @@ const AlertDialog = () => {
 		<Modal
 			backdrop={"blur"}
 			isOpen={isOpen}
+			placement="center"
 			onClose={() => {
 				if (alertDialogDetails?.actionLink) {
 					navigate(alertDialogDetails?.actionLink);

@@ -1,3 +1,7 @@
+.event-template {
+	pointer-events: none !important;
+}
+
 .e-schedule .e-vertical-view .e-time-cells-wrap table td,
 .e-schedule .e-vertical-view .e-work-cells {
 	height: 85px !important;

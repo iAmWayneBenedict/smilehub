@@ -61,7 +61,7 @@ const ItemShortage = () => {
 	return (
 		<div style={{ flex: 1 }} className="">
 			<div style={{ flex: 1 }} className="relative p-4 bg-white">
-				<div className="p-5 font-darkText">
+				<div className="p-2 md:p-5 font-darkText">
 					<Breadcrumbs>
 						<BreadcrumbItem href={`/${currentUser}/inventory`}>
 							Inventory
@@ -104,8 +104,8 @@ const ItemShortage = () => {
 										</Button>
 									</div>
 								</div>
-								<div className="flex flex-col w-full gap-10 mt-10">
-									<div className="flex flex-row gap-10">
+								<div className="flex flex-col w-full gap-5 mt-10 md:gap-10">
+									<div className="flex flex-col gap-5 md:flex-row md:gap-10">
 										<div
 											style={{ flex: 1 }}
 											className="flex flex-col border-2 rounded-md border-[#bcbec1]"

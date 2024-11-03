@@ -358,7 +358,7 @@ const PatientDetails = () => {
 						</div>
 					</div>
 					<div className="flex flex-col gap-5 px-5">
-						<div className="flex flex-row gap-5">
+						<div className="flex flex-col gap-5 lg:flex-row">
 							<div style={{ flex: 1 }}>
 								<Controller
 									name="TITLE"
@@ -469,7 +469,7 @@ const PatientDetails = () => {
 								/>
 							</div>
 						</div>
-						<div className="flex flex-row gap-5">
+						<div className="flex flex-col gap-5 lg:flex-row">
 							<div style={{ flex: 1 }}>
 								<Controller
 									name="LAST_NAME"
@@ -535,7 +535,7 @@ const PatientDetails = () => {
 								/>
 							</div>
 						</div>
-						<div className="flex flex-row gap-5">
+						<div className="flex flex-col gap-5 lg:flex-row">
 							<div style={{ flex: 1 }}>
 								<Controller
 									name="BIRTHDAY"
@@ -594,7 +594,7 @@ const PatientDetails = () => {
 								/>
 							</div>
 						</div>
-						<div className="flex flex-row gap-5">
+						<div className="flex flex-col gap-5 lg:flex-row">
 							<div style={{ flex: 1 }}>
 								<Controller
 									name="CONTACT_NUMBER"
@@ -672,7 +672,7 @@ const PatientDetails = () => {
 								/>
 							</div>
 						</div>
-						<div className="flex flex-row gap-5">
+						<div className="flex flex-col gap-5 lg:flex-row">
 							<div style={{ flex: 1 }}>
 								<Controller
 									name="HEALTH_FUND"
@@ -738,7 +738,7 @@ const PatientDetails = () => {
 						</div>
 						<Divider />
 						<span>Emergency Contact</span>
-						<div className="flex flex-row gap-5">
+						<div className="flex flex-col gap-5 lg:flex-row">
 							<div style={{ flex: 1 }}>
 								<Controller
 									name="EMERGENCY_CONTACT_NAME"
@@ -810,7 +810,7 @@ const PatientDetails = () => {
 								/>
 							</div>
 						</div>
-						<div className="flex flex-row gap-5">
+						<div className="flex flex-col gap-5 lg:flex-row">
 							<div style={{ flex: 1 }}>
 								<Controller
 									name="EMERGENCY_CONTACT_RELATIONSHIP"
@@ -851,7 +851,7 @@ const PatientDetails = () => {
 					<Divider />
 					<div className="flex flex-col gap-5 px-5">
 						<span>Medical History</span>
-						<div className="flex flex-row gap-5">
+						<div className="flex flex-col gap-5 lg:flex-row">
 							<div style={{ flex: 1 }}>
 								<Controller
 									name="FAMILY_DOCTOR"
@@ -921,7 +921,7 @@ const PatientDetails = () => {
 								/>
 							</div>
 						</div>
-						<div className="flex flex-row gap-5">
+						<div className="flex flex-col gap-5 lg:flex-row">
 							<div style={{ flex: 1 }}>
 								<Controller
 									name="SUFFERING"
@@ -944,7 +944,8 @@ const PatientDetails = () => {
 											errorMessage={errors.SUFFERING?.message}
 											classNames={{
 												label: "text-darkText font-semibold",
-												wrapper: "~pl-2/5 grid grid-cols-2 gap-3",
+												wrapper:
+													"~pl-2/5 grid grid-cols-1 sm:grid-cols-2 gap-3",
 											}}
 										>
 											{conditions.map((condition) => (
@@ -956,7 +957,7 @@ const PatientDetails = () => {
 									)}
 								/>
 							</div>
-							<div style={{ flex: 1 }} className="flex flex-col gap-5">
+							<div style={{ flex: 1 }} className="flex flex-col gap-14 sm:gap-5">
 								<Input
 									value={formData["OTHER_CONDITIONS"]}
 									onValueChange={(value) => {
@@ -1107,7 +1108,7 @@ const PatientDetails = () => {
 					<div className="flex flex-col gap-5 px-5">
 						<span>Dental History</span>
 
-						<div className="flex flex-row gap-5">
+						<div className="flex flex-col gap-5 lg:flex-row">
 							<div style={{ flex: 1 }}>
 								<Controller
 									name="DENTAL_CONCERN_PROBLEMS"
@@ -1122,7 +1123,8 @@ const PatientDetails = () => {
 											errorMessage={errors.DENTAL_CONCERN_PROBLEMS?.message}
 											classNames={{
 												label: "text-darkText font-semibold",
-												wrapper: "~pl-2/5 grid grid-cols-2 gap-3",
+												wrapper:
+													"~pl-2/5 grid grid-cols-1 sm:grid-cols-2 gap-3",
 											}}
 										>
 											<Checkbox value="Sensitivity to hot or cold">
@@ -1241,7 +1243,7 @@ const PatientDetails = () => {
 								/> */}
 							</div>
 						</div>
-						<div className="flex flex-row gap-5">
+						<div className="flex flex-col gap-5 lg:flex-row">
 							<div style={{ flex: 1 }}>
 								<Controller
 									name="DENTAL_TREATMENT_REQUIREMENT"
@@ -1258,7 +1260,8 @@ const PatientDetails = () => {
 											}
 											classNames={{
 												label: "text-darkText font-semibold",
-												wrapper: "~pl-2/5 grid grid-cols-2 gap-3",
+												wrapper:
+													"~pl-2/5 grid grid-cols-1 sm:grid-cols-2 gap-3",
 											}}
 										>
 											<Checkbox value="Gas (Nitrous oxide-laughing gas)">
@@ -1308,7 +1311,7 @@ const PatientDetails = () => {
 					<div className="flex flex-col gap-5 px-5">
 						<span>Referral Information</span>
 
-						<div className="flex flex-row gap-5">
+						<div className="flex flex-col gap-5 lg:flex-row">
 							<div style={{ flex: 1 }}>
 								<Controller
 									name="REFFERAL"
@@ -1446,7 +1449,7 @@ const PatientDetails = () => {
 					</div>
 					<Divider />
 					<div className="flex flex-col gap-5 px-5">
-						<div className="flex flex-row gap-5">
+						<div className="flex flex-col gap-5 lg:flex-row">
 							<div style={{ flex: 1 }}>
 								<Controller
 									name="CONSENT"
@@ -1500,9 +1503,11 @@ const PatientDetails = () => {
 							</div>
 						</div>
 					</div>
-					<Button color="primary" type="submit" className="px-8 mb-24 w-fit">
-						Submit
-					</Button>
+					<div className="px-5">
+						<Button color="primary" type="submit" className="px-8 mb-24 w-fit">
+							Submit
+						</Button>
+					</div>
 				</form>
 			</div>
 		</div>

@@ -154,238 +154,122 @@ export default function AssessmentPatient() {
 		}
 	};
 	return (
-		<>
-			<Modal
-				isOpen={isOpen}
-				aria-label="Assessment Patient Modal"
-				size="5xl"
-				onClose={() => {
-					onClose();
-					setAssessmentPatientModal({ isOpen: false });
-				}}
-				placement="top-center"
-				backdrop="blur"
-			>
-				<ModalContent>
-					{(onClose) => (
-						<form onSubmit={handleSubmit(onSubmit)}>
-							<ModalHeader className="flex flex-col gap-1">
-								{assessmentPatientModal.title || "Assessment"}
-							</ModalHeader>
-							<ModalBody>
-								<div className="flex flex-row gap-24 ~mx-4/10">
-									<div style={{ flex: 1 }} className="flex flex-col gap-6">
-										<Controller
-											name="TOOTH_NO"
-											control={control}
-											rules={{ required: "Tooth number is required" }}
-											render={({ field, formState: { errors } }) => (
-												<Select
-													{...field}
-													aria-label="Tooth Number Select"
-													selectedKeys={[field.value]}
-													onChange={(selectedKeys) => {
-														field.onChange(selectedKeys);
-													}}
-													isDisabled={currentUser === "staff"}
-													disallowEmptySelection
-													textValue="tooth number"
-													isInvalid={!!errors.TOOTH_NO}
-													errorMessage={errors.TOOTH_NO?.message}
-													labelPlacement={"outside"}
-													placeholder="Select Tooth number"
-													label="Tooth number"
-													size="lg"
-													variant="bordered"
-													color="primary"
-													className="w-full bg-white"
-													radius="sm"
-													classNames={{
-														label: "text-darkText font-semibold text-sm pb-1",
-														inputWrapper: "h-full",
-													}}
-												>
-													{Array.from({ length: 32 }).map((_, number) => (
-														<SelectItem
-															key={number + 1}
-															value={number + 1}
-															textValue={"#" + (number + 1)}
-														>
-															#{number + 1}
-														</SelectItem>
-													))}
-												</Select>
-											)}
-										/>
-										<Controller
-											name="COLOR"
-											control={control}
-											rules={{ required: "Treatment is required" }}
-											render={({ field, formState: { errors } }) => (
-												<Select
-													{...field}
-													aria-label="Color Select"
-													selectedKeys={[field.value]}
-													onChange={(selectedKeys) => {
-														field.onChange(selectedKeys);
-													}}
-													textValue="color"
-													isDisabled={
-														!colors?.length || currentUser === "staff"
-													}
-													isInvalid={!!errors.COLOR}
-													errorMessage={errors.COLOR?.message}
-													labelPlacement={"outside"}
-													placeholder="Select treatment"
-													label="Treatment"
-													size="lg"
-													variant="bordered"
-													color="primary"
-													className="w-full bg-white"
-													radius="sm"
-													classNames={{
-														label: "text-darkText font-semibold text-sm pb-1",
-														inputWrapper: "h-full",
-													}}
-												>
-													{colors.map((color) => (
-														<SelectItem
-															key={color}
-															value={color}
-															textValue={color}
-														>
-															{color}
-														</SelectItem>
-													))}
-												</Select>
-											)}
-										/>
-										<div className="flex justify-between">
-											<div className="flex flex-col gap-5">
-												<div>
-													<Controller
-														name="TEXTURE"
-														control={control}
-														rules={{ required: "Texture is required" }}
-														render={({
-															field,
-															formState: { errors },
-														}) => (
-															<CheckboxGroup
-																aria-label="Texture Checkboxes"
-																label="Texture"
-																color="primary"
-																value={field.value}
-																isDisabled={currentUser === "staff"}
-																onValueChange={(value) =>
-																	field.onChange(
-																		checkboxSetterSingleItem(
-																			value
-																		)
-																	)
-																}
-																isInvalid={!!errors.TEXTURE}
-																errorMessage={
-																	errors.TEXTURE?.message
-																}
-															>
-																<Checkbox value="Smooth">
-																	Smooth
-																</Checkbox>
-																<Checkbox value="Rough">
-																	Rough
-																</Checkbox>
-																<Checkbox value="Pitted">
-																	Pitted
-																</Checkbox>
-																<Checkbox value="Cracked">
-																	Cracked
-																</Checkbox>
-															</CheckboxGroup>
-														)}
-													/>
-												</div>
-												<div className="flex flex-col gap-5">
-													<Controller
-														name="PRESENCE_OF_DECAY"
-														control={control}
-														render={({
-															field,
-															formState: { errors },
-														}) => (
-															<div className="flex gap-5">
-																<h5>Presence of Decay</h5>
-																<Checkbox
-																	isSelected={field.value}
-																	onValueChange={(value) =>
-																		field.onChange(value)
-																	}
-																	isDisabled={
-																		currentUser === "staff"
-																	}
-																>
-																	Yes
-																</Checkbox>
-															</div>
-														)}
-													/>
-													<Controller
-														name="CAVITIES"
-														control={control}
-														render={({
-															field,
-															formState: { errors },
-														}) => (
-															<div className="flex gap-5">
-																<h5>Cavities</h5>
-																<Checkbox
-																	isSelected={field.value}
-																	onValueChange={(value) =>
-																		field.onChange(value)
-																	}
-																	isDisabled={
-																		currentUser === "staff"
-																	}
-																>
-																	Yes
-																</Checkbox>
-															</div>
-														)}
-													/>
-													<Controller
-														name="SENSITIVITY"
-														control={control}
-														render={({
-															field,
-															formState: { errors },
-														}) => (
-															<div className="flex gap-5">
-																<h5>Sensitivity</h5>
-																<Checkbox
-																	isSelected={field.value}
-																	onValueChange={(value) =>
-																		field.onChange(value)
-																	}
-																	isDisabled={
-																		currentUser === "staff"
-																	}
-																>
-																	Yes
-																</Checkbox>
-															</div>
-														)}
-													/>
-												</div>
-											</div>
-											<div className="flex flex-col gap-5">
+		<Modal
+			isOpen={isOpen}
+			aria-label="Assessment Patient Modal"
+			size="5xl"
+			onClose={() => {
+				onClose();
+				setAssessmentPatientModal({ isOpen: false });
+			}}
+			placement="top-center"
+			backdrop="blur"
+		>
+			<ModalContent>
+				{(onClose) => (
+					<form onSubmit={handleSubmit(onSubmit)}>
+						<ModalHeader className="flex flex-col gap-1">
+							{assessmentPatientModal.title || "Assessment"}
+						</ModalHeader>
+						<ModalBody>
+							<div className="flex flex-col md:flex-row gap-6 md:gap-24 ~mx-4/10">
+								<div style={{ flex: 1 }} className="flex flex-col gap-6">
+									<Controller
+										name="TOOTH_NO"
+										control={control}
+										rules={{ required: "Tooth number is required" }}
+										render={({ field, formState: { errors } }) => (
+											<Select
+												{...field}
+												aria-label="Tooth Number Select"
+												selectedKeys={[field.value]}
+												onChange={(selectedKeys) => {
+													field.onChange(selectedKeys);
+												}}
+												isDisabled={currentUser === "staff"}
+												disallowEmptySelection
+												textValue="tooth number"
+												isInvalid={!!errors.TOOTH_NO}
+												errorMessage={errors.TOOTH_NO?.message}
+												labelPlacement={"outside"}
+												placeholder="Select Tooth number"
+												label="Tooth number"
+												size="lg"
+												variant="bordered"
+												color="primary"
+												className="w-full bg-white"
+												radius="sm"
+												classNames={{
+													label: "text-darkText font-semibold text-sm pb-1",
+													inputWrapper: "h-full",
+												}}
+											>
+												{Array.from({ length: 32 }).map((_, number) => (
+													<SelectItem
+														key={number + 1}
+														value={number + 1}
+														textValue={"#" + (number + 1)}
+													>
+														#{number + 1}
+													</SelectItem>
+												))}
+											</Select>
+										)}
+									/>
+									<Controller
+										name="COLOR"
+										control={control}
+										rules={{ required: "Treatment is required" }}
+										render={({ field, formState: { errors } }) => (
+											<Select
+												{...field}
+												aria-label="Color Select"
+												selectedKeys={[field.value]}
+												onChange={(selectedKeys) => {
+													field.onChange(selectedKeys);
+												}}
+												textValue="color"
+												isDisabled={
+													!colors?.length || currentUser === "staff"
+												}
+												isInvalid={!!errors.COLOR}
+												errorMessage={errors.COLOR?.message}
+												labelPlacement={"outside"}
+												placeholder="Select treatment"
+												label="Treatment"
+												size="lg"
+												variant="bordered"
+												color="primary"
+												className="w-full bg-white"
+												radius="sm"
+												classNames={{
+													label: "text-darkText font-semibold text-sm pb-1",
+													inputWrapper: "h-full",
+												}}
+											>
+												{colors.map((color) => (
+													<SelectItem
+														key={color}
+														value={color}
+														textValue={color}
+													>
+														{color}
+													</SelectItem>
+												))}
+											</Select>
+										)}
+									/>
+									<div className="flex flex-col justify-between gap-6 md:gap-0 md:flex-row">
+										<div className="flex flex-col gap-5">
+											<div>
 												<Controller
-													name="GUM_HEALTH"
+													name="TEXTURE"
 													control={control}
-													rules={{ required: "Gum Health is required" }}
+													rules={{ required: "Texture is required" }}
 													render={({ field, formState: { errors } }) => (
 														<CheckboxGroup
-															aria-label="Gum Health Checkboxes"
-															label="Gum Health"
+															aria-label="Texture Checkboxes"
+															label="Texture"
 															color="primary"
 															value={field.value}
 															isDisabled={currentUser === "staff"}
@@ -394,73 +278,89 @@ export default function AssessmentPatient() {
 																	checkboxSetterSingleItem(value)
 																)
 															}
-															isInvalid={!!errors.GUM_HEALTH}
-															errorMessage={
-																errors.GUM_HEALTH?.message
-															}
+															isInvalid={!!errors.TEXTURE}
+															errorMessage={errors.TEXTURE?.message}
 														>
-															<Checkbox value="Healthy">
-																Healthy
+															<Checkbox value="Smooth">
+																Smooth
 															</Checkbox>
-															<Checkbox value="Inflamed">
-																Inflamed
+															<Checkbox value="Rough">Rough</Checkbox>
+															<Checkbox value="Pitted">
+																Pitted
 															</Checkbox>
-															<Checkbox value="Bleeding">
-																Bleeding
-															</Checkbox>
-															<Checkbox value="Receding">
-																Receding
+															<Checkbox value="Cracked">
+																Cracked
 															</Checkbox>
 														</CheckboxGroup>
 													)}
 												/>
+											</div>
+											<div className="flex flex-col gap-5">
 												<Controller
-													name="MOBILITY"
+													name="PRESENCE_OF_DECAY"
 													control={control}
-													rules={{ required: "Mobility is required" }}
 													render={({ field, formState: { errors } }) => (
-														<CheckboxGroup
-															aria-label="Mobility Checkboxes"
-															label="Mobility"
-															color="primary"
-															value={field.value}
-															isDisabled={currentUser === "staff"}
-															onValueChange={(value) =>
-																field.onChange(
-																	checkboxSetterSingleItem(value)
-																)
-															}
-															isInvalid={!!errors.MOBILITY}
-															errorMessage={errors.MOBILITY?.message}
-														>
-															<Checkbox value="Stable">
-																Stable
+														<div className="flex gap-5">
+															<h5>Presence of Decay</h5>
+															<Checkbox
+																isSelected={field.value}
+																onValueChange={(value) =>
+																	field.onChange(value)
+																}
+																isDisabled={currentUser === "staff"}
+															>
+																Yes
 															</Checkbox>
-															<Checkbox value="Slightly Loose">
-																Slightly Loose
+														</div>
+													)}
+												/>
+												<Controller
+													name="CAVITIES"
+													control={control}
+													render={({ field, formState: { errors } }) => (
+														<div className="flex gap-5">
+															<h5>Cavities</h5>
+															<Checkbox
+																isSelected={field.value}
+																onValueChange={(value) =>
+																	field.onChange(value)
+																}
+																isDisabled={currentUser === "staff"}
+															>
+																Yes
 															</Checkbox>
-															<Checkbox value="Moderately Loose">
-																Moderately Loose
+														</div>
+													)}
+												/>
+												<Controller
+													name="SENSITIVITY"
+													control={control}
+													render={({ field, formState: { errors } }) => (
+														<div className="flex gap-5">
+															<h5>Sensitivity</h5>
+															<Checkbox
+																isSelected={field.value}
+																onValueChange={(value) =>
+																	field.onChange(value)
+																}
+																isDisabled={currentUser === "staff"}
+															>
+																Yes
 															</Checkbox>
-														</CheckboxGroup>
+														</div>
 													)}
 												/>
 											</div>
 										</div>
-									</div>
-									<div style={{ flex: 1 }} className="flex flex-col gap-16">
-										<div style={{ flex: 1 }}></div>
-										<div style={{ flex: 2 }}>
+										<div className="flex flex-col gap-5">
 											<Controller
-												name="PREVIOUS_TREATMENT"
+												name="GUM_HEALTH"
 												control={control}
-												rules={{
-													required: "Previous treatment is required",
-												}}
+												rules={{ required: "Gum Health is required" }}
 												render={({ field, formState: { errors } }) => (
 													<CheckboxGroup
-														aria-label="Previous treatment Checkboxes"
-														label="Previous treatment"
+														aria-label="Gum Health Checkboxes"
+														label="Gum Health"
 														color="primary"
 														value={field.value}
 														isDisabled={currentUser === "staff"}
@@ -469,19 +369,47 @@ export default function AssessmentPatient() {
 																checkboxSetterSingleItem(value)
 															)
 														}
-														isInvalid={!!errors.PREVIOUS_TREATMENT}
-														errorMessage={
-															errors.PREVIOUS_TREATMENT?.message
-														}
+														isInvalid={!!errors.GUM_HEALTH}
+														errorMessage={errors.GUM_HEALTH?.message}
 													>
-														<Checkbox value="None">None</Checkbox>
-														<Checkbox value="Filing">Filing</Checkbox>
-														<Checkbox value="Crown">Crown</Checkbox>
-														<Checkbox value="Root Canal">
-															Root Canal
+														<Checkbox value="Healthy">Healthy</Checkbox>
+														<Checkbox value="Inflamed">
+															Inflamed
 														</Checkbox>
-														<Checkbox value="Extraction">
-															Extraction
+														<Checkbox value="Bleeding">
+															Bleeding
+														</Checkbox>
+														<Checkbox value="Receding">
+															Receding
+														</Checkbox>
+													</CheckboxGroup>
+												)}
+											/>
+											<Controller
+												name="MOBILITY"
+												control={control}
+												rules={{ required: "Mobility is required" }}
+												render={({ field, formState: { errors } }) => (
+													<CheckboxGroup
+														aria-label="Mobility Checkboxes"
+														label="Mobility"
+														color="primary"
+														value={field.value}
+														isDisabled={currentUser === "staff"}
+														onValueChange={(value) =>
+															field.onChange(
+																checkboxSetterSingleItem(value)
+															)
+														}
+														isInvalid={!!errors.MOBILITY}
+														errorMessage={errors.MOBILITY?.message}
+													>
+														<Checkbox value="Stable">Stable</Checkbox>
+														<Checkbox value="Slightly Loose">
+															Slightly Loose
+														</Checkbox>
+														<Checkbox value="Moderately Loose">
+															Moderately Loose
 														</Checkbox>
 													</CheckboxGroup>
 												)}
@@ -489,24 +417,64 @@ export default function AssessmentPatient() {
 										</div>
 									</div>
 								</div>
-							</ModalBody>
-							<ModalFooter>
-								<Button color="light" variant="flat" onPress={onClose}>
-									Close
-								</Button>
-								<Button
-									type="submit"
-									color="primary"
-									isDisabled={currentUser === "staff"}
-								>
-									Save
-								</Button>
-							</ModalFooter>
-						</form>
-					)}
-				</ModalContent>
-			</Modal>
-		</>
+								<div style={{ flex: 1 }} className="flex flex-col gap-0 md:gap-16">
+									<div style={{ flex: 1 }}></div>
+									<div style={{ flex: 2 }}>
+										<Controller
+											name="PREVIOUS_TREATMENT"
+											control={control}
+											rules={{
+												required: "Previous treatment is required",
+											}}
+											render={({ field, formState: { errors } }) => (
+												<CheckboxGroup
+													aria-label="Previous treatment Checkboxes"
+													label="Previous treatment"
+													color="primary"
+													value={field.value}
+													isDisabled={currentUser === "staff"}
+													onValueChange={(value) =>
+														field.onChange(
+															checkboxSetterSingleItem(value)
+														)
+													}
+													isInvalid={!!errors.PREVIOUS_TREATMENT}
+													errorMessage={
+														errors.PREVIOUS_TREATMENT?.message
+													}
+												>
+													<Checkbox value="None">None</Checkbox>
+													<Checkbox value="Filing">Filing</Checkbox>
+													<Checkbox value="Crown">Crown</Checkbox>
+													<Checkbox value="Root Canal">
+														Root Canal
+													</Checkbox>
+													<Checkbox value="Extraction">
+														Extraction
+													</Checkbox>
+												</CheckboxGroup>
+											)}
+										/>
+									</div>
+								</div>
+							</div>
+						</ModalBody>
+						<ModalFooter>
+							<Button color="light" variant="flat" onPress={onClose}>
+								Close
+							</Button>
+							<Button
+								type="submit"
+								color="primary"
+								isDisabled={currentUser === "staff"}
+							>
+								Save
+							</Button>
+						</ModalFooter>
+					</form>
+				)}
+			</ModalContent>
+		</Modal>
 	);
 }
 
@@ -539,6 +507,5 @@ const colors = [
 	"Alveolar Ridge Preservation",
 	"Implant Placement Surgery",
 	"Abutment Connection",
-	"Prosthetic Crown Placement"
-  ];
-  
+	"Prosthetic Crown Placement",
+];

@@ -114,7 +114,7 @@ const EditItem = () => {
 				</div>
 				<div className="mt-7">
 					<form onSubmit={handleSubmit(onSubmit)}>
-						<div className="max-w-[1200px] ps-6 2xl:ps-24 flex flex-col gap-5">
+						<div className="max-w-[1200px] ps-0 md:ps-6 2xl:ps-24 flex flex-col gap-5">
 							<div className="flex flex-row gap-7">
 								<Controller
 									name="NAME"
@@ -149,7 +149,7 @@ const EditItem = () => {
 									)}
 								/>
 							</div>
-							<div className="flex flex-row gap-7">
+							<div className="flex flex-col gap-5 md:flex-row md:gap-7">
 								<Controller
 									name="ITEM_GROUP"
 									control={control}

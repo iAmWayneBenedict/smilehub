@@ -61,7 +61,7 @@ const Registration = () => {
 		mutation.mutate(data);
 	};
 	return (
-		<div style={{ flex: 1 }} className="~mx-10/16 mt-10">
+		<div style={{ flex: 1 }} className="mx-2 sm:mx-5 lg:~mx-10/16 mt-10">
 			<div style={{ flex: 1 }} className="relative p-4 bg-white">
 				<div className="flex flex-row items-center justify-between">
 					<div>

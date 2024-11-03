@@ -9,7 +9,7 @@ const InventoryLogs = () => {
 	return (
 		<div style={{ flex: 1 }} className="">
 			<div style={{ flex: 1 }} className="relative p-4 bg-white">
-				<h3 className="p-5 text-lg font-darkText">
+				<h3 className="p-2 text-lg sm:p-5 font-darkText">
 					<Breadcrumbs>
 						<BreadcrumbItem href={`/${currentUser}/inventory`}>
 							Inventory

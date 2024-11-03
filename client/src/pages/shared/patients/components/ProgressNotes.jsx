@@ -93,13 +93,13 @@ const ProgressNotes = () => {
 								</tr>
 							</thead>
 							<tbody>
-								{progressNotes &&
+								{progressNotes ? (
 									progressNotes.map((item, i) => (
 										<tr key={i}>
 											<td className="border border-[#5B5B5B] h-[7rem] px-4 border-r-0 border-t-0">
-												<p className="line-clamp-3">{item.DIAGNOSIS}</p>			
+												<p className="line-clamp-3">{item.DIAGNOSIS}</p>
 											</td>
-											<td className="border border-[#5B5B5B] h-[7rem] px-4 flex justify-between items-center border-t-0">
+											<td className="border border-[#5B5B5B] h-[7rem] px-4 flex md:flex-row flex-col text-center md:text-start justify-around md:justify-between items-center border-t-0">
 												{formatDate(new Date(item.DATE))}
 												<div className="flex gap-1">
 													<Button
@@ -162,8 +162,8 @@ const ProgressNotes = () => {
 												</div>
 											</td>
 										</tr>
-									))}
-								{!progressNotes && (
+									))
+								) : (
 									<tr>
 										<td
 											colSpan={2}
