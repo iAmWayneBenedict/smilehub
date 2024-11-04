@@ -65,7 +65,7 @@ export const articleCardData = [
 			</React.Fragment>
 		),
 		description:
-			"We use only the best quality materials on the market in order to provide the best products to our patients, So don’t worry about anything and book yourself.",
+			"We use only the best quality materials on the market in order to provide the best products to our patients, so don’t worry about anything and book yourself.",
 		isForm: true,
 		image: <Image src={articleImageHomPage} removeWrapper className="w-full h-full" />,
 	},
@@ -79,7 +79,7 @@ export const articleCardData = [
 			</React.Fragment>
 		),
 		description:
-			"We use only the best quality materials on the market in order to provide the best products to our patients, So don’t worry about anything and book yourself.",
+			"We use only the best quality materials on the market in order to provide the best products to our patients, so don’t worry about anything and book yourself.",
 		isForm: false,
 		image: <Image src={articleImageHomPage2} removeWrapper className="w-full h-full" />,
 	},

@@ -85,7 +85,7 @@ const Home = () => {
 					},
 					textUnderlined: "News & Articles",
 					description:
-						"We use only the best quality materials on the market in order to provide the best products to our patients.",
+						"Discover valuable insights and information in the curated collection of dental news and articles.",
 				}}
 			/>
 			<FAQ />
