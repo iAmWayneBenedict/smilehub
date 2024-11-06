@@ -14,11 +14,12 @@ import { convertDateYYYYMMDD, isWeekEndDate } from "@/services/api/utils";
 import { useAppStore, useAuthTokenPersisted } from "@/store/zustand";
 import { useState } from "react";
 import { useEffect } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { decrypt, formatDate } from "@/lib/utils";
 import { useMemo } from "react";
 import { sendEmail } from "@/services/email/index.js";
+import PatientsAPIManager from "@/services/api/managers/patients/PatientsAPIManager";
 
 const contactAddressCard = [
 	{
@@ -60,7 +61,7 @@ const purpose = [
 	"Mayobrace/Trainer for kids",
 	"Veneer",
 	"Denture",
-	"Fixed Bridge"
+	"Fixed Bridge",
 ];
 
 const Contact = () => {
@@ -70,6 +71,16 @@ const Contact = () => {
 	const user = decrypt(authToken);
 	const navigate = useNavigate();
 	//	const [tempData, setTempData] =
+
+	const {
+		data: userData,
+		isSuccess,
+		isError,
+	} = useQuery({
+		enabled: !!user,
+		queryKey: ["users"],
+		queryFn: () => PatientsAPIManager.getDetailPatient({ ID: user.id }),
+	});
 	// Form hook
 	const {
 		register,
@@ -85,28 +96,29 @@ const Contact = () => {
 				defaultValues: {
 					FULLNAME: user?.fullname || "",
 					EMAIL: user?.email || "",
-					PHONE: "",
+					PHONE:
+						isSuccess && userData?.EMAIL === user.email ? Number(userData.PHONE) : "",
 					APPOINTMENT_DATE: today(getLocalTimeZone()), // default date (today)
 					APPOINTMENT_TIME: "",
 					PURPOSE: "",
 				},
 			};
-		}, [user])
+		}, [user, isError, isSuccess])
 	);
 	useEffect(() => {
 		handleGetDate(today(getLocalTimeZone()), false);
 	}, []);
 	useEffect(() => {
-		if (!user) return;
+		if (!user || !userData) return;
 		reset({
 			FULLNAME: user?.fullname || "",
 			EMAIL: user?.email || "",
-			PHONE: "",
+			PHONE: isSuccess && userData?.EMAIL === user.email ? Number(userData.PHONE) : "",
 			APPOINTMENT_DATE: today(getLocalTimeZone()), // default date (today)
 			APPOINTMENT_TIME: "",
 			PURPOSE: "",
 		});
-	}, []);
+	}, [isSuccess, isError, userData]);
 	const handleGetDate = async (date, isForm = true) => {
 		if (isWeekEndDate(date)) return;
 		try {
@@ -133,7 +145,9 @@ const Contact = () => {
 				type: "success",
 				title: "Success!",
 				message: "Appointment booked successfully!",
-				actionLink: "/", // redirect to home page
+				confirmCallback: () => {
+					location.reload();
+				},
 			});
 			const date = formatDate(new Date(convertDateYYYYMMDD(getValues("APPOINTMENT_DATE"))));
 			const time = getValues("APPOINTMENT_TIME")?.split("-")[0];
@@ -296,7 +310,45 @@ const Contact = () => {
 										labelPlacement={"outside"}
 										readOnly
 									/>
-									<Input
+									<Controller
+										name="PHONE"
+										control={control}
+										rules={{
+											required: "Phone Number is required",
+											pattern: {
+												value: /^[+069](\d{9}|\d{10}|\d{11}|\d{12})$/,
+												message: "Invalid phone number",
+											},
+										}}
+										render={({ field, formState: { errors } }) => (
+											<Input
+												value={field.value}
+												onValueChange={(value) => {
+													field.onChange(value);
+												}}
+												readOnly={
+													!!(userData && userData?.EMAIL === user.email)
+												}
+												isInvalid={!!errors.PHONE}
+												errorMessage={errors.PHONE?.message}
+												label="Phone Number"
+												placeholder="900-000-0000"
+												labelPlacement="outside"
+												type="number"
+												size="lg"
+												variant="bordered"
+												color="primary"
+												className="w-full"
+												classNames={{
+													label: "text-darkText font-semibold ",
+													inputWrapper: "rounded-lg h-[4rem] bg-white",
+													mainWrapper: "max-h-[4rem]",
+												}}
+												startContent={"+63"}
+											/>
+										)}
+									/>
+									{/* <Input
 										{...register("PHONE", {
 											required: "Phone Number is required",
 											pattern: {
@@ -304,6 +356,7 @@ const Contact = () => {
 												message: "Invalid phone number",
 											},
 										})}
+										readOnly={!!userData}
 										isInvalid={!!errors.PHONE}
 										errorMessage={errors.PHONE?.message}
 										label="Phone Number"
@@ -320,7 +373,7 @@ const Contact = () => {
 											mainWrapper: "max-h-[4rem]",
 										}}
 										startContent={"+63"}
-									/>
+									/> */}
 									<Controller
 										name="APPOINTMENT_DATE"
 										control={control}

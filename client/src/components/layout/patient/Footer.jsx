@@ -8,20 +8,20 @@ const Footer = () => {
 		<ContainerWrapper className="mt-36">
 			<div className="flex flex-col w-full">
 				<div className="flex flex-wrap justify-center sm:justify-end ~gap-6/12 footer-links">
-					<Link href="#" className="text-[--dark-text]">
+					<Link href="/" className="text-[--dark-text]">
 						Home
 					</Link>
-					<Link href="#" className="text-[--dark-text]">
+					<Link href="/services" className="text-[--dark-text]">
 						Services
 					</Link>
-					<Link href="#" className="text-[--dark-text]">
+					<Link href="/blogs" className="text-[--dark-text]">
 						Blogs
 					</Link>
-					<Link href="#" className="text-[--dark-text]">
+					<Link href="/about" className="text-[--dark-text]">
 						About
 					</Link>
-					<Link href="#" className="text-[--dark-text]">
-						Contact
+					<Link href="/appointment" className="text-[--dark-text]">
+						Appointment
 					</Link>
 				</div>
 			</div>
@@ -34,8 +34,28 @@ const Footer = () => {
 					</Link>
 				</div>
 				<div className="flex gap-3 mt-6 sm:mt-0">
-					<Image src={facebook} className="cursor-pointer" alt="facebook" onClick={() => window.open("https://web.facebook.com/BajarDentalClinic?mibextid=ZbWKwL&_rdc=1&_rdr", "_blank")}/>
-					<Image src={instagram} className="cursor-pointer" alt="instagram" onClick={() => window.open("https://www.instagram.com/bajar_dentalclinic/?igsh=azlub243NjI0MjJm#", "_blank")} />
+					<Image
+						src={facebook}
+						className="cursor-pointer"
+						alt="facebook"
+						onClick={() =>
+							window.open(
+								"https://web.facebook.com/BajarDentalClinic?mibextid=ZbWKwL&_rdc=1&_rdr",
+								"_blank"
+							)
+						}
+					/>
+					<Image
+						src={instagram}
+						className="cursor-pointer"
+						alt="instagram"
+						onClick={() =>
+							window.open(
+								"https://www.instagram.com/bajar_dentalclinic/?igsh=azlub243NjI0MjJm#",
+								"_blank"
+							)
+						}
+					/>
 				</div>
 			</div>
 			<br />

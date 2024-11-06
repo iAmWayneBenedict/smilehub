@@ -58,6 +58,7 @@ const Register = () => {
 		handleSubmit,
 		control,
 		formState: { errors },
+		getValues,
 	} = useForm({
 		defaultValues: {
 			FIRSTNAME: "",
@@ -66,6 +67,7 @@ const Register = () => {
 			PHONE: "",
 			EMAIL: "",
 			PASSWORD: "",
+			CONFIRM_PASSWORD: "",
 		},
 	});
 	useEffect(() => {
@@ -372,6 +374,47 @@ const Register = () => {
 								})}
 								isInvalid={!!errors.PASSWORD} // check if the input is invalid
 								errorMessage={errors.PASSWORD?.message} // get the error message
+								startContent={
+									<LockKeyhole
+										width="28"
+										height="27"
+										className="text-[#AFAFAF]"
+									/>
+								}
+								variant="bordered"
+								color="primary"
+								type={isVisible ? "text" : "password"}
+								size="lg"
+								radius="none"
+								placeholder="Enter your Password"
+								classNames={{
+									inputWrapper: "h-full rounded-lg p-4",
+									mainWrapper: "h-full",
+									input: "ml-3",
+								}}
+								endContent={
+									<button
+										className="focus:outline-none"
+										type="button"
+										onClick={toggleVisibility}
+										aria-label="toggle password visibility"
+									>
+										{isVisible ? (
+											<Eye className="text-2xl pointer-events-none text-default-400" />
+										) : (
+											<EyeOff className="text-2xl pointer-events-none text-default-400" />
+										)}
+									</button>
+								}
+							/>
+							<Input
+								{...register("CONFIRM_PASSWORD", {
+									required: "Confirm password is required", // custom error message
+									validate: (value) =>
+										value === getValues("PASSWORD") || "Password do not match",
+								})}
+								isInvalid={!!errors.CONFIRM_PASSWORD} // check if the input is invalid
+								errorMessage={errors.CONFIRM_PASSWORD?.message} // get the error message
 								startContent={
 									<LockKeyhole
 										width="28"

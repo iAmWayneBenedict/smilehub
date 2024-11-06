@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 
+import { getDayOfWeek } from "@internationalized/date";
 import { isWeekend } from "@internationalized/date";
 
 /**
@@ -211,4 +212,8 @@ export const employeeRoles = [
 
 export const isWeekEndDate = (date) => {
 	return isWeekend(date, "en-PH");
+};
+
+export const isSunday = (date) => {
+	return getDayOfWeek(date, "en-PH") === 0;
 };

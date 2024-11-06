@@ -18,14 +18,15 @@ import { useState } from "react";
 import { useAppStore } from "@/store/zustand";
 import { useEffect } from "react";
 import CustomDatePicker from "@/components/ui/DatePicker";
-import { getLocalTimeZone, today, CalendarDate } from "@internationalized/date";
-import { convertDateYYYYMMDD, extractTime, isWeekEndDate } from "@/services/api/utils";
+import { getLocalTimeZone, today, CalendarDate, now } from "@internationalized/date";
+import { convertDateYYYYMMDD, extractTime, isSunday, isWeekEndDate } from "@/services/api/utils";
 import AppointmentsAPIManager from "@/services/api/managers/appointments/AppointmentsAPIManager";
 import PatientsAPIManager from "@/services/api/managers/patients/PatientsAPIManager";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 import { cn, days, formatDate, months } from "@/lib/utils";
 import { sendEmail } from "@/services/email";
+import { getDayOfWeek } from "@internationalized/date";
 
 const purposes = [
 	"Extraction",
@@ -66,6 +67,9 @@ export default function AppointmentModal() {
 	} = useAppStore();
 	const [selectedDate, setSelectedDate] = useState({});
 
+	const todayDate = today("UTC");
+	const tomorrow = todayDate.add({ days: 1 });
+
 	// stores error
 	const [isErrorDetails, setIsErrorDetails] = useState({
 		isError: false,
@@ -83,7 +87,7 @@ export default function AppointmentModal() {
 		defaultValues: {
 			PATIENT_ID: "",
 
-			APPOINTMENT_DATE: today(getLocalTimeZone()), // default date (today)
+			APPOINTMENT_DATE: tomorrow, // default date (today)
 			APPOINTMENT_TIME: "",
 			PURPOSE: "",
 		},
@@ -103,7 +107,7 @@ export default function AppointmentModal() {
 	}, [isOpen]);
 
 	const handleInvalidDate = (date) => {
-		if (isWeekEndDate(date || today(getLocalTimeZone()))) {
+		if (isWeekEndDate(date || tomorrow)) {
 			setError("APPOINTMENT_DATE", {
 				type: "manual",
 				message: "The date must not fall on a weekend.",
@@ -114,7 +118,7 @@ export default function AppointmentModal() {
 	};
 
 	useEffect(() => {
-		handleGetDate(today(getLocalTimeZone()), false);
+		handleGetDate(tomorrow, false);
 		handleGetPatients();
 	}, [isOpen]);
 	const handleGetDate = async (date, isForm = true) => {
@@ -376,7 +380,7 @@ export default function AppointmentModal() {
 															handleInvalidDate(date);
 														}}
 														minValue={today(getLocalTimeZone())}
-														isDateUnavailable={isWeekEndDate}
+														isDateUnavailable={isSunday}
 													/>
 												)}
 											/>

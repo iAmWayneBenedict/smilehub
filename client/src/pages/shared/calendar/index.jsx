@@ -28,7 +28,7 @@ import { Printer, Filter, CircleHelp } from "lucide-react";
 import {
 	getISODateString,
 	getOrdinalSuffix,
-	getThisWeekMondayAndFriday,
+	getThisWeekMondayAndSaturday,
 	months,
 	patientStatus,
 	purpose,
@@ -38,26 +38,25 @@ import AppointmentsAPIManager from "@/services/api/managers/appointments/Appoint
 
 const COLORS = [
 	{
+		Status: "Cancelled",
 		PrimaryColor: "#fbdddd",
 		SecondaryColor: "#eb5757",
 		HighlightColor: "#ffc5c5",
 	},
 	{
+		Status: "Completed",
 		PrimaryColor: "#d4efdf",
 		SecondaryColor: "#27ae60",
 		HighlightColor: "#d8ffe8",
 	},
 	{
+		Status: "On-going",
 		PrimaryColor: "#d5e6fb",
 		SecondaryColor: "#2f80ed",
 		HighlightColor: "#c1dcff",
 	},
 	{
-		PrimaryColor: "#fbdddd",
-		SecondaryColor: "#eb5757",
-		HighlightColor: "#ffc5c5",
-	},
-	{
+		Status: "Pending",
 		PrimaryColor: "#f9f1d8",
 		SecondaryColor: "#e2b93b",
 		HighlightColor: "#fff3cd",
@@ -69,7 +68,7 @@ const Calendar = () => {
 	const currentYear = currentDate.getFullYear();
 	const currentMonth = currentDate.getMonth();
 	const currentDay = currentDate.getDate();
-	const { monday, friday } = getThisWeekMondayAndFriday();
+	const { monday, saturday } = getThisWeekMondayAndSaturday();
 	let instance = new Internationalization();
 	const [isCompletedData, setIsCompletedData] = useState(false);
 	const [weeklyAppointmentsData, setWeeklyAppointmentsData] = useState(null);
@@ -143,7 +142,7 @@ const Calendar = () => {
 
 	const handlePopulateCalendarSchema = (arrData) => {
 		return arrData?.map((item) => {
-			const random_number = Math.floor(Math.random() * 5);
+			const random_number = Math.floor(Math.random() * 4);
 			const [startTime, endTime] = item.APPOINTMENT_TIME.split(" - ");
 			return {
 				Id: item.ID,
@@ -154,7 +153,7 @@ const Calendar = () => {
 				StartTime: getISODateString(`${item.APPOINTMENT_DATE} ${startTime}`),
 				EndTime: getISODateString(`${item.APPOINTMENT_DATE} ${endTime}`),
 				// random color
-				...COLORS[random_number],
+				...COLORS.find((color) => item.STATUS === color.Status),
 			};
 		});
 	};
@@ -268,11 +267,11 @@ const Calendar = () => {
 						}}
 						showHeaderBar={false}
 						selectedDate={new Date()}
-						workDays={[1, 2, 3, 4, 5]}
-						workHours={{ start: "08:00", end: "18:00" }}
+						workDays={[1, 2, 3, 4, 5, 6]}
+						workHours={{ start: "09:00", end: "18:00" }}
 						showWeekend={false}
 						cssClass="event-template"
-						startHour="08:00"
+						startHour="09:00"
 						endHour="18:00"
 						readonly={true}
 						ref={scheduleObj}
@@ -297,8 +296,8 @@ const Calendar = () => {
 						<div>
 							<h6 className="~text-lg/xl font-medium">
 								Weekly schedule from {monday.day + getOrdinalSuffix(monday.day)} to{" "}
-								{friday.day + getOrdinalSuffix(friday.day)} {months[currentMonth]}{" "}
-								{currentYear}
+								{saturday.day + getOrdinalSuffix(saturday.day)}{" "}
+								{months[currentMonth]} {currentYear}
 							</h6>
 						</div>
 						<div className="flex gap-3 mt-3 sm:mt-0">

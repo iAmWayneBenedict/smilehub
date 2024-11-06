@@ -222,7 +222,7 @@ const NavigationBar = () => {
 						href={authToken ? "/appointment" : "/login"}
 						variant="flat"
 					>
-						Log in
+						{authToken ? "Book Now" : "Log in"}
 					</Button>
 				</NavbarItem>
 			</NavbarContent>

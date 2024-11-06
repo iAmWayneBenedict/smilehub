@@ -13,7 +13,7 @@ import { useAppStore } from "@/store/zustand.js";
 import { useEffect, useState } from "react";
 import { getLocalTimeZone, today } from "@internationalized/date";
 import { Controller, useForm } from "react-hook-form";
-import { convertDateYYYYMMDD, isWeekEndDate } from "@/services/api/utils";
+import { convertDateYYYYMMDD, isSunday, isWeekEndDate } from "@/services/api/utils";
 import AppointmentsAPIManager from "@/services/api/managers/appointments/AppointmentsAPIManager";
 import { useMutation } from "@tanstack/react-query";
 import CustomDatePicker from "@/components/ui/DatePicker";
@@ -28,6 +28,10 @@ export default function ReschedModal() {
 	const { newScheduleModal, setNewScheduleModal, setAlertDialogDetails } = useAppStore();
 	const [timeDropdownList, setTimeDropdownList] = useState([]);
 	const [patients, setPatients] = useState([]);
+
+	const todayDate = today("UTC");
+	const tomorrow = todayDate.add({ days: 1 });
+
 	useEffect(() => {
 		if (newScheduleModal.isOpen) {
 			onOpen();
@@ -50,7 +54,7 @@ export default function ReschedModal() {
 			reset({
 				APPOINTMENT_DATE:
 					parseDate(convertDateYYYYMMDD(newScheduleModal.data.APPOINTMENT_DATE)) ||
-					today(getLocalTimeZone()),
+					tomorrow,
 				APPOINTMENT_TIME: newScheduleModal.data.APPOINTMENT_TIME,
 			});
 		}
@@ -78,14 +82,19 @@ export default function ReschedModal() {
 				return {
 					APPOINTMENT_DATE:
 						parseDate(convertDateYYYYMMDD(newScheduleModal.data.APPOINTMENT_DATE)) ||
-						today(getLocalTimeZone()),
+						tomorrow,
+					APPOINTMENT_TIME: "",
+				};
+			} else {
+				return {
+					APPOINTMENT_DATE: tomorrow,
 					APPOINTMENT_TIME: "",
 				};
 			}
 		}, [newScheduleModal.isOpen]),
 	});
 	// useEffect(() => {
-	// 	handleGetDate(today(getLocalTimeZone()), false);
+	// 	handleGetDate(tomorrow, false);
 	// }, []);
 
 	const handleGetDate = async (date, isForm = true) => {
@@ -150,96 +159,90 @@ export default function ReschedModal() {
 		mutation.mutate(data);
 	};
 	return (
-		<>
-			<Modal
-				isOpen={isOpen}
-				onClose={() => {
-					onClose();
-					setNewScheduleModal({ isOpen: false });
-				}}
-				placement="top-center"
-				backdrop="blur"
-			>
-				<ModalContent>
-					{(onClose) => (
-						<form onSubmit={handleSubmit(onSubmit)}>
-							<ModalHeader className="flex flex-col gap-1">
-								{newScheduleModal.title}
-							</ModalHeader>
-							<ModalBody>
-								<Controller
-									name="APPOINTMENT_DATE"
-									control={control}
-									rules={{ required: "Date is required" }}
-									render={({ field, formState: { errors } }) => (
-										<CustomDatePicker
-											value={field.value}
-											isInvalid={!!errors.APPOINTMENT_DATE}
-											errorMessage={errors.APPOINTMENT_DATE?.message}
-											setValue={(value) => {
-												field.onChange(value);
-											}}
-											classNames={{
-												innerWrapper: "h-12",
-											}}
-											isDateUnavailable={isWeekEndDate}
-											onChange={handleGetDate}
-											minValue={today(getLocalTimeZone())}
-										/>
-									)}
-								/>
-								<Controller
-									name="APPOINTMENT_TIME"
-									control={control}
-									rules={{ required: "Time is required" }}
-									render={({ field, formState: { errors } }) => (
-										<Select
-											{...field}
-											selectedKeys={[field.value]}
-											onChange={(selectedKeys) => {
-												field.onChange(selectedKeys);
-											}}
-											isDisabled={!timeDropdownList?.length}
-											isInvalid={!!errors.APPOINTMENT_TIME}
-											errorMessage={errors.APPOINTMENT_TIME?.message}
-											labelPlacement={"outside"}
-											placeholder="Select Time"
-											label="Time of Visit"
-											size="lg"
-											variant="bordered"
-											color="primary"
-											className="w-full bg-white"
-											radius="sm"
-											classNames={{
-												label: "text-darkText font-semibold text-sm pb-1",
-												inputWrapper: "h-full",
-											}}
-										>
-											{timeDropdownList.map((time) => (
-												<SelectItem key={time} value={time}>
-													{time}
-												</SelectItem>
-											))}
-										</Select>
-									)}
-								/>
-							</ModalBody>
-							<ModalFooter>
-								<Button color="light" variant="flat" onPress={onClose}>
-									Close
-								</Button>
-								<Button
-									color="primary"
-									type="submit"
-									isLoading={mutation.isPending}
-								>
-									{mutation.isPending ? "Changing..." : "Change"}
-								</Button>
-							</ModalFooter>
-						</form>
-					)}
-				</ModalContent>
-			</Modal>
-		</>
+		<Modal
+			isOpen={isOpen}
+			onClose={() => {
+				onClose();
+				setNewScheduleModal({ isOpen: false });
+			}}
+			placement="top-center"
+			backdrop="blur"
+		>
+			<ModalContent>
+				{(onClose) => (
+					<form onSubmit={handleSubmit(onSubmit)}>
+						<ModalHeader className="flex flex-col gap-1">
+							{newScheduleModal.title}
+						</ModalHeader>
+						<ModalBody>
+							<Controller
+								name="APPOINTMENT_DATE"
+								control={control}
+								rules={{ required: "Date is required" }}
+								render={({ field, formState: { errors } }) => (
+									<CustomDatePicker
+										value={field.value}
+										isInvalid={!!errors.APPOINTMENT_DATE}
+										errorMessage={errors.APPOINTMENT_DATE?.message}
+										setValue={(value) => {
+											field.onChange(value);
+										}}
+										classNames={{
+											innerWrapper: "h-12",
+										}}
+										isDateUnavailable={isSunday}
+										onChange={handleGetDate}
+										minValue={tomorrow}
+									/>
+								)}
+							/>
+							<Controller
+								name="APPOINTMENT_TIME"
+								control={control}
+								rules={{ required: "Time is required" }}
+								render={({ field, formState: { errors } }) => (
+									<Select
+										{...field}
+										selectedKeys={[field.value]}
+										onChange={(selectedKeys) => {
+											field.onChange(selectedKeys);
+										}}
+										isDisabled={!timeDropdownList?.length}
+										isInvalid={!!errors.APPOINTMENT_TIME}
+										errorMessage={errors.APPOINTMENT_TIME?.message}
+										labelPlacement={"outside"}
+										placeholder="Select Time"
+										label="Time of Visit"
+										size="lg"
+										variant="bordered"
+										color="primary"
+										className="w-full bg-white"
+										radius="sm"
+										classNames={{
+											label: "text-darkText font-semibold text-sm pb-1",
+											inputWrapper: "h-full",
+										}}
+									>
+										{timeDropdownList.map((time) => (
+											<SelectItem key={time} value={time}>
+												{time}
+											</SelectItem>
+										))}
+									</Select>
+								)}
+							/>
+						</ModalBody>
+						<ModalFooter>
+							<Button color="light" variant="flat" onPress={onClose}>
+								Close
+							</Button>
+							<Button color="primary" type="submit" isLoading={mutation.isPending}>
+								{mutation.isPending ? "Changing..." : "Change"}
+							</Button>
+						</ModalFooter>
+					</form>
+				)}
+			</ModalContent>
+		</Modal>
 	);
 }

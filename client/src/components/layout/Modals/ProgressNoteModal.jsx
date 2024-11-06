@@ -441,7 +441,7 @@ export default function ProgressNoteModal() {
 													/>
 													{errors.X_RAY_FILE && (
 														<small className="text-red-500">
-															{errors.TREATMENT_PLAN?.message}
+															{errors.X_RAY_FILE?.message}
 														</small>
 													)}
 												</div>
@@ -624,7 +624,7 @@ export default function ProgressNoteModal() {
 													/>
 													{errors.SIGNATURE && (
 														<small className="text-red-500">
-															{errors.TREATMENT_PLAN?.message}
+															{errors.SIGNATURE?.message}
 														</small>
 													)}
 												</div>

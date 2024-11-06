@@ -120,10 +120,11 @@ export default function TablePatients({
 		const archivedPatients = patientsData
 			.filter((patient) => patient.ROLE === "ARCHIVE")
 			.map((patient) => parseInt(patient.ID));
+
 		let filteredPatients = data.patients.filter((patient) =>
 			type === "archived"
-				? archivedPatients.includes(patient.ID)
-				: !archivedPatients.includes(patient.ID)
+				? archivedPatients.includes(Number(patient.ID))
+				: !archivedPatients.includes(Number(patient.ID))
 		);
 		if (hasSearchFilter) {
 			filteredPatients = filteredPatients.filter((patient) => {

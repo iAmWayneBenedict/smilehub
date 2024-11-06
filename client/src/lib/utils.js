@@ -118,22 +118,22 @@ export const getOrdinalSuffix = (day) => {
 	}
 };
 
-export const getThisWeekMondayAndFriday = () => {
+export const getThisWeekMondayAndSaturday = () => {
 	const today = new Date();
 	const day = today.getDay();
 	const diff = today.getDate() - day + (day == 0 ? -6 : 1); // adjust when day is sunday
 	const monday = new Date(today.setDate(diff));
-	const friday = new Date(today.setDate(diff + 4));
+	const saturday = new Date(today.setDate(diff + 5));
 	return {
 		monday: {
 			year: monday.getFullYear(),
 			month: monday.getMonth(),
 			day: monday.getDate(),
 		},
-		friday: {
-			year: friday.getFullYear(),
-			month: friday.getMonth(),
-			day: friday.getDate(),
+		saturday: {
+			year: saturday.getFullYear(),
+			month: saturday.getMonth(),
+			day: saturday.getDate(),
 		},
 	};
 };
