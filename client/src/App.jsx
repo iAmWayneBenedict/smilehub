@@ -53,7 +53,7 @@ import PatientDetails from "./pages/shared/patients/components/PatientDetails";
 import PatientProfile from "./pages/Profile/Profile";
 import InventoryLogs from "./pages/shared/inventory/layouts/InventoryLogs";
 import { ScrollToTop } from "./hooks/ScrollToTop";
-
+ 
 function App() {
 	const navigate = useNavigate();
 
