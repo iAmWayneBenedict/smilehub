@@ -10,17 +10,21 @@ import {
 	useDisclosure,
 	Slider,
 	Link,
+	Chip,
 } from "@nextui-org/react";
+import { readableColor } from "polished";
 import { ReactPainter } from "react-painter";
 import teethDiagramImg from "../../../assets/images/teeth-diagram2.png";
-import { useState } from "react";
-import { useRef } from "react";
+import { useState, useRef, useEffect } from "react";
+
 import { CircleX, Undo2, Redo2 } from "lucide-react";
-import { useEffect } from "react";
+
 import { useMutation } from "@tanstack/react-query";
 import PatientsAPIManager from "@/services/api/managers/patients/PatientsAPIManager";
 import useElementSize from "@/hooks/useElementSize";
 import { useMediaQuery } from "react-responsive";
+import "./styles.css";
+import { cn } from "@/lib/utils";
 
 const TeethDiagram = () => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
@@ -30,6 +34,7 @@ const TeethDiagram = () => {
 	const [initialImage, setInitialImage] = useState();
 	const [loading, setLoading] = useState(false);
 	const [showDownload, setShowDownload] = useState(false);
+	const [selectedLegend, setSelectedLegend] = useState("Missing");
 	const currentUser = location.pathname.includes("admin") ? "admin" : "staff";
 	const { teethDiagramModalDetails, setTeethDiagramModalDetails, setAlertDialogDetails } =
 		useAppStore();
@@ -90,11 +95,22 @@ const TeethDiagram = () => {
 	const [redoStack, setRedoStack] = useState([]);
 	const canvasRef = useRef(null);
 
+	const resetStates = () => {
+		setBrushSize(25);
+		setAlpha(45);
+		setLoading(false);
+		setSelectedLegend("Missing");
+		setColor("#000000");
+		setHistory([]);
+		setRedoStack([]);
+	};
+
 	useEffect(() => {
 		if (teethDiagramModalDetails.isOpen) {
 			onOpen();
 		} else {
 			onClose();
+			resetStates();
 		}
 	}, [teethDiagramModalDetails]);
 
@@ -162,15 +178,16 @@ const TeethDiagram = () => {
 	};
 	const clearCanvas = () => {
 		const canvas = canvasRef.current;
-		canvas.width = 700;
 		const ctx = canvas.getContext("2d");
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		//redraw the image
 		// setInitialImage(teethDiagramImg);
+		setHistory([]);
+		setRedoStack([]);
 		const image = new Image();
 		image.src = initialImage;
 		image.onload = () => {
-			ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+			ctx.drawImage(image, 0, 0);
 		};
 	};
 
@@ -256,6 +273,10 @@ const TeethDiagram = () => {
 														handleSave();
 														setShowDownload(false);
 													}}
+													onDrag={() => {
+														handleSave();
+														setShowDownload(false);
+													}}
 													{...getCanvasProps({
 														ref: (ref) => (canvasRef.current = ref),
 													})}
@@ -301,69 +322,42 @@ const TeethDiagram = () => {
 												{/* Color legends */}
 												<p className="text-sm font-bold">Color legends</p>
 												<div className="flex flex-wrap gap-3 mt-[-1rem]">
-													<p className="text-sm">
-														<strong>Healthy:</strong> Light blue
-													</p>
-													<p className="text-sm">
-														<strong>Cavity:</strong> Dark brown
-													</p>
-													<p className="text-sm">
-														<strong>Filling:</strong> Silver
-													</p>
-													<p className="text-sm">
-														<strong>Root canal:</strong> Red
-													</p>
-													<p className="text-sm">
-														<strong>Missing:</strong> Black
-													</p>
-													<p className="text-sm">
-														<strong>Impacted tooth:</strong> Yellow
-													</p>
-													<p className="text-sm">
-														<strong>Crown:</strong> Gold
-													</p>
-													<p className="text-sm">
-														<strong>Fractured:</strong> Orange
-													</p>
-													<p className="text-sm">
-														<strong>Tooth extraction planned:</strong>{" "}
-														Green
-													</p>
-													<p className="text-sm">
-														<strong>Implant:</strong> Dark blue
-													</p>
+													{colorLegends.map((legend) => (
+														<Chip
+															key={legend.name}
+															size="lg"
+															isDisabled={currentUser === "staff"}
+															classNames={{
+																dot: `${legend.color}`,
+																base: cn(
+																	`border cursor-pointer border-${legend.color}`,
+																	selectedLegend === legend.name
+																		? legend.color
+																		: ""
+																),
+															}}
+															style={{
+																color:
+																	selectedLegend === legend.name
+																		? readableColor(legend.code)
+																		: "",
+															}}
+															variant={
+																selectedLegend === legend.name
+																	? "solid"
+																	: "dot"
+															}
+															onClick={() => {
+																setSelectedLegend(legend.name);
+																setBrushColor(legend.code + alpha);
+																setColor(legend.code);
+															}}
+														>
+															{legend.name}
+														</Chip>
+													))}
 												</div>
 
-												<div className="flex flex-row items-center gap-4">
-													<label htmlFor="color-picker">
-														Color picker:{" "}
-													</label>
-													<select
-														id="color-picker"
-														onChange={(e) => {
-															setBrushColor(e.target.value + alpha);
-															setColor(e.target.value);
-														}}
-														disabled={currentUser === "staff"}
-														className="p-2 border rounded"
-													>
-														<option value="" disabled>
-															Select a color
-														</option>
-														<option value="#0088B4">Light Blue</option>
-														<option value="#692600">Dark Brown</option>
-														<option value="#C0C0C0">Silver</option>
-														<option value="#FF0000">Red</option>
-														<option value="#000000" selected>
-															Black
-														</option>
-														<option value="#FFFF00">Yellow</option>
-														<option value="#FFD700">Gold</option>
-														<option value="#FFA500">Orange</option>
-														<option value="#008000">Green</option>
-														<option value="#00008B">Dark Blue</option>
-													</select>
-												</div>
 												<Slider
 													label="Brush Size"
 													step={1}
@@ -440,6 +434,60 @@ const TeethDiagram = () => {
 };
 
 export default TeethDiagram;
+
+const colorLegends = [
+	{
+		color: "light-blue",
+		code: "#0088B4",
+		name: "Healthy",
+	},
+	{
+		color: "dark-brown",
+		code: "#692600",
+		name: "Cavity",
+	},
+	{
+		color: "silver",
+		code: "#C0C0C0",
+		name: "Filling",
+	},
+	{
+		color: "red",
+		code: "#FF0000",
+		name: "Root canal",
+	},
+	{
+		color: "black",
+		code: "#000000",
+		name: "Missing",
+	},
+	{
+		color: "yellow",
+		code: "#FFFF00",
+		name: "Impacted tooth",
+	},
+	{
+		color: "gold",
+		code: "#FFD700",
+		name: "Crown",
+	},
+	{
+		color: "orange",
+		code: "#FFA500",
+		name: "Fractured",
+	},
+	{
+		color: "green",
+		code: "#008000",
+		name: "Tooth extraction planned",
+	},
+	{
+		color: "dark-blue",
+		code: "#00008B",
+		name: "Implant",
+	},
+];
+
 const alphaValues = [
 	"00",
 	"03",
