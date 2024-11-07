@@ -55,7 +55,7 @@ export const Blogs = () => {
 					childClassName="py-0"
 					showSectionHeader={false}
 					slidesPerView={
-						isSmallerDesktop ? (isTablet ? (isMobile ? "1.9" : "2.5") : "3.75") : "4.5"
+						isSmallerDesktop ? (isTablet ? (isMobile ? "1.9" : "2.5") : "3.75") : "4.75"
 					}
 					type="blogs"
 					buttonTheme="dark"

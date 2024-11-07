@@ -1,9 +1,9 @@
-import { cn } from "@/lib/utils";
+import { cn, truncateText } from "@/lib/utils";
 import { Card, CardHeader, CardBody, Image } from "@nextui-org/react";
 import PropTypes from "prop-types";
 import "./styles.css";
 
-const ArticleCard = ({ data, classNames, alt = false }) => {
+const ArticleCard = ({ data, kind, classNames, alt = false }) => {
 	return (
 		<Card
 			className={cn(
@@ -25,15 +25,22 @@ const ArticleCard = ({ data, classNames, alt = false }) => {
 				</div>
 			</CardHeader>
 			<CardBody className="flex flex-col gap-3 py-2 mt-3 overflow-visible">
-				<h4 className="font-bold text-large">{data?.title}</h4>
-				<p>{data?.description}</p>
-				{!alt && <small className="font-bold text-right">~ {data?.author || "No author available"}</small>}
-
+				<h4 className="font-bold text-large">
+					{kind === "slider-article" ? truncateText(data?.title, 35) : data?.title}
+				</h4>
+				{kind === "slider-article"
+					? truncateText(data?.description, 85)
+					: data?.description}
+				{!alt && (
+					<small className="font-bold text-right">
+						~ {data?.author || "No author available"}
+					</small>
+				)}
 			</CardBody>
 			<div className="w-full px-2">
-				<button 
-					className="w-full p-2 px-6 text-center text-white rounded-md bg-primary hover:opacity-90" 
-					onClick={() => window.open(data?.url, '_blank')}
+				<button
+					className="w-full p-2 px-6 text-center text-white rounded-md bg-primary hover:opacity-90"
+					onClick={() => window.open(data?.url, "_blank")}
 				>
 					Read More
 				</button>

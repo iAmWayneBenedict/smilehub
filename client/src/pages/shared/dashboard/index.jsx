@@ -169,7 +169,7 @@ const AdminDashboard = () => {
 					<div
 						style={{ flex: 1 }}
 						className={cn(
-							"flex flex-col lg:flex-col gap-5 w-full ",
+							"flex flex-col lg:flex-col gap-5 w-full min-w-[20rem]",
 							zoomedDevices ? "xl:max-w-[27rem]" : "xl:~max-w-48/120"
 						)}
 					>

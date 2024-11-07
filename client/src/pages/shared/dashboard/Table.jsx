@@ -375,7 +375,7 @@ export default function TableDashboard({ type }) {
 			bottomContentPlacement="outside"
 			classNames={{
 				th: "bg-primary text-white data-[hover=true]:text-gray-300",
-				table: "min-w-[50rem]",
+				table: "min-w-[40rem]",
 				wrapper:
 					"min-h-96 bg-gray-50 p-0 max-h-[382px] shadow-none w-fit md:w-full overflow-x-scroll max-w-[80vw] md:max-w-[88vw] 2xl:max-w-none custom-scrollbar-vertical",
 			}}

@@ -90,13 +90,13 @@ const SharedLogin = () => {
 	};
 	return (
 		<div className="flex w-screen h-screen">
-			<div className="flex items-center justify-center" style={{ flex: 1 }}>
+			<div className="items-center justify-center hidden md:flex" style={{ flex: 1 }}>
 				<div className="flex flex-col items-center justify-center gap-5 w-fit">
 					<Image src={logo} removeWrapper className="w-36" />
 					<Image src={smileHub} removeWrapper className="w-80" />
 				</div>
 			</div>
-			<div className="flex items-center justify-center bg-primary" style={{ flex: 1 }}>
+			<div className="flex items-center justify-center px-5 bg-primary" style={{ flex: 1 }}>
 				<div className="flex flex-col w-full lg:w-120">
 					<h2 className="mb-24 text-5xl text-center text-white">WELCOME</h2>
 					{isErrorDetails.isError && (
