@@ -13,7 +13,7 @@ import { useMediaQuery } from "react-responsive";
 // register SwiperElement
 register();
 
-const SwiperElement = ({ data, buttonTheme, type, slidesPerView = "4.5" }) => {
+const SwiperElement = ({ data, buttonTheme, type, kind, slidesPerView = "4.5" }) => {
 	const swiperElRef = useRef(null);
 	const nextSlide = useRef(null);
 	const prevSlide = useRef(null);
@@ -60,30 +60,29 @@ const SwiperElement = ({ data, buttonTheme, type, slidesPerView = "4.5" }) => {
 					slides-per-view={slidesPerView}
 					loop="true"
 				>
-					{data &&
-						data?.map((item, index) => {
-							return (
-								// swiper-slide wrapper from swiper library
-								<swiper-slide
-									key={index}
-									style={{ paddingLeft: isMobile ? "1rem" : "2rem" }}
-								>
-									{/* custom styled cards */}
-									{type === "specialists" && <SpecialistCard data={item} />}
-									{type === "feedbacks" && <FeedbackCard data={item} />}
-									{type === "blogs" && (
-										<ArticleCard
-											classNames={{
-												parentClassName: "w-full",
-												imgParentClassName: "max-w-full",
-											}}
-											alt={true}
-											image={item?.image}
-										/>
-									)}
-								</swiper-slide>
-							);
-						})}
+					{data?.map((item, index) => {
+						return (
+							// swiper-slide wrapper from swiper library
+							<swiper-slide
+								key={index}
+								style={{ paddingLeft: isMobile ? "1rem" : "2rem" }}
+							>
+								{/* custom styled cards */}
+								{type === "specialists" && <SpecialistCard data={item} />}
+								{type === "feedbacks" && <FeedbackCard data={item} />}
+								{type === "blogs" && (
+									<ArticleCard
+										classNames={{
+											parentClassName: "w-full h-full",
+											imgParentClassName: "max-w-full",
+										}}
+										data={item}
+										kind={kind || ""}
+									/>
+								)}
+							</swiper-slide>
+						);
+					})}
 				</swiper-container>
 			</div>
 

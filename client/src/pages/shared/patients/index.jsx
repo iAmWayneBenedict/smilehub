@@ -15,6 +15,7 @@ import TablePatients from "./components/Table";
 import { useState } from "react";
 import { patientStatus, purpose } from "@/lib/utils";
 import { useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 
 const Patients = () => {
 	const [filterType, setFilterType] = useState("all");
@@ -22,9 +23,10 @@ const Patients = () => {
 	const [filterKeys, setFilterKeys] = useState(new Set(["text"]));
 
 	// controlled tabs
-	const [selected, setSelected] = useState("patients");
 	const currentUser = location.pathname.includes("admin") ? "admin" : "staff";
 	const [totalPatients, setTotalPatients] = useState(0);
+	const [searchParams, setSearchParams] = useSearchParams();
+	const [selected, setSelected] = useState(searchParams.get("type") || "patients");
 
 	return (
 		<div style={{ flex: 1 }} className="bg-[#f9f9f9] h-[calc(100vh-5.3rem)]">
@@ -125,7 +127,10 @@ const Patients = () => {
 					<div className="p-4 mt-5 bg-white rounded-lg shadow-md ">
 						<Tabs
 							selectedKey={selected}
-							onSelectionChange={setSelected}
+							onSelectionChange={(e) => {
+								setSelected(e);
+								setSearchParams({ type: e });
+							}}
 							variant={"underlined"}
 							aria-label="Tabs variants"
 							color="primary"

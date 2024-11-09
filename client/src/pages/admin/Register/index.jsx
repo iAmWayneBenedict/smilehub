@@ -14,8 +14,11 @@ import AuthAdminAPIManager from "@/services/api/managers/AuthAdminAPIManager";
 register();
 const AdminRegister = () => {
 	const [isVisible, setIsVisible] = useState(false);
+
+	const [isVisibleConfirm, setIsVisibleConfirm] = useState(false);
 	const toggleVisibility = () => setIsVisible(!isVisible);
 	const [agreedTerms, setAgreedTerms] = useState(false);
+	const toggleVisibilityConfirm = () => setIsVisibleConfirm(!isVisibleConfirm);
 
 	// swiper refs
 	const swiperElRef = useRef(null);
@@ -29,6 +32,7 @@ const AdminRegister = () => {
 	const {
 		register,
 		handleSubmit,
+		getValues,
 		formState: { errors },
 	} = useForm({
 		defaultValues: {
@@ -267,6 +271,47 @@ const AdminRegister = () => {
 										aria-label="toggle password visibility"
 									>
 										{isVisible ? (
+											<Eye className="text-2xl pointer-events-none text-default-400" />
+										) : (
+											<EyeOff className="text-2xl pointer-events-none text-default-400" />
+										)}
+									</button>
+								}
+							/>
+							<Input
+								{...register("CONFIRM_PASSWORD", {
+									required: "Confirm password is required",
+									validate: (value) =>
+										value === getValues("PASSWORD") || "Password do not match",
+								})}
+								isInvalid={!!errors.CONFIRM_PASSWORD} // check if error exists
+								errorMessage={errors.CONFIRM_PASSWORD?.message} // error message for password
+								startContent={
+									<LockKeyhole
+										width="28"
+										height="27"
+										className="text-[#AFAFAF]"
+									/>
+								}
+								variant="bordered"
+								color="primary"
+								type={isVisibleConfirm ? "text" : "password"}
+								size="lg"
+								radius="none"
+								placeholder="Confirm Password"
+								classNames={{
+									inputWrapper: "h-full rounded-lg p-4",
+									mainWrapper: "h-full",
+									input: "ml-3",
+								}}
+								endContent={
+									<button
+										className="focus:outline-none"
+										type="button"
+										onClick={toggleVisibilityConfirm}
+										aria-label="toggle password visibility"
+									>
+										{isVisibleConfirm ? (
 											<Eye className="text-2xl pointer-events-none text-default-400" />
 										) : (
 											<EyeOff className="text-2xl pointer-events-none text-default-400" />

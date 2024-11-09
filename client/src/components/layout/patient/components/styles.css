@@ -5,7 +5,7 @@
 	backdrop-filter: blur(100px);
 }
 
-#article-card-img-container {
+/* #article-card-img-container {
 	max-width: 19rem;
 }
 @media only screen and (min-device-width: 900px) and (max-device-width: 1600px) {
@@ -17,4 +17,4 @@
 	#article-card-img-container {
 		max-width: 100%;
 	}
-}
+} */

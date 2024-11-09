@@ -21,6 +21,8 @@ import articleImg5 from "../../../assets/images/article img 5.png";
 import articleImg6 from "../../../assets/images/article img 6.png";
 import articleImg7 from "../../../assets/images/article img 7.png";
 import articleImg8 from "../../../assets/images/article img 8.png";
+import { useEffect, useLayoutEffect, useState } from "react";
+import { newsArray } from "./data/news";
 
 const tempData = {
 	specialists: [
@@ -88,6 +90,7 @@ const tempData = {
 		// },
 		{
 			image: articleImg1,
+			topic: "Self Care",
 		},
 		{
 			image: articleImg2,
@@ -126,8 +129,9 @@ const SwiperSection = ({
 				)}
 
 				<SwiperElement
-					data={tempData[type]}
+					data={newsArray.articles.splice(1, 10)}
 					type={type}
+					kind="slider-article"
 					buttonTheme={buttonTheme}
 					slidesPerView={slidesPerView}
 				/>

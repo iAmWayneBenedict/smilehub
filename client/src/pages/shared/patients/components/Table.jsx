@@ -93,6 +93,7 @@ export default function TablePatients({
 			});
 			refetchPatientData();
 			refetch();
+			location.reload();
 		},
 		onError: (error) => {
 			console.error(error);
@@ -145,7 +146,17 @@ export default function TablePatients({
 		}
 
 		return filteredPatients;
-	}, [data, isSuccess, filterValue, statusFilter, filterKeys, isSuccessPatientData]);
+	}, [
+		isSuccess,
+		isSuccessPatientData,
+		patientsData,
+		data?.patients,
+		hasSearchFilter,
+		statusFilter,
+		type,
+		filterValue,
+		filterKeys,
+	]);
 
 	const items = React.useMemo(() => {
 		const start = (page - 1) * rowsPerPage;

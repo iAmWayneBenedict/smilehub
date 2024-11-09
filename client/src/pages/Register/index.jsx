@@ -17,8 +17,10 @@ import { getLocalTimeZone } from "@internationalized/date";
 register();
 const Register = () => {
 	const [isVisible, setIsVisible] = useState(false);
+	const [isVisibleConfirm, setIsVisibleConfirm] = useState(false);
 	const [agreedTerms, setAgreedTerms] = useState(false);
 	const toggleVisibility = () => setIsVisible(!isVisible);
+	const toggleVisibilityConfirm = () => setIsVisibleConfirm(!isVisibleConfirm);
 
 	// swiper refs
 	const swiperElRef = useRef(null);
@@ -424,10 +426,10 @@ const Register = () => {
 								}
 								variant="bordered"
 								color="primary"
-								type={isVisible ? "text" : "password"}
+								type={isVisibleConfirm ? "text" : "password"}
 								size="lg"
 								radius="none"
-								placeholder="Enter your Password"
+								placeholder="Confirm Password"
 								classNames={{
 									inputWrapper: "h-full rounded-lg p-4",
 									mainWrapper: "h-full",
@@ -437,10 +439,10 @@ const Register = () => {
 									<button
 										className="focus:outline-none"
 										type="button"
-										onClick={toggleVisibility}
+										onClick={toggleVisibilityConfirm}
 										aria-label="toggle password visibility"
 									>
-										{isVisible ? (
+										{isVisibleConfirm ? (
 											<Eye className="text-2xl pointer-events-none text-default-400" />
 										) : (
 											<EyeOff className="text-2xl pointer-events-none text-default-400" />

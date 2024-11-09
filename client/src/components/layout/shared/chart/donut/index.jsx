@@ -9,8 +9,9 @@ const DonutChart = ({ femaleCount, maleCount }) => {
 	var options = {
 		series: data,
 		chart: {
+			responsive: true,
 			type: "donut",
-			height: 250,
+			height: 235,
 		},
 		labels,
 		colors,
