@@ -10,6 +10,8 @@ import { formatDate } from "@/lib/utils";
 import { Pencil } from "lucide-react";
 import { Trash2 } from "lucide-react";
 import { Eye } from "lucide-react";
+import PrintProgress from "./PrintProgress";
+import { handlePrint } from "./utils";
 
 const ProgressNotes = () => {
 	const params = useParams();
@@ -50,6 +52,7 @@ const ProgressNotes = () => {
 	const currentUser = location.pathname.includes("admin") ? "admin" : "staff";
 	return (
 		<div style={{ flex: 1 }} className="bg-white">
+			<PrintProgress />
 			<div className="w-full h-full">
 				<h3 className="p-5 text-lg font-darkText">
 					<Breadcrumbs size="lg">
@@ -64,7 +67,17 @@ const ProgressNotes = () => {
 				</h3>
 				<div className="flex flex-col gap-3">
 					<div className="w-full p-6 ~px-12/36 bg-white">
-						<div className="flex justify-end w-full mb-6">
+						<div className="flex justify-end w-full gap-3 mb-6">
+							<Button
+								color={"primary"}
+								onClick={() => {
+									handlePrint();
+								}}
+								variant="bordered"
+								isDisabled={currentUser === "staff" || !progressNotes}
+							>
+								Download
+							</Button>
 							<Button
 								color={"primary"}
 								onClick={() => {
