@@ -129,7 +129,7 @@ const SwiperSection = ({
 				)}
 
 				<SwiperElement
-					data={newsArray.articles.splice(1, 10)}
+					data={type === "specialists" ? tempData[type] :  newsArray.articles.splice(1, 10)}
 					type={type}
 					kind="slider-article"
 					buttonTheme={buttonTheme}
