@@ -720,9 +720,9 @@ const AccordionSchedule = () => {
 																onClick={() => {
 																	setAlertDialogDetails({
 																		isOpen: true,
-																		title: "Delete Appointment",
+																		title: "Archive Appointment",
 																		message:
-																			"Are you sure you want to delete this appointment?",
+																			"Are you sure you want to archive this appointment?",
 																		type: "danger",
 																		dialogType: "confirm",
 																		confirmCallback: () => {
@@ -741,8 +741,8 @@ const AccordionSchedule = () => {
 																				type: "notification",
 																				name: item.FULLNAME,
 																				email: item.EMAIL,
-																				title: "Appointment Deleted",
-																				content: `Your appointment on ${date} at ${time} has been deleted. Please contact the clinic for more information.`,
+																				title: "Appointment Archived",
+																				content: `Your appointment on ${date} at ${time} has been archived. Please contact the clinic for more information.`,
 																			});
 																			deleteAppointmentMutation.mutate(
 																				{
