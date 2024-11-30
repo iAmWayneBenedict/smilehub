@@ -6,11 +6,15 @@ import PatientsAPIManager from "@/services/api/managers/patients/PatientsAPIMana
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { formatDate } from "@/lib/utils";
+import { useParams, useSearchParams } from "react-router-dom";
+import { decrypt, formatDate } from "@/lib/utils";
+import { useAuthTokenPersisted } from "@/store/zustand.js";
 const PrintProgress = () => {
 	const params = useParams();
 	const [progressNotes, setProgressNotes] = useState([]);
+	
+	const {authToken} = useAuthTokenPersisted();
+	const user = decrypt(authToken);
 
 	const getAllProgressNotes = useMutation({
 		mutationFn: PatientsAPIManager.getProgressNotes,
@@ -20,15 +24,16 @@ const PrintProgress = () => {
 	});
 
 	const { data, isSuccess, isLoading, refetch } = useQuery({
+		enabled: !!params?.id || !!user?.id,
 		queryKey: ["employee-detail"],
 		queryFn: () =>
 			PatientsAPIManager.getDetailPatient({
-				ID: params?.id,
+				ID: params?.id || user?.id,
 			}),
 	});
 
 	useEffect(() => {
-		getAllProgressNotes.mutate({ PATIENT_ID: params?.id });
+		getAllProgressNotes.mutate({ PATIENT_ID: params?.id || user?.id });
 	}, []);
 	return (
 		<div className="w-full overflow-scroll absolute inset-0 z-[-9999] opacity-0">

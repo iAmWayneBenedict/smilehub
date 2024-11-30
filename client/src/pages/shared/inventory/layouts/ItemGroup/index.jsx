@@ -16,7 +16,7 @@ const ItemGroup = () => {
 							Item Group
 						</BreadcrumbItem>
 					</Breadcrumbs>
-					<p className="mt-2 text-secondaryText">List of items groups.</p>
+					<p className="mt-2 text-secondaryText">List of item groups.</p>
 				</div>
 				<div className="mt-10">
 					<TableAppointments />

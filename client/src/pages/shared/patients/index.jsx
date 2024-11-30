@@ -5,16 +5,13 @@ import {
 	DropdownItem,
 	Button,
 	Link,
-	Select,
-	SelectItem,
 	Tabs,
 	Tab,
 } from "@nextui-org/react";
-import { Plus, Search, Filter, CircleHelp } from "lucide-react";
+import { Plus, Search, Filter } from "lucide-react";
 import TablePatients from "./components/Table";
 import { useState } from "react";
 import { patientStatus, purpose } from "@/lib/utils";
-import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 
 const Patients = () => {
@@ -31,7 +28,7 @@ const Patients = () => {
 	return (
 		<div style={{ flex: 1 }} className="bg-[#f9f9f9] h-[calc(100vh-5.3rem)]">
 			<div className="w-full h-full p-5">
-				<h3 className="text-lg font-darkText">Patient Info</h3>
+				{/*<h3 className="text-lg font-darkText">Patient Info</h3>*/}
 				<div className="flex flex-col gap-3">
 					<div
 						style={{ flex: 1 }}

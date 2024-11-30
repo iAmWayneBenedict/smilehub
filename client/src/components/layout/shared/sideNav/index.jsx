@@ -122,11 +122,11 @@ const SideNav = ({ isCustom = false }) => {
 		<div
 			id={isCustom ? "fullSideNav" : "sideNav"}
 			className={cn(
-				`h-[calc(93vh-5.3rem)] lg:h-[calc(100vh-5.3rem)] border-gray-300 border-r-1`,
+				`h-[calc(93vh-5.3rem)] lg:h-[calc(99vh-5.3rem)] border-gray-300 border-r-1 ~pt-5/10 `,
 				isCustom && "border-none"
 			)}
 		>
-			<div className="~mt-5/10 h-full">
+			<div className="h-full">
 				<small className="px-4 text-lightText">MENU</small>
 				<div className="flex flex-col gap-3 mt-4">
 					{menuLinks.map((item, index) => {

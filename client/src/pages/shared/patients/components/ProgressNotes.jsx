@@ -71,7 +71,7 @@ const ProgressNotes = () => {
 							<Button
 								color={"primary"}
 								onClick={() => {
-									handlePrint();
+									handlePrint("asd");
 								}}
 								variant="bordered"
 								isDisabled={currentUser === "staff" || !progressNotes}

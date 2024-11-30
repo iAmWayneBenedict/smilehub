@@ -47,6 +47,8 @@ import { CalendarDays } from "lucide-react";
 import { Trash2 } from "lucide-react";
 import { sendEmail } from "@/services/email";
 import { useParams } from "react-router-dom";
+import CardsContainer from "@/pages/shared/dashboard/components/CardsContainer.jsx";
+import CustomBarChart from "@/pages/shared/dashboard/components/BarChart.jsx";
 
 const AdminDashboard = () => {
 	const { setNewAppointmentModal } = useAppStore();
@@ -97,81 +99,90 @@ const AdminDashboard = () => {
 	const mobileScreen = useMediaQuery({
 		query: "(max-width: 640px)",
 	});
+
+	const currentUser = location.pathname.includes("admin") ? "admin" : "staff";
 	return (
 		<div style={{ flex: 1 }} className="bg-[#f9f9f9] overflow-x-hidden sm:overflow-x-auto">
 			<div className="w-full h-full p-5">
 				<h3 className="text-lg font-darkText">Dashboard</h3>
-				<div className="flex flex-col gap-3 xl:flex-row">
-					<div style={{ flex: 1 }} className="flex flex-col gap-5">
-						{/* top chart */}
-						<div style={{ flex: 1 }} className="p-4 bg-white rounded-lg shadow-md">
-							<div className="flex flex-col justify-between gap-2 sm:flex-row sm:gap-0">
-								<h3 className="text-xl font-medium" style={{ flex: 1 }}>
-									Patient Visit
-								</h3>
-								<div
-									className="flex items-center justify-start gap-3 sm:justify-end"
-									style={{ flex: 1 }}
-								>
-									<span className="text-lightText">Sort by</span>
-									<div className="w-full max-w-36">
-										<Select
-											aria-label="Sort by"
-											variant="bordered"
-											selectedKeys={filterSelected}
-											onSelectionChange={setFilterSelected}
-											color="primary"
-											className="bg-white "
-											classNames={{
-												label: "text-darkText font-semibold ",
-												inputWrapper: "rounded-lg h-full",
-											}}
-										>
-											<SelectItem key={"Monthly"} value={"Monthly"}>
-												Monthly
-											</SelectItem>
-											<SelectItem key={"Yearly"} selected value={"Yearly"}>
-												Yearly
-											</SelectItem>
-										</Select>
+				<CardsContainer />
+				<div className="flex flex-col gap-3 xl:flex-row mt-5">
+					<div style={ { flex: 1 } } className="flex flex-col gap-5">
+						{/* top chart */ }
+						<div className={ "flex flex-row gap-5" }>
+							{/*<div style={ { flex: 2 } } className="p-4 pb-10 bg-white rounded-lg shadow-md">*/}
+							{/*	<CustomBarChart/>*/}
+							{/*</div>*/}
+							<div style={ { flex: 3 } } className="p-4 bg-white rounded-lg shadow-md">
+								<div className="flex flex-col justify-between gap-2 sm:flex-row sm:gap-0">
+									<h3 className="text-xl font-medium" style={ { flex: 1 } }>
+										Patient Visit
+									</h3>
+									<div
+										className="flex items-center justify-start gap-3 sm:justify-end"
+										style={ { flex: 1 } }
+									>
+										<span className="text-lightText">Sort by</span>
+										<div className="w-full max-w-36">
+											<Select
+												aria-label="Sort by"
+												variant="bordered"
+												selectedKeys={ filterSelected }
+												onSelectionChange={ setFilterSelected }
+												color="primary"
+												className="bg-white "
+												classNames={ {
+													label: "text-darkText font-semibold ",
+													inputWrapper: "rounded-lg h-full",
+												} }
+											>
+												<SelectItem key={ "Monthly" } value={ "Monthly" }>
+													Monthly
+												</SelectItem>
+												<SelectItem key={ "Yearly" } selected value={ "Yearly" }>
+													Yearly
+												</SelectItem>
+											</Select>
+										</div>
 									</div>
 								</div>
+								<SplineChart data={ visitData }/>
 							</div>
-							<SplineChart data={visitData} />
+
 						</div>
 
-						{/* bottom table */}
-						<div style={{ flex: 1 }} className="p-4 bg-white rounded-lg shadow-md">
-							<Tabs
-								selectedKey={selected}
-								onSelectionChange={setSelected}
-								variant={"underlined"}
+						{/* bottom table */ }
+						<div style={ { flex: 1 } } className="p-4 bg-white rounded-lg shadow-md">
+						<Tabs
+								selectedKey={ selected }
+								onSelectionChange={ setSelected }
+								variant={ "underlined" }
 								aria-label="Tabs variants"
 								color="primary"
-								classNames={{
+								classNames={ {
 									tabContent:
 										"group-data-[selected=true]:text-darkText group-data-[selected=true]:font-bold px-0",
-								}}
+								} }
 							>
-								<Tab key="new" title={mobileScreen ? "NEW" : "NEW APPOINTMENTS"}>
-									<TableDashboard type={"new"} />
+								<Tab key="new" title={ mobileScreen ? "NEW" : "NEW APPOINTMENTS" }>
+									<TableDashboard type={ "new" }/>
 								</Tab>
 								<Tab
 									key="completed"
-									title={mobileScreen ? "COMPLETED" : "COMPLETED APPOINTMENTS"}
+									title={ mobileScreen ? "COMPLETED" : "COMPLETED APPOINTMENTS" }
 								>
-									<TableDashboard type={"completed"} />
+									<TableDashboard type={ "completed" }/>
 								</Tab>
 							</Tabs>
 						</div>
 					</div>
-					{/* right side */}
+					{/* right side */ }
 					<div
-						style={{ flex: 1 }}
-						className={cn(
+						style={ { flex: 1 } }
+						className={ cn(
 							"flex flex-col lg:flex-col gap-5 w-full min-w-[20rem]",
 							zoomedDevices ? "xl:max-w-[27rem]" : "xl:~max-w-48/120"
-						)}
+						) }
 					>
 						<div className="p-4 pb-10 bg-white rounded-lg shadow-md h-fit">
 							<div className="flex justify-between">
@@ -192,19 +203,23 @@ const AdminDashboard = () => {
 										<DonutChart
 											femaleCount={parseInt(data?.gender_counts?.Female || 0)}
 											maleCount={parseInt(data?.gender_counts?.Male || 0)}
+											ratherNotToSayCount={parseInt(data?.gender_counts["Rather not"] || 0)}
 										/>
 									)}
 								</div>
 							</div>
 						</div>
 						<div className="p-4 pb-10 bg-white rounded-lg shadow-md">
+							<CustomBarChart/>
+						</div> 
+						{ currentUser === "staff" && <div className="p-4 pb-10 bg-white rounded-lg shadow-md">
 							<div className="flex flex-row items-center justify-between">
 								<h2 className="~text-lg/xl font-semibold">Upcoming schedule</h2>
 								<Button
 									variant="light"
 									disableRipple
 									className="flex items-center gap-3 text-primary data-[hover=true]:opacity-70 data-[hover=true]:bg-transparent"
-									onClick={() =>
+									onClick={ () =>
 										setNewAppointmentModal({
 											isOpen: true,
 											title: "New Appointment",
@@ -217,14 +232,14 @@ const AdminDashboard = () => {
 										New Appointment
 									</span>
 									<span className="p-1 rounded-md border-1">
-										<Plus />
+										<Plus/>
 									</span>
 								</Button>
 							</div>
 							<div className="flex flex-col">
-								<AccordionSchedule />
+								<AccordionSchedule/>
 							</div>
-						</div>
+						</div> }
 					</div>
 				</div>
 			</div>
