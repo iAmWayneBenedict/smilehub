@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React from "react";
+import React, { useEffect, useLayoutEffect } from "react";
 import {
 	Table,
 	TableHeader,
@@ -20,7 +20,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import AppontmentsAPIManager from "@/services/api/managers/appointments/AppointmentsAPIManager.js";
 import { useAppStore } from "@/store/zustand.js";
 import AppointmentsAPIManager from "@/services/api/managers/appointments/AppointmentsAPIManager.js";
-import { useEffect } from "react";
 import { sendEmail } from "@/services/email";
 import { formatDate } from "@/lib/utils";
 import { convertDateYYYYMMDD } from "@/services/api/utils";
@@ -46,6 +45,15 @@ export default function TableDashboard({ type }) {
 	const { setNewScheduleModal, setAlertDialogDetails, setRefetchArr, refetchArr } = useAppStore();
 
 	const queryClient = useQueryClient();
+
+	useLayoutEffect(() => {
+		if(type === "completed") {
+			const tempVisibleColumns = INITIAL_VISIBLE_COLUMNS.filter(item => item !== "STATUS")
+			setVisibleColumns(new Set(tempVisibleColumns))
+		} else {
+			setVisibleColumns(new Set(INITIAL_VISIBLE_COLUMNS))
+		}
+	}, [type, setVisibleColumns]);
 
 	// handle header columns
 	const headerColumns = React.useMemo(() => {

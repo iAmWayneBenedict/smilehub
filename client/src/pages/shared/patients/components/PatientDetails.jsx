@@ -686,8 +686,8 @@ const PatientDetails = () => {
 											isReadOnly={location.pathname.includes("info")}
 											isInvalid={!!errors.HEALTH_FUND}
 											errorMessage={errors.HEALTH_FUND?.message}
-											aria-label="health fund"
-											label="Health Fund (if applicable)"
+											aria-label="health card"
+											label="Health Card (if applicable)"
 											type="text"
 											variant="bordered"
 											color="primary"

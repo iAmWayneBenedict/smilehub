@@ -2,10 +2,10 @@ import { useEffect } from "react";
 import ApexCharts from "apexcharts";
 import PropTypes from "prop-types";
 
-const DonutChart = ({ femaleCount, maleCount }) => {
-	const data = [maleCount, femaleCount];
-	const labels = ["Male", "Female"]; //* labels for the chart
-	const colors = ["#eb5757", "#2f80ed"]; //* colors for the chart
+const DonutChart = ({ femaleCount, maleCount, ratherNotToSayCount }) => {
+	const data = [maleCount, femaleCount , ratherNotToSayCount];
+	const labels = ["Male", "Female", "Other"]; //* labels for the chart
+	const colors = ["#eb5757", "#2f80ed", "#e2b93b"]; //* colors for the chart
 	var options = {
 		series: data,
 		chart: {
@@ -43,6 +43,10 @@ const DonutChart = ({ femaleCount, maleCount }) => {
 					<h3 className="flex gap-2 text-lg font-semibold">
 						<span>{data[1]}</span>
 						<span className={`text-[#2f80ed]`}>{labels[1]}</span>
+					</h3>	
+					<h3 className="flex gap-2 text-lg font-semibold">
+						<span>{data[2]}</span>
+						<span className={`text-[#e2b93b]`}>{labels[2]}</span>
 					</h3>
 				</div>
 			</div>
@@ -52,5 +56,6 @@ const DonutChart = ({ femaleCount, maleCount }) => {
 DonutChart.propTypes = {
 	femaleCount: PropTypes.any,
 	maleCount: PropTypes.any,
+	ratherNotToSayCount: PropTypes.any,
 };
 export default DonutChart;

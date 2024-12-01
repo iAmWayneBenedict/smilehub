@@ -47,16 +47,16 @@ const Inventory = () => {
 							<h3 className="text-lg font-bold uppercase text-darkText">Inventory</h3>
 							<p className="text-lightText">List of items available.</p>
 						</div>
-						<div>
-							<Button
-								color="primary"
-								startContent={<PlusIcon />}
-								as={Link}
-								href={`/${currentUser}/inventory/item-list/add`}
-							>
-								Add new item
-							</Button>
-						</div>
+						{/*<div>*/}
+						{/*	<Button*/}
+						{/*		color="primary"*/}
+						{/*		startContent={<PlusIcon />}*/}
+						{/*		as={Link}*/}
+						{/*		href={`/${currentUser}/inventory/item-list/add`}*/}
+						{/*	>*/}
+						{/*		Add new item*/}
+						{/*	</Button>*/}
+						{/*</div>*/}
 					</div>
 					<div className="grid gap-5 mt-10 gir-cols-1 md:grid-cols-2 xl:grid-cols-4">
 						<div className="rounded-lg border-2 border-[#03A9F5] flex flex-col items-center">

@@ -7,7 +7,7 @@ import {
 	ModalFooter,
 	Button,
 	useDisclosure,
-	Divider,
+	Divider, CircularProgress,
 } from "@nextui-org/react";
 import { useEffect } from "react";
 import { CircleCheckBig, CircleX, CircleAlert, Info } from "lucide-react";
@@ -57,6 +57,11 @@ const AlertDialog = () => {
 			bg: "bg-blue-500/5",
 			icon: <Info className="w-16 h-16 text-blue-500" />,
 		},
+		loading: {
+			title: "Loading...",
+			bg: "bg-blue-500/5",
+			icon: <Info className="w-16 h-16 text-blue-500" />,
+		}
 	};
 
 	return (
@@ -64,6 +69,9 @@ const AlertDialog = () => {
 			backdrop={"blur"}
 			isOpen={isOpen}
 			placement="center"
+			isDismissable={alertDialogDetails?.showClose || alertDialogDetails?.showClose === undefined}
+			isKeyboardDismissDisabled={!alertDialogDetails?.showClose}
+			hideCloseButton={!alertDialogDetails?.showClose && alertDialogDetails?.showClose !== undefined}
 			onClose={() => {
 				if (alertDialogDetails?.actionLink) {
 					navigate(alertDialogDetails?.actionLink);
@@ -96,6 +104,9 @@ const AlertDialog = () => {
 						</ModalHeader>
 						<Divider />
 						<ModalBody className="mt-5">
+							{!alertDialogDetails?.showClose && alertDialogDetails?.showClose !== undefined && <center>
+								<CircularProgress size="lg" aria-label="Loading..."/>
+							</center> }
 							{Array.isArray(alertDialogDetails?.message) ? (
 								alertDialogDetails?.message?.map((message, index) => (
 									<p key={index} className="text-center">
@@ -109,7 +120,7 @@ const AlertDialog = () => {
 							)}
 						</ModalBody>
 						<ModalFooter>
-							{alertDialogDetails?.dialogType !== "confirm" ? (
+							{alertDialogDetails?.dialogType !== "confirm" ? (alertDialogDetails?.showClose || alertDialogDetails?.showClose === undefined) && (
 								<Button
 									color="default"
 									variant="light"
@@ -127,15 +138,16 @@ const AlertDialog = () => {
 								</Button>
 							) : (
 								<>
+								{ (alertDialogDetails?.showClose || alertDialogDetails?.showClose === undefined) && <>
 									<Button
 										color="default"
 										variant="light"
-										onPress={() => {
+										onPress={ () => {
 											if (alertDialogDetails?.cancelCallback) {
 												alertDialogDetails?.cancelCallback();
 											}
 											onClose();
-										}}
+										} }
 									>
 										Cancel
 									</Button>
@@ -146,7 +158,7 @@ const AlertDialog = () => {
 												: alertDialogDetails?.type
 										}
 										variant="solid"
-										onPress={() => {
+										onPress={ () => {
 											if (alertDialogDetails?.confirmCallback) {
 												alertDialogDetails?.confirmCallback();
 											}
@@ -154,10 +166,12 @@ const AlertDialog = () => {
 												navigate(alertDialogDetails?.actionLink);
 											}
 											onClose();
-										}}
+										} }
 									>
 										Confirm
 									</Button>
+								</> 
+								}
 								</>
 							)}
 						</ModalFooter>

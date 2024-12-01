@@ -38,6 +38,12 @@ const Appointments = () => {
 						>
 							<TableAppointments type={"completed"} />
 						</Tab>
+						<Tab
+							key="archived-appointments"
+							title={mobileScreen ? "ARCHIVED" : "ARCHIVED APPOINTMENTS"}
+						>
+							<TableAppointments type={"archived"} />
+						</Tab>
 					</Tabs>
 				</div>
 				<AppointmentModal />

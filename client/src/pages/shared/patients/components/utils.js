@@ -45,5 +45,15 @@ export const handlePrint = async () => {
 		var imgData = pageCanvas.toDataURL("image/" + image.type, image.quality);
 		pdf.addImage(imgData, image.type, margin[1], 25, innerPageWidth, pageHeight);
 	}
+	
 	pdf.save("Progress Notes.pdf");
+	
+	// if(data) {
+	// 	const file = new Blob([pdf.output("blob")], { type: "application/pdf" });
+	//	
+	// // 	convert to file object
+	// 	const fileObject = new File([file], "progress-notes.pdf", { type: "application/pdf" });
+	//	
+	// 	console.log(fileObject)
+	// }
 };
