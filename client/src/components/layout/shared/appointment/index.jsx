@@ -484,8 +484,7 @@ export default function AppointmentModal() {
 										<div>
 											<p className="mt-2 text-base">
 												Appointment confirmation and reminder messages will
-												be automatically sent to clinic Email notification
-												settings.
+												be automatically sent to your Email.
 											</p>
 										</div>
 									</div>
