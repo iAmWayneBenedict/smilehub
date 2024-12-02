@@ -49,6 +49,7 @@ import { sendEmail } from "@/services/email";
 import { useParams } from "react-router-dom";
 import CardsContainer from "@/pages/shared/dashboard/components/CardsContainer.jsx";
 import CustomBarChart from "@/pages/shared/dashboard/components/BarChart.jsx";
+import { CustomVerticalBarChart } from "@/components/layout/shared/chart/bar/index.jsx";
 
 const AdminDashboard = () => {
 	const { setNewAppointmentModal } = useAppStore();
@@ -113,14 +114,14 @@ const AdminDashboard = () => {
 							{/*<div style={ { flex: 2 } } className="p-4 pb-10 bg-white rounded-lg shadow-md">*/}
 							{/*	<CustomBarChart/>*/}
 							{/*</div>*/}
-							<div style={ { flex: 3 } } className="p-4 bg-white rounded-lg shadow-md">
-								<div className="flex flex-col justify-between gap-2 sm:flex-row sm:gap-0">
-									<h3 className="text-xl font-medium" style={ { flex: 1 } }>
+							<div style={ { flex: 3 } } className="p-4 bg-white rounded-lg shadow-md w-[100%] sm:w-auto">
+								<div className="flex justify-between gap-2 flex-col sm:flex-row sm:gap-0">
+									<h3 className="text-xl font-medium flex-none sm:flex-1" >
 										Patient Visit
 									</h3>
 									<div
-										className="flex items-center justify-start gap-3 sm:justify-end"
-										style={ { flex: 1 } }
+										className="flex items-center gap-3 justify-start sm:justify-end flex-1 sm:w-auto"
+										
 									>
 										<span className="text-lightText">Sort by</span>
 										<div className="w-full max-w-36">
@@ -146,7 +147,8 @@ const AdminDashboard = () => {
 										</div>
 									</div>
 								</div>
-								<SplineChart data={ visitData }/>
+								{/*<SplineChart data={ visitData }/>*/}
+								<CustomVerticalBarChart  data={ visitData } filterAs={[...filterSelected][0]}/>
 							</div>
 
 						</div>
