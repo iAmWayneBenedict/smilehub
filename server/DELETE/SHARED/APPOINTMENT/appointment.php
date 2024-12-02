@@ -41,7 +41,8 @@ function deleteAppointment($conn, $data) {
     }
 
     // Delete the appointment
-    $query = "DELETE FROM appointment_table WHERE ID = ?";
+    // $query = "DELETE FROM appointment_table WHERE ID = ?";
+    $query = "UPDATE appointment_table SET STATUS = 'Archived' WHERE ID = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param('i', $data->ID);
     $result = $stmt->execute();
