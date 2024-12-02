@@ -51,7 +51,6 @@ export function CustomVerticalBarChart({data, filterAs}) {
 				data: data.data[index]
 			}));
 	}, [data])
-	console.log(filterAs)
 	return (
 		<Card className={"border-0 shadow-none"}>
 			<CardHeader className={"p-0"}>
