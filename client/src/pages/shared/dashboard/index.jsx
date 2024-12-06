@@ -64,6 +64,7 @@ const AdminDashboard = () => {
 	});
 	const [selected, setSelected] = useState(new URLSearchParams(location.search).get("tab"));
 	const [filterSelected, setFilterSelected] = useState(new Set(["Monthly"]));
+	const [chartType, setChartType] = useState(new Set(["Line"]));
 
 	const { data, isSuccess, isLoading } = useQuery({
 		queryKey: ["dashboard-statistics"],
@@ -120,42 +121,68 @@ const AdminDashboard = () => {
 										Patient Visit
 									</h3>
 									<div
-										className="flex items-center gap-3 justify-start sm:justify-end flex-1 sm:w-auto"
+										className="flex items-center gap-3 justify-start sm:justify-end flex-1"
 										
 									>
-										<span className="text-lightText">Sort by</span>
-										<div className="w-full max-w-36">
-											<Select
-												aria-label="Sort by"
-												variant="bordered"
-												selectedKeys={ filterSelected }
-												onSelectionChange={ setFilterSelected }
-												color="primary"
-												className="bg-white "
-												classNames={ {
-													label: "text-darkText font-semibold ",
-													inputWrapper: "rounded-lg h-full",
-												} }
-											>
-												<SelectItem key={ "Monthly" } value={ "Monthly" }>
-													Monthly
-												</SelectItem>
-												<SelectItem key={ "Yearly" } selected value={ "Yearly" }>
-													Yearly
-												</SelectItem>
-											</Select>
+										<div className="flex items-center gap-3 justify-start sm:justify-end w-fit">
+											<span className="text-lightText whitespace-nowrap">Chart Type</span>
+											<div className="w-full max-w-36 min-w-28">
+												<Select
+													aria-label="Sort by"
+													variant="bordered"
+													selectedKeys={ chartType }
+													onSelectionChange={ setChartType }
+													color="primary"
+													className="bg-white "
+													classNames={ {
+														label: "text-darkText font-semibold ",
+														inputWrapper: "rounded-lg h-full",
+													} }
+												>
+													<SelectItem key={ "Line" } selected value={ "Line" }>
+														Line
+													</SelectItem>
+													<SelectItem key={ "Bar" } value={ "Bar" }>
+														Bar
+													</SelectItem>
+												</Select>
+											</div>
+										</div>
+										<div className="flex items-center gap-3 justify-start sm:justify-end w-fit">
+											<span className="text-lightText whitespace-nowrap">Sort by</span>
+											<div className="w-full max-w-36 min-w-28">
+												<Select
+													aria-label="Sort by"
+													variant="bordered"
+													selectedKeys={ filterSelected }
+													onSelectionChange={ setFilterSelected }
+													color="primary"
+													className="bg-white "
+													classNames={ {
+														label: "text-darkText font-semibold ",
+														inputWrapper: "rounded-lg h-full",
+													} }
+												>
+													<SelectItem key={ "Monthly" } value={ "Monthly" }>
+														Monthly
+													</SelectItem>
+													<SelectItem key={ "Yearly" } selected value={ "Yearly" }>
+														Yearly
+													</SelectItem>
+												</Select>
+											</div>
 										</div>
 									</div>
 								</div>
-								{/*<SplineChart data={ visitData }/>*/}
-								<CustomVerticalBarChart  data={ visitData } filterAs={[...filterSelected][0]}/>
+								{ chartType.has("Line") && <SplineChart data={ visitData }/> }
+								{ chartType.has("Bar") && <CustomVerticalBarChart data={ visitData } filterAs={ [...filterSelected][0] }/> }
 							</div>
 
 						</div>
 
 						{/* bottom table */ }
 						<div style={ { flex: 1 } } className="p-4 bg-white rounded-lg shadow-md">
-						<Tabs
+							<Tabs
 								selectedKey={ selected }
 								onSelectionChange={ setSelected }
 								variant={ "underlined" }

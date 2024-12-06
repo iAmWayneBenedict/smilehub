@@ -89,7 +89,7 @@ const Inventory = () => {
 									<h3 className="text-3xl font-bold">
 										{groupInventory?.length || 0}
 									</h3>
-									<h6 className="text-lg font-semibold">Items Group</h6>
+									<h6 className="text-lg font-semibold">Item Group</h6>
 								</div>
 							</div>
 							<div className="w-full bg-[#01A768]/30 flex flex-col items-center mt-5 border-t-2 border-[#01A768]">
@@ -112,7 +112,7 @@ const Inventory = () => {
 									<h3 className="text-3xl font-bold">
 										{shortageInventory?.length || 0}
 									</h3>
-									<h6 className="text-lg font-semibold">Items Shortage</h6>
+									<h6 className="text-lg font-semibold">Item Shortage</h6>
 								</div>
 							</div>
 							<div className="w-full bg-[#F0483E]/30 flex flex-col items-center mt-5 border-t-2 border-[#F0483E]">

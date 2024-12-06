@@ -94,6 +94,7 @@ const EditItemShortage = () => {
 	const onSubmit = (data) => {
 		data.EMPLOYEE_NAME = user.fullname;
 		data.EMPLOYEE_ID = user.id;
+		data.LOCATION = "N/A";
 		mutation.mutate(data);
 	};
 	return (
@@ -222,38 +223,38 @@ const EditItemShortage = () => {
 									)}
 								/>
 							</div>
-							<Controller
-								name="LOCATION"
-								control={control}
-								rules={{ required: "Location is required" }}
-								render={({ field, formState: { errors } }) => (
-									<Textarea
-										value={field.value}
-										onValueChange={(value) => {
-											field.onChange(value);
-										}}
-										isReadOnly={location.pathname.includes("info")}
-										aria-label="title"
-										isInvalid={!!errors.LOCATION}
-										errorMessage={errors.LOCATION?.message}
-										placeholder={" "}
-										type="text"
-										variant={"bordered"}
-										label="Location"
-										radius="sm"
-										size="lg"
-										color="primary"
-										className="col-span-12 mb-6 md:col-span-6 md:mb-0"
-										classNames={{
-											label: "text-darkText font-semibold text-base",
-											inputWrapper:
-												"rounded-lg h-full bg-[#e3ebf3] border-1 border-[#1D242E]",
-											mainWrapper: "h-[4rem]",
-										}}
-										labelPlacement={"outside"}
-									/>
-								)}
-							/>
+							{/*<Controller*/}
+							{/*	name="LOCATION"*/}
+							{/*	control={control}*/}
+							{/*	rules={{ required: "Location is required" }}*/}
+							{/*	render={({ field, formState: { errors } }) => (*/}
+							{/*		<Textarea*/}
+							{/*			value={field.value}*/}
+							{/*			onValueChange={(value) => {*/}
+							{/*				field.onChange(value);*/}
+							{/*			}}*/}
+							{/*			isReadOnly={location.pathname.includes("info")}*/}
+							{/*			aria-label="title"*/}
+							{/*			isInvalid={!!errors.LOCATION}*/}
+							{/*			errorMessage={errors.LOCATION?.message}*/}
+							{/*			placeholder={" "}*/}
+							{/*			type="text"*/}
+							{/*			variant={"bordered"}*/}
+							{/*			label="Location"*/}
+							{/*			radius="sm"*/}
+							{/*			size="lg"*/}
+							{/*			color="primary"*/}
+							{/*			className="col-span-12 mb-6 md:col-span-6 md:mb-0"*/}
+							{/*			classNames={{*/}
+							{/*				label: "text-darkText font-semibold text-base",*/}
+							{/*				inputWrapper:*/}
+							{/*					"rounded-lg h-full bg-[#e3ebf3] border-1 border-[#1D242E]",*/}
+							{/*				mainWrapper: "h-[4rem]",*/}
+							{/*			}}*/}
+							{/*			labelPlacement={"outside"}*/}
+							{/*		/>*/}
+							{/*	)}*/}
+							{/*/>*/}
 
 							<div>
 								<Button color="primary" type="submit" className="px-8 text-base">

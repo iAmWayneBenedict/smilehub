@@ -26,13 +26,13 @@ const PatientDetails = () => {
 	const navigate = useNavigate();
 	const [getRequestData, setGetRequestData] = useState(null);
 	const [formData, setFormData] = useState({
-		OTHER_TITLE: "",
+		// OTHER_TITLE: "",
 		OTHER_CONDITIONS: "",
 		OTHER_DENTAL_CONCERN_PROBLEMS: "",
 		FRIEND_FAMILY: "",
 	});
 	const [errorForm, setErrorForm] = useState({
-		OTHER_TITLE: "",
+		// OTHER_TITLE: "",
 		OTHER_CONDITIONS: "",
 		OTHER_DENTAL_CONCERN_PROBLEMS: "",
 		FRIEND_FAMILY: "",
@@ -61,13 +61,13 @@ const PatientDetails = () => {
 		// newData.CONSENT = JSON.parse(data.CONSENT);
 		// console.log(1233);
 
-		if (data.TITLE.includes("Other")) {
-			const temp = data.TITLE.split(", ");
-			newData.TITLE = temp[0];
-			newFormData.OTHER_TITLE = temp[1];
-		} else {
-			newData.TITLE = data.TITLE;
-		}
+		// if (data.TITLE.includes("Other")) {
+		// 	const temp = data.TITLE.split(", ");
+		// 	newData.TITLE = temp[0];
+		// 	newFormData.OTHER_TITLE = temp[1];
+		// } else {
+		// 	newData.TITLE = data.TITLE;
+		// }
 
 		if (data.REFFERAL.includes("Other")) {
 			const temp = data.REFFERAL.split(", ");
@@ -92,7 +92,7 @@ const PatientDetails = () => {
 			}
 		});
 
-		newData.TITLE = data.TITLE.includes("Other") ? data.TITLE.split(",")[0] : data.TITLE;
+		// newData.TITLE = data.TITLE.includes("Other") ? data.TITLE.split(",")[0] : data.TITLE;
 		newData.BIRTHDAY = data.BIRTHDAY
 			? parseDate(convertDateYYYYMMDD(data.BIRTHDAY))
 			: today(getLocalTimeZone());
@@ -121,7 +121,7 @@ const PatientDetails = () => {
 			// if (!data)
 			return {
 				PATIENT_ID: "",
-				TITLE: "",
+				// TITLE: "",
 				FIRST_NAME: "",
 				LAST_NAME: "",
 				OCCUPATION: "",
@@ -283,9 +283,9 @@ const PatientDetails = () => {
 	const onSubmit = (data) => {
 		data.PATIENT_ID = params.id;
 		if (data.ID) {
-			data.TITLE = data.TITLE.includes("Other")
-				? data.TITLE + ", " + formData.OTHER_TITLE
-				: data.TITLE;
+			// data.TITLE = data.TITLE.includes("Other")
+			// 	? data.TITLE + ", " + formData.OTHER_TITLE
+			// 	: data.TITLE;
 			switch (data.REFFERAL) {
 				case "Other":
 					data.REFFERAL = data.REFFERAL + ", " + formData.OTHER_REFERRAL;
@@ -301,9 +301,9 @@ const PatientDetails = () => {
 				? JSON.stringify(data?.SUFFERING)
 				: JSON.stringify([formData?.OTHER_CONDITIONS]);
 		} else {
-			data.TITLE = data.TITLE.includes("Other")
-				? data.TITLE + ", " + formData.OTHER_TITLE
-				: data.TITLE[0];
+			// data.TITLE = data.TITLE.includes("Other")
+			// 	? data.TITLE + ", " + formData.OTHER_TITLE
+			// 	: data.TITLE[0];
 			switch (data.REFFERAL) {
 				case "Other":
 					data.REFFERAL = data.REFFERAL + ", " + formData.OTHER_REFERRAL;
@@ -319,6 +319,8 @@ const PatientDetails = () => {
 				? JSON.stringify([data?.SUFFERING[0]])
 				: JSON.stringify([formData?.OTHER_CONDITIONS]);
 		}
+		
+		data['TITLE'] = "N/A";
 
 		data.DENTAL_CONCERN_PROBLEMS = JSON.stringify(data.DENTAL_CONCERN_PROBLEMS);
 		data.DENTAL_TREATMENT_REQUIREMENT = JSON.stringify(data.DENTAL_TREATMENT_REQUIREMENT);
@@ -359,83 +361,83 @@ const PatientDetails = () => {
 					</div>
 					<div className="flex flex-col gap-5 px-5">
 						<div className="flex flex-col gap-5 lg:flex-row">
-							<div style={{ flex: 1 }}>
-								<Controller
-									name="TITLE"
-									control={control}
-									rules={{ required: "Title is required" }}
-									render={({ field, formState: { errors } }) => (
-										<CheckboxGroup
-											label="Title"
-											orientation="horizontal"
-											value={field.value}
-											onValueChange={(value) => {
-												const val = checkerInvalidValue(
-													["Other"],
-													checkboxSetterSingleItem(value)
-												);
-												field.onChange(val);
-												autoOtherParent(
-													"OTHER_TITLE",
-													"TITLE",
-													"Other",
-													val
-												);
-											}}
-											isInvalid={!!errors.TITLE}
-											errorMessage={errors.TITLE?.message}
-										>
-											<Checkbox value="Mr.">Mr.</Checkbox>
-											<Checkbox value="Mrs.">Mrs.</Checkbox>
-											<Checkbox value="Miss">Miss</Checkbox>
-											<Checkbox value="Ms.">Ms.</Checkbox>
-											<Checkbox value="Master">Master</Checkbox>
-											<div className="flex flex-row max-w-sm gap-5">
-												<Checkbox
-													value="Other"
-													classNames={{
-														label: "flex flex-row items-center",
-													}}
-												>
-													Other
-												</Checkbox>
-												<Input
-													value={formData["OTHER_TITLE"]}
-													onValueChange={(value) => {
-														setFormData({
-															...formData,
-															OTHER_TITLE: value,
-														});
-
-														autoOther(
-															"OTHER_TITLE",
-															"TITLE",
-															"Other",
-															value
-														);
-													}}
-													isReadOnly={location.pathname.includes("info")}
-													isInvalid={!!errorForm["OTHER_TITLE"]}
-													errorMessage={errorForm["OTHER_TITLE"]}
-													aria-label="other referral"
-													type="text"
-													variant="bordered"
-													color="primary"
-													radius="sm"
-													size="lg"
-													className="w-full"
-													placeholder=" "
-													classNames={{
-														label: "text-darkText font-semibold ",
-														inputWrapper: "h-full bg-white",
-													}}
-													labelPlacement={"outside"}
-												/>
-											</div>
-										</CheckboxGroup>
-									)}
-								/>
-							</div>
+							{/*<div style={{ flex: 1 }}>*/}
+							{/*	<Controller*/}
+							{/*		name="TITLE"*/}
+							{/*		control={control}*/}
+							{/*		rules={{ required: "Title is required" }}*/}
+							{/*		render={({ field, formState: { errors } }) => (*/}
+							{/*			<CheckboxGroup*/}
+							{/*				label="Title"*/}
+							{/*				orientation="horizontal"*/}
+							{/*				value={field.value}*/}
+							{/*				onValueChange={(value) => {*/}
+							{/*					const val = checkerInvalidValue(*/}
+							{/*						["Other"],*/}
+							{/*						checkboxSetterSingleItem(value)*/}
+							{/*					);*/}
+							{/*					field.onChange(val);*/}
+							{/*					autoOtherParent(*/}
+							{/*						"OTHER_TITLE",*/}
+							{/*						"TITLE",*/}
+							{/*						"Other",*/}
+							{/*						val*/}
+							{/*					);*/}
+							{/*				}}*/}
+							{/*				isInvalid={!!errors.TITLE}*/}
+							{/*				errorMessage={errors.TITLE?.message}*/}
+							{/*			>*/}
+							{/*				<Checkbox value="Mr.">Mr.</Checkbox>*/}
+							{/*				<Checkbox value="Mrs.">Mrs.</Checkbox>*/}
+							{/*				<Checkbox value="Miss">Miss</Checkbox>*/}
+							{/*				<Checkbox value="Ms.">Ms.</Checkbox>*/}
+							{/*				<Checkbox value="Master">Master</Checkbox>*/}
+							{/*				<div className="flex flex-row max-w-sm gap-5">*/}
+							{/*					<Checkbox*/}
+							{/*						value="Other"*/}
+							{/*						classNames={{*/}
+							{/*							label: "flex flex-row items-center",*/}
+							{/*						}}*/}
+							{/*					>*/}
+							{/*						Other*/}
+							{/*					</Checkbox>*/}
+							{/*					<Input*/}
+							{/*						value={formData["OTHER_TITLE"]}*/}
+							{/*						onValueChange={(value) => {*/}
+							{/*							setFormData({*/}
+							{/*								...formData,*/}
+							{/*								OTHER_TITLE: value,*/}
+							{/*							});*/}
+							
+							{/*							autoOther(*/}
+							{/*								"OTHER_TITLE",*/}
+							{/*								"TITLE",*/}
+							{/*								"Other",*/}
+							{/*								value*/}
+							{/*							);*/}
+							{/*						}}*/}
+							{/*						isReadOnly={location.pathname.includes("info")}*/}
+							{/*						isInvalid={!!errorForm["OTHER_TITLE"]}*/}
+							{/*						errorMessage={errorForm["OTHER_TITLE"]}*/}
+							{/*						aria-label="other referral"*/}
+							{/*						type="text"*/}
+							{/*						variant="bordered"*/}
+							{/*						color="primary"*/}
+							{/*						radius="sm"*/}
+							{/*						size="lg"*/}
+							{/*						className="w-full"*/}
+							{/*						placeholder=" "*/}
+							{/*						classNames={{*/}
+							{/*							label: "text-darkText font-semibold ",*/}
+							{/*							inputWrapper: "h-full bg-white",*/}
+							{/*						}}*/}
+							{/*						labelPlacement={"outside"}*/}
+							{/*					/>*/}
+							{/*				</div>*/}
+							{/*			</CheckboxGroup>*/}
+							{/*		)}*/}
+							{/*	/>*/}
+							{/*</div>*/}
 							<div style={{ flex: 1 }}>
 								<Controller
 									name="FIRST_NAME"

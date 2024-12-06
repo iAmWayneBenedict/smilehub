@@ -68,6 +68,7 @@ const AddItem = () => {
 	const onSubmit = (data) => {
 		data.EMPLOYEE_NAME = user.fullname;
 		data.EMPLOYEE_ID = user.id;
+		data.LOCATION = "N/A";
 		mutation.mutate(data);
 	};
 	return (
@@ -178,27 +179,27 @@ const AddItem = () => {
 									labelPlacement={"outside"}
 								/>
 							</div>
-							<Textarea
-								{...register("LOCATION", {
-									required: "Location is required",
-								})}
-								isInvalid={!!errors.LOCATION}
-								errorMessage={errors.LOCATION?.message}
-								variant={"bordered"}
-								label="Location"
-								radius="sm"
-								size="lg"
-								color="primary"
-								labelPlacement="outside"
-								classNames={{
-									label: "text-darkText font-semibold text-base",
-									inputWrapper:
-										"rounded-lg h-full bg-[#e3ebf3] border-1 border-[#1D242E]",
-									mainWrapper: "h-[4rem]",
-								}}
-								placeholder=" "
-								className="col-span-12 mb-6 md:col-span-6 md:mb-0"
-							/>
+							{/*<Textarea*/}
+							{/*	{...register("LOCATION", {*/}
+							{/*		required: "Location is required",*/}
+							{/*	})}*/}
+							{/*	isInvalid={!!errors.LOCATION}*/}
+							{/*	errorMessage={errors.LOCATION?.message}*/}
+							{/*	variant={"bordered"}*/}
+							{/*	label="Location"*/}
+							{/*	radius="sm"*/}
+							{/*	size="lg"*/}
+							{/*	color="primary"*/}
+							{/*	labelPlacement="outside"*/}
+							{/*	classNames={{*/}
+							{/*		label: "text-darkText font-semibold text-base",*/}
+							{/*		inputWrapper:*/}
+							{/*			"rounded-lg h-full bg-[#e3ebf3] border-1 border-[#1D242E]",*/}
+							{/*		mainWrapper: "h-[4rem]",*/}
+							{/*	}}*/}
+							{/*	placeholder=" "*/}
+							{/*	className="col-span-12 mb-6 md:col-span-6 md:mb-0"*/}
+							{/*/>*/}
 							<div>
 								<Button color="primary" type="submit" className="px-8 text-base">
 									Save Details

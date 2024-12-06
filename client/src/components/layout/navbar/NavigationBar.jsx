@@ -110,7 +110,7 @@ const NavigationBar = () => {
 				isOpen: true,
 				type: "success",
 				title: "Success!",
-				message: ["Request Successfully", "Please check your downloads folder."],
+				message: ["Request Successful", "Please check your downloads folder."],
 			})
 		}, 2000);
 	};
